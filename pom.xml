@@ -20,6 +20,13 @@
 	<additionalparam>-Xdoclint:none</additionalparam>
   </properties>
 
+	<scm>
+		<connection>scm:git:https://github.com/ACWI-SSWD/nldi-services.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:ACWI-SSWD/nldi-services.git</developerConnection>
+		<url>https://github.com/ACWI-SSWD/nldi-services</url>
+		<tag>HEAD</tag>
+	</scm>
+		
 	<dependencyManagement>
     	<dependencies>
     		<dependency>
