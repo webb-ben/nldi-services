@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="navigate">
+
+	<select id="navigate" resultType="java.util.LinkedHashMap" >
+		select nhdplus_navigation.navigate(                
+             pnavigationtype           := 'UT'     
+            ,pstartcomid               := 13284726 
+            ,pstartpermanentidentifier := null     
+            ,pstartreachcode           := null     
+            ,pstartmeasure             := 91.60319 
+            ,pstopcomid                := null     
+            ,pstoppermanentidentifier  := null     
+            ,pstopreachcode            := null     
+            ,pstopmeasure              := null     
+            ,pmaxdistancekm            := 15       
+            ,pmaxflowtimehour          := null     
+            ,pdebug                    := 'FALSE'   
+            ,paddflowlineattributes    := 'TRUE'  
+            ,paddflowlinegeometry      := 'TRUE'  
+         );
+	</select>
+
+    <select id="select" resultType="java.util.LinkedHashMap" fetchSize="500">
+        select nhdplus_comid,
+        	   st_asgeojson(shape) shape
+          from nhdplus_navigation.tmp_navigation_results
+            order by totaldist, hydroseq
+     </select>
+
+</mapper>       
