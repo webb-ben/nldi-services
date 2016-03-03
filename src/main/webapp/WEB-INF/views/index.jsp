@@ -43,7 +43,7 @@ function addDataToMap(data, map) {
 }
 
 
-$.getJSON("http://localhost:8080/nldi-services/navigation", function(data) { addDataToMap(data, map); });
+$.getJSON("navigation", function(data) { addDataToMap(data, map); });
 </script>
 </body>
 </html>
