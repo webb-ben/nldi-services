@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
-@ComponentScan(basePackages="gov.usgs.owi.navigation_pilot")
+@ComponentScan(basePackages="gov.usgs.owi.nldi")
 @EnableWebMvc
 public class SpringConfig extends WebMvcConfigurerAdapter {
 
