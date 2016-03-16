@@ -19,9 +19,4 @@
 	<typeHandlers>
 	</typeHandlers>
    
-	<mappers>
-		<mapper resource="mybatis/navigate.xml"/>
-		<mapper resource="mybatis/pointIndexing.xml"/>
-	 </mappers>
-	
 </configuration>
