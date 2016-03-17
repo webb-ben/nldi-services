@@ -73,9 +73,12 @@ public class RestController {
 				parameterMap.put(DISTANCE, NumberUtils.parseNumber(distance, BigDecimal.class));
 			}
 						
+			LOG.debug("Request Parameters:" + parameterMap.toString());
+			
 			LinkedHashMap<?,?> navigationResult = streamingDao.navigate(NAVIGATE, parameterMap);
 			//  -  type="record" value="(13297246,0.0000000000,,,0,,{f8612242-ea24-11e5-9999-0242ac110003})"
-			
+			LOG.debug("return from navigate:" + navigationResult.get(NAVIGATE).toString());
+
 			String[] result = navigationResult.get(NAVIGATE).toString().split(",");
 			
 			if ("0".equals(result[4])) {
@@ -83,7 +86,8 @@ public class RestController {
 				streamResults(responseStream, parameterMap);
 			} else {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				String msg = "{\"error\":" + result[5] + "}";
+				String msg = "{\"errorCode\":" + result[4] + ", \"errorMessage\":" + result[5] + "}";
+				LOG.debug(msg);
 				responseStream.write(msg.getBytes());
 			}
 
