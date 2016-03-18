@@ -9,23 +9,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StreamingDao extends BaseDao {
+public class DemoStreamingDao extends BaseDao {
 	String QUERY_SELECT_ID = ".select";
 	
 	@Autowired
-	public StreamingDao(SqlSessionFactory sqlSessionFactory) {
+	public DemoStreamingDao(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory);
 	}
 	
 	public void stream(String nameSpace, Map<String, Object> parameterMap, ResultHandler<?> handler) {
 		if (null == handler) {
-			throw new IllegalArgumentException("A ResultHandler is required for the StreamingDao.stream");
+			throw new IllegalArgumentException("A ResultHandler is required for the DemoStreamingDao.stream");
 		}
 		getSqlSession().select(nameSpace + QUERY_SELECT_ID, parameterMap, handler);
 	}
 
 	public LinkedHashMap<?,?> navigate(String nameSpace, Map<String, Object> parameterMap) {
-		return getSqlSession().selectOne(nameSpace + ".navigate", parameterMap);
+		return getSqlSession().selectOne(nameSpace + ".navigate");
 	}
 
 }
