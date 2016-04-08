@@ -6,13 +6,13 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
-public class MapToJsonTransformer extends OutputStream implements ITransformer {
+public abstract class MapToJsonTransformer extends OutputStream implements ITransformer {
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
 
 	protected OutputStream target;
 
-	private boolean endPrevious = false;
+	protected boolean endPrevious = false;
 
 	/** Is this the first write to the stream. */
 	protected boolean first = true;
@@ -53,12 +53,14 @@ public class MapToJsonTransformer extends OutputStream implements ITransformer {
 		}
 		writeToStream("{\"type\":\"Feature\",\"geometry\":");
 		writeToStream(getValue(resultMap, "shape"));
-		writeToStream(",\"properties\":{\"nhdplus_comid\":\"");
-		writeToStream(getValueEncode(resultMap, "nhdplus_comid"));
-		writeToStream("\"}}");
+		writeToStream(",\"properties\":{");
+
+		writeProperties(resultMap);
+		
+		writeToStream("}}");
 		endPrevious = true;
 	}
-	
+
 	@Override
 	public void write(int b) {
 		//Nothing to do here, but we need to override because we are extending OutpuStream.
@@ -112,5 +114,7 @@ public class MapToJsonTransformer extends OutputStream implements ITransformer {
 	public String encode(String value) {
 		return StringEscapeUtils.escapeJson(value);
 	}
+
+	abstract void writeProperties(Map<String, Object> resultMap);
 
 }

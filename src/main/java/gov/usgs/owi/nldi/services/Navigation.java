@@ -1,0 +1,76 @@
+package gov.usgs.owi.nldi.services;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.NumberUtils;
+
+import gov.usgs.owi.nldi.dao.NavigationDao;
+
+@Service
+public class Navigation {
+	private static final Logger LOG = LoggerFactory.getLogger(Navigation.class);
+
+	public static final String COMID = "comid";
+	public static final String NAVIGATION_MODE = "navigationMode";
+	public static final String STOP_COMID = "stopComid";
+	public static final String DISTANCE = "distance";
+
+	protected final NavigationDao navigationDao;
+
+	@Autowired
+	public Navigation(NavigationDao inNavigationDao) {
+		navigationDao = inNavigationDao;
+	}
+
+	public String navigate(OutputStream responseStream, final String comid, final String navigationMode,
+			final String distance, final String stopComid) {
+		String sessionId = null;
+		Map<String, Object> parameterMap = new HashMap<> ();
+		
+		if (StringUtils.isNotBlank(comid)) {
+			parameterMap.put(COMID, NumberUtils.parseNumber(comid, Integer.class));
+		}
+		if (StringUtils.isNotBlank(navigationMode)) {
+			parameterMap.put(NAVIGATION_MODE, navigationMode);
+		}
+		if (StringUtils.isNotBlank(distance)) {
+			parameterMap.put(DISTANCE, NumberUtils.parseNumber(distance, BigDecimal.class));
+		}
+		if (StringUtils.isNotBlank(stopComid)) {
+			parameterMap.put(STOP_COMID, NumberUtils.parseNumber(stopComid, Integer.class));
+		}
+					
+		LOG.debug("Request Parameters:" + parameterMap.toString());
+		
+		LinkedHashMap<?,?> navigationResult = navigationDao.navigate(parameterMap);
+		//  -  type="record" value="(13297246,0.0000000000,,,0,,{f8612242-ea24-11e5-9999-0242ac110003})"
+		LOG.debug("return from navigate:" + navigationResult.get(NavigationDao.NAVIGATE).toString());
+
+		String[] result = navigationResult.get(NavigationDao.NAVIGATE).toString().split(",");
+		
+		if ("0".equals(result[4])) {
+			sessionId = result[6].replace(")", "");
+		} else {
+			String msg = "{\"errorCode\":" + result[4] + ", \"errorMessage\":" + result[5] + "}";
+			LOG.debug(msg);
+			try {
+				responseStream.write(msg.getBytes());
+			} catch (IOException e) {
+				LOG.error("Unable to stream error message", e);
+			}
+		}
+
+		return sessionId;
+	}
+
+}

@@ -12,37 +12,41 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
-
-
 
 public class MapToJsonTransformerTest {
 
-	protected MapToJsonTransformer transformer;
+	protected TTransformer transformer;
 	protected ByteArrayOutputStream baos;
 	
 	private class TTransformer extends MapToJsonTransformer {
 		public int writeHeaderCalled = 0;
 		public int writeDataCalled = 0;
+		public int writePropertiesCalled = 0;
 		public TTransformer(OutputStream target) {
 			super(target);
 		}
 		@Override
 		protected void writeHeader() {
 			writeHeaderCalled = writeHeaderCalled + 1;
+			super.writeHeader();
 		}
 		@Override
 		protected void writeData(Map<String, Object> resultMap) {
 			writeDataCalled = writeDataCalled + 1;
+			super.writeData(resultMap);
+		}
+		@Override
+		protected void writeProperties(Map<String, Object> resultMap) {
+			writePropertiesCalled = writePropertiesCalled + 1;
+			super.writeToStream("\"prop\":\"propValue\"");
 		}
 	}
 	
 
     @Before
     public void initTest() {
-        MockitoAnnotations.initMocks(this);
 		baos = new ByteArrayOutputStream();
-        transformer = new MapToJsonTransformer(baos);
+        transformer = new TTransformer(baos);
     }
     
     @After
@@ -52,18 +56,18 @@ public class MapToJsonTransformerTest {
 
 	@Test
 	public void writeTest() {
-		TTransformer transformer = new TTransformer(new ByteArrayOutputStream());
-
 		//Don't process null results
 		transformer.write((Object) null);
 		assertEquals(0, transformer.writeHeaderCalled);
 		assertEquals(0, transformer.writeDataCalled);
+		assertEquals(0, transformer.writePropertiesCalled);
 		transformer.end();
 
 		//Don't process results that aren't a map
 		transformer.write((Object) "ABCDEFG");
 		assertEquals(0, transformer.writeHeaderCalled);
 		assertEquals(0, transformer.writeDataCalled);
+		assertEquals(0, transformer.writePropertiesCalled);
 		transformer.end();
 
 		Map<String, Object> result = new HashMap<>();
@@ -74,6 +78,7 @@ public class MapToJsonTransformerTest {
 		transformer.write((Object) result);
 		assertEquals(1, transformer.writeHeaderCalled);
 		assertEquals(2, transformer.writeDataCalled);
+		assertEquals(2, transformer.writePropertiesCalled);
 		transformer.end();
 		
 		try {
@@ -99,24 +104,22 @@ public class MapToJsonTransformerTest {
 	public void writeDataTest() {
 		Map<String, Object> map = new HashMap<>();
 		map.put("shape", "{\"type\":\"LineString\",\"coordinates\":[[-89.2572407051921, 43.2039759978652],[-89.2587703019381, 43.204960398376]]}");
-		map.put("nhdplus_comid", "13293474");
 		try {
 			transformer.writeData(map);
-			assertEquals(184, baos.size());
-			assertEquals("{\"type\":\"Feature\",\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-89.2572407051921, 43.2039759978652],[-89.2587703019381, 43.204960398376]]},\"properties\":{\"nhdplus_comid\":\"13293474\"}}",
+			assertEquals(176, baos.size());
+			assertEquals("{\"type\":\"Feature\",\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-89.2572407051921, 43.2039759978652],[-89.2587703019381, 43.204960398376]]},\"properties\":{\"prop\":\"propValue\"}}",
 					new String(baos.toByteArray(), MapToJsonTransformer.DEFAULT_ENCODING));
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
 		}
 
 		map.put("shape", "{\"type\":\"LineString\",\"coordinates\":[[-89.2489906027913, 43.2102229967713],[-89.2497089058161, 43.2099935933948]]}");
-		map.put("nhdplus_comid", "13294118");
 
 		try {
 			transformer.writeData(map);
-			assertEquals(370, baos.size());
-			assertEquals("{\"type\":\"Feature\",\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-89.2572407051921, 43.2039759978652],[-89.2587703019381, 43.204960398376]]},\"properties\":{\"nhdplus_comid\":\"13293474\"}}"
-					+ ",{\"type\":\"Feature\",\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-89.2489906027913, 43.2102229967713],[-89.2497089058161, 43.2099935933948]]},\"properties\":{\"nhdplus_comid\":\"13294118\"}}",
+			assertEquals(354, baos.size());
+			assertEquals("{\"type\":\"Feature\",\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-89.2572407051921, 43.2039759978652],[-89.2587703019381, 43.204960398376]]},\"properties\":{\"prop\":\"propValue\"}}"
+					+ ",{\"type\":\"Feature\",\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-89.2489906027913, 43.2102229967713],[-89.2497089058161, 43.2099935933948]]},\"properties\":{\"prop\":\"propValue\"}}",
 					new String(baos.toByteArray(), MapToJsonTransformer.DEFAULT_ENCODING));
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());

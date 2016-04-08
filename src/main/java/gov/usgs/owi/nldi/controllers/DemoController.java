@@ -1,5 +1,10 @@
 package gov.usgs.owi.nldi.controllers;
 
+import gov.usgs.owi.nldi.dao.DemoStreamingDao;
+import gov.usgs.owi.nldi.dao.StreamingResultHandler;
+import gov.usgs.owi.nldi.transform.FlowLineTransformer;
+import gov.usgs.owi.nldi.transform.ITransformer;
+
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,11 +23,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-
-import gov.usgs.owi.nldi.dao.DemoStreamingDao;
-import gov.usgs.owi.nldi.dao.StreamingResultHandler;
-import gov.usgs.owi.nldi.transform.ITransformer;
-import gov.usgs.owi.nldi.transform.MapToJsonTransformer;
 
 @Controller
 public class DemoController {
@@ -49,7 +49,7 @@ public class DemoController {
 			responseStream = new BufferedOutputStream(response.getOutputStream());
 			Map<String, Object> parameterMap = new HashMap<> ();
 			
-			ITransformer transformer = new MapToJsonTransformer(responseStream);
+			ITransformer transformer = new FlowLineTransformer(responseStream);
 			
 			LinkedHashMap<?,?> navigationResult = streamingDao.navigate("demoNavigate", null);
 			String[] result = navigationResult.get("navigate").toString().split(",");
