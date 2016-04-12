@@ -21,6 +21,7 @@ public class FeatureTransformerTest {
     public void initTest() {
 		baos = new ByteArrayOutputStream();
         transformer = new FeatureTransformer(baos);
+        transformer.init();
     }
     
     @After
@@ -38,9 +39,13 @@ public class FeatureTransformerTest {
 		map.put("name", "nameValue");
 		map.put("uri", "uriValue");
 		try {
+			transformer.g.writeStartObject();
 			transformer.writeProperties(map);
-			assertEquals(85, baos.size());
-			assertEquals("\"comid\":\"47439231\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\",\"uri\":\"uriValue\"",
+			transformer.g.writeEndObject();
+			//need to flush the JsonGenerator to get at output. 
+			transformer.g.flush();
+			assertEquals(127, baos.size());
+			assertEquals(MapToJsonTransformerTest.HEADER_TEXT + "{\"comid\":\"47439231\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\",\"uri\":\"uriValue\"}",
 					new String(baos.toByteArray(), MapToJsonTransformer.DEFAULT_ENCODING));
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
@@ -54,10 +59,14 @@ public class FeatureTransformerTest {
 		map.put("uri", "uri2Value");
 
 		try {
+			transformer.g.writeStartObject();
 			transformer.writeProperties(map);
-			assertEquals(173, baos.size());
-			assertEquals("\"comid\":\"47439231\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\",\"uri\":\"uriValue\""
-					+ "\"comid\":\"81149213\",\"identifier\":\"identifier2Value\",\"name\":\"name2Value\",\"uri\":\"uri2Value\"",
+			transformer.g.writeEndObject();
+			//need to flush the JsonGenerator to get at output. 
+			transformer.g.flush();
+			assertEquals(218, baos.size());
+			assertEquals(MapToJsonTransformerTest.HEADER_TEXT + "{\"comid\":\"47439231\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\",\"uri\":\"uriValue\"}"
+					+ ",{\"comid\":\"81149213\",\"identifier\":\"identifier2Value\",\"name\":\"name2Value\",\"uri\":\"uri2Value\"}",
 					new String(baos.toByteArray(), MapToJsonTransformer.DEFAULT_ENCODING));
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());

@@ -1,5 +1,6 @@
 package gov.usgs.owi.nldi.transform;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
@@ -11,9 +12,11 @@ public class FlowLineTransformer extends MapToJsonTransformer {
 
 	@Override
 	protected void writeProperties(Map<String, Object> resultMap) {
-		writeToStream("\"nhdplus_comid\":\"");
-		writeToStream(getValueEncode(resultMap, "nhdplus_comid"));
-		writeToStream("\"");
+		try {
+			g.writeStringField("nhdplus_comid", getValue(resultMap, "nhdplus_comid"));
+		} catch (IOException e) {
+			throw new RuntimeException("Error writing json for FlowLine Properties", e);
+		}
 	}
 
 }

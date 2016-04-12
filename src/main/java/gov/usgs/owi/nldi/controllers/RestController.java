@@ -39,6 +39,12 @@ public class RestController {
 	public static final String NAVIGATE = "navigate";
 	public static final String SESSION_ID = "sessionId";
 	public static final String COUNT_SUFFIX = "_count";
+	
+	public static final String HEADER_CONTENT_TYPE = "Content-Type";
+	public static final String MIME_TYPE_GEOJSON = "application/vnd.geo+json";
+    public static final String FEATURE_COUNT_HEADER = BaseDao.FEATURES + COUNT_SUFFIX;
+    public static final String FLOW_LINES_COUNT_HEADER = BaseDao.FLOW_LINES + COUNT_SUFFIX;
+
 
 	protected final CountDao countDao;
 	protected final StreamingDao streamingDao;
@@ -65,11 +71,10 @@ public class RestController {
 			if (null != sessionId) {
 				Map<String, Object> parameterMap = new HashMap<> ();
 				parameterMap.put(SESSION_ID, sessionId);
-				addCountHeader(response, BaseDao.FLOW_LINES, parameterMap);
+				addHeaders(response, BaseDao.FLOW_LINES, parameterMap);
 				streamResults(new FlowLineTransformer(responseStream), BaseDao.FLOW_LINES, parameterMap);
 			} else {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				responseStream.write("Unable to perform navigation.".getBytes());
 			}
 
 		} catch (Exception e) {
@@ -102,11 +107,10 @@ public class RestController {
 				Map<String, Object> parameterMap = new HashMap<> ();
 				parameterMap.put(SESSION_ID, sessionId);
 				parameterMap.put(DATA_SOURCE, dataSource.toLowerCase());
-				addCountHeader(response, BaseDao.FEATURES, parameterMap);
+				addHeaders(response, BaseDao.FEATURES, parameterMap);
 				streamResults(new FeatureTransformer(responseStream), BaseDao.FEATURES, parameterMap);
 			} else {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				responseStream.write("Unable to perform navigation.".getBytes());
 			}
 
 		} catch (Exception e) {
@@ -124,14 +128,13 @@ public class RestController {
     }
 
 	protected void streamResults(ITransformer transformer, String featureType, Map<String, Object> parameterMap) {
-		
 		ResultHandler<?> handler = new StreamingResultHandler(transformer);
 		streamingDao.stream(featureType, parameterMap, handler);
-
 		transformer.end();		
 	}
 
-	protected void addCountHeader(HttpServletResponse response, String featureType, Map<String, Object> parameterMap) {
+	protected void addHeaders(HttpServletResponse response, String featureType, Map<String, Object> parameterMap) {
+		response.setHeader(HEADER_CONTENT_TYPE, MIME_TYPE_GEOJSON);
 		response.setHeader(featureType + COUNT_SUFFIX, countDao.count(featureType, parameterMap));
 	}
 

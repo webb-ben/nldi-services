@@ -1,10 +1,8 @@
 package gov.usgs.owi.nldi.services;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.NumberUtils;
+
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvParser;
 
 import gov.usgs.owi.nldi.dao.NavigationDao;
 
@@ -34,9 +36,18 @@ public class Navigation {
 
 	public String navigate(OutputStream responseStream, final String comid, final String navigationMode,
 			final String distance, final String stopComid) {
-		String sessionId = null;
-		Map<String, Object> parameterMap = new HashMap<> ();
 		
+		Map<String, Object> parameterMap = processParameters(comid, navigationMode, distance, stopComid);
+		
+		Map<?,?> navigationResult = navigationDao.navigate(parameterMap);
+
+		return interpretResult(responseStream, navigationResult);
+	}
+
+	protected Map<String, Object> processParameters(final String comid, final String navigationMode,
+			final String distance, final String stopComid) {
+		Map<String, Object> parameterMap = new HashMap<> ();
+	
 		if (StringUtils.isNotBlank(comid)) {
 			parameterMap.put(COMID, NumberUtils.parseNumber(comid, Integer.class));
 		}
@@ -51,25 +62,38 @@ public class Navigation {
 		}
 					
 		LOG.debug("Request Parameters:" + parameterMap.toString());
-		
-		LinkedHashMap<?,?> navigationResult = navigationDao.navigate(parameterMap);
-		//  -  type="record" value="(13297246,0.0000000000,,,0,,{f8612242-ea24-11e5-9999-0242ac110003})"
+
+		return parameterMap;
+	}
+
+	protected String interpretResult(OutputStream responseStream, Map<?,?> navigationResult) {
+		//An Error Result - {navigate=(,,,,-1,"Valid navigation type codes are UM, UT, DM, DD and PP.",)}
+		//Another Error - {navigate=(13297246,1.1545800000,13297198,48.5846800000,310,"Start ComID must have a hydroseq greater than the hydroseq for stop ComID.",{f170f490-00ad-11e6-8f62-0242ac110003})}
+		//A Good Result - {navigate=(13297246,0.0000000000,,,0,,{4d06cca2-001e-11e6-b9d0-0242ac110003})}
 		LOG.debug("return from navigate:" + navigationResult.get(NavigationDao.NAVIGATE).toString());
 
-		String[] result = navigationResult.get(NavigationDao.NAVIGATE).toString().split(",");
+		String sessionId = null;
 		
-		if ("0".equals(result[4])) {
-			sessionId = result[6].replace(")", "");
-		} else {
-			String msg = "{\"errorCode\":" + result[4] + ", \"errorMessage\":" + result[5] + "}";
-			LOG.debug(msg);
-			try {
-				responseStream.write(msg.getBytes());
-			} catch (IOException e) {
-				LOG.error("Unable to stream error message", e);
+		try {
+			String resultCsv = navigationResult.get(NavigationDao.NAVIGATE).toString().replace("(", "").replace(")", "");
+			CsvMapper mapper = new CsvMapper();
+			mapper.enable(CsvParser.Feature.WRAP_AS_ARRAY);
+			MappingIterator<String[]> mi = mapper.readerFor(String[].class).readValues(resultCsv);
+			while (mi.hasNext()) {
+				String[] result = mi.next();
+		
+				if ("0".equals(result[4])) {
+					sessionId = result[6];
+				} else {
+					String msg = "{\"errorCode\":" + result[4] + ", \"errorMessage\":\"" + result[5] + "\"}";
+					LOG.debug(msg);
+					responseStream.write(msg.getBytes());
+				}
 			}
+		} catch (Exception e) {
+			LOG.error("Unable to stream error message", e);
 		}
-
+		
 		return sessionId;
 	}
 

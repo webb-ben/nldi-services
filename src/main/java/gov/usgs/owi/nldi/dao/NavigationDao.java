@@ -1,6 +1,5 @@
 package gov.usgs.owi.nldi.dao;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -17,7 +16,7 @@ public class NavigationDao extends BaseDao {
 		super(sqlSessionFactory);
 	}
 	
-	public LinkedHashMap<?,?> navigate(Map<String, Object> parameterMap) {
+	public Map<String, String> navigate(Map<String, Object> parameterMap) {
 		return getSqlSession().selectOne(NS + NAVIGATE, parameterMap);
 	}
 

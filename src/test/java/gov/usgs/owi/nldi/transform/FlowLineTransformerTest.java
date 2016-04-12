@@ -21,6 +21,7 @@ public class FlowLineTransformerTest {
     public void initTest() {
 		baos = new ByteArrayOutputStream();
         transformer = new FlowLineTransformer(baos);
+        transformer.init();
     }
     
     @After
@@ -38,9 +39,13 @@ public class FlowLineTransformerTest {
 		map.put("name", "nameValue");
 		map.put("uri", "uriValue");
 		try {
+			transformer.g.writeStartObject();
 			transformer.writeProperties(map);
-			assertEquals(26, baos.size());
-			assertEquals("\"nhdplus_comid\":\"13293474\"",
+			transformer.g.writeEndObject();
+			//need to flush the JsonGenerator to get at output. 
+			transformer.g.flush();
+			assertEquals(68, baos.size());
+			assertEquals(MapToJsonTransformerTest.HEADER_TEXT + "{\"nhdplus_comid\":\"13293474\"}",
 					new String(baos.toByteArray(), MapToJsonTransformer.DEFAULT_ENCODING));
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
@@ -55,10 +60,14 @@ public class FlowLineTransformerTest {
 		map.put("uri", "uri2Value");
 
 		try {
+			transformer.g.writeStartObject();
 			transformer.writeProperties(map);
-			assertEquals(52, baos.size());
-			assertEquals("\"nhdplus_comid\":\"13293474\""
-					+ "\"nhdplus_comid\":\"13294118\"",
+			transformer.g.writeEndObject();
+			//need to flush the JsonGenerator to get at output. 
+			transformer.g.flush();
+			assertEquals(97, baos.size());
+			assertEquals(MapToJsonTransformerTest.HEADER_TEXT + "{\"nhdplus_comid\":\"13293474\"}"
+					+ ",{\"nhdplus_comid\":\"13294118\"}",
 					new String(baos.toByteArray(), MapToJsonTransformer.DEFAULT_ENCODING));
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
