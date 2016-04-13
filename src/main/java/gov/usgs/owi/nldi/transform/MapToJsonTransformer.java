@@ -4,21 +4,20 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 
-public class MapToJsonTransformer extends OutputStream implements ITransformer {
+public abstract class MapToJsonTransformer extends OutputStream implements ITransformer {
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
 
 	protected OutputStream target;
-
-	private boolean endPrevious = false;
-
-	/** Is this the first write to the stream. */
-	protected boolean first = true;
+	protected JsonFactory f;
+	protected JsonGenerator g;
 
 	public MapToJsonTransformer(OutputStream target) {
 		this.target = target;
+		init();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -30,10 +29,6 @@ public class MapToJsonTransformer extends OutputStream implements ITransformer {
 		
 		if (result instanceof Map) {
 			Map<String, Object> resultMap = (Map<String, Object>) result;
-			if (first) {
-				writeHeader();
-				first = false;
-			}
 			writeData(resultMap);
 		}
 		try {
@@ -43,53 +38,53 @@ public class MapToJsonTransformer extends OutputStream implements ITransformer {
 		}
 	}
 
-	protected void writeHeader() {
-		writeToStream("{\"type\":\"FeatureCollection\",\"features\":[");
+	protected void init() {
+		f = new JsonFactory();
+		try {
+			g = f.createGenerator(target);
+			g.writeStartObject();
+			g.writeStringField("type", "FeatureCollection");
+			g.writeFieldName("features");
+			g.writeStartArray();
+		} catch (IOException e) {
+			throw new RuntimeException("Error starting json document", e);
+		}
 	}
 
 	protected void writeData(Map<String, Object> resultMap) {
-		if (endPrevious) {
-			writeToStream(",");
+		try {
+			g.writeStartObject();
+			
+			g.writeStringField("type", "Feature");
+			
+			g.writeFieldName("geometry");
+			g.writeStartObject();
+			g.writeRaw(getValue(resultMap, "shape").replace("{", "").replace("}", ""));
+			g.writeEndObject();
+
+			g.writeObjectFieldStart("properties");
+			writeProperties(resultMap);
+			g.writeEndObject();
+			
+			g.writeEndObject();
+		} catch (IOException e) {
+			throw new RuntimeException("Error writing json", e);
 		}
-		writeToStream("{\"type\":\"Feature\",\"geometry\":");
-		writeToStream(getValue(resultMap, "shape"));
-		writeToStream(",\"properties\":{\"nhdplus_comid\":\"");
-		writeToStream(getValueEncode(resultMap, "nhdplus_comid"));
-		writeToStream("\"}}");
-		endPrevious = true;
 	}
-	
+
 	@Override
 	public void write(int b) {
 		//Nothing to do here, but we need to override because we are extending OutpuStream.
 		throw new RuntimeException("Writing a single byte is not supported");
 	}
 
-	/** 
-	 * Converts a string to a byte array and stream it.
-	 * @param in the string to be streamed.
-	 */
-	protected void writeToStream(final String in) {
-		try {
-			if (null != in) {
-				target.write(in.getBytes(DEFAULT_ENCODING));
-			}
-		} catch (IOException e) {
-			throw new RuntimeException("Error writing to stream", e);
-		}
-	}
-
-	/** output the closing tag if we have written data. */
+	/** output the closing tags. */
 	@Override
 	public void end() {
-		if (!first) {
-			writeToStream("]}");
-		}
 		try {
-			target.flush();
-			this.close();
+			g.close();
 		} catch (IOException e) {
-			throw new RuntimeException("Error ending transformation", e);
+			throw new RuntimeException("Error ending json document", e);
 		}
 	}
 
@@ -100,17 +95,7 @@ public class MapToJsonTransformer extends OutputStream implements ITransformer {
 			return "";
 		}
 	}
-	protected String getValueEncode(Map<String, Object> resultMap, String key) {
-		if (resultMap.containsKey(key) && null != resultMap.get(key)) {
-			return encode(resultMap.get(key).toString());
-		} else {
-			return "";
-		}
-	}
 
-	@Override
-	public String encode(String value) {
-		return StringEscapeUtils.escapeJson(value);
-	}
+	abstract void writeProperties(Map<String, Object> resultMap);
 
 }

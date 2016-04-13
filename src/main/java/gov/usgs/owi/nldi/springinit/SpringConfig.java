@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
-@ComponentScan(basePackages={"gov.usgs.owi.nldi.controllers", "gov.usgs.owi.nldi.dao", "gov.usgs.owi.nldi.transform"})
+@ComponentScan(basePackages={"gov.usgs.owi.nldi.controllers", "gov.usgs.owi.nldi.dao", "gov.usgs.owi.nldi.services", "gov.usgs.owi.nldi.transform"})
 @EnableWebMvc
 public class SpringConfig extends WebMvcConfigurerAdapter {
 
