@@ -255,82 +255,49 @@
 						<version>2.18.1</version>
 					</dependency>
 				</dependencies>
-<!--				<configuration> -->
-<!--					<includes> -->
-<!--						<include>**/*.class</include> -->
-<!--					</includes> -->
-<!--					<excludedGroups>gov.usgs.cida.wqp.DBIntegrationTest,gov.usgs.cida.wqp.FullIntegrationTest</excludedGroups> -->
-<!--				</configuration> -->
+				<configuration>
+					<includes>
+						<include>**/*.class</include>
+					</includes>
+					<excludedGroups>gov.usgs.owi.nldi.DBIntegrationTest,gov.usgs.owi.nldi.FullIntegrationTest</excludedGroups>
+				</configuration>
 			</plugin>
-<!--			<plugin> -->
-<!--				<groupId>org.apache.maven.plugins</groupId> -->
-<!--				<artifactId>maven-failsafe-plugin</artifactId> -->
-<!--				<version>2.18.1</version> -->
-<!--				<dependencies> -->
-<!--					<dependency> -->
-<!--						<groupId>org.apache.maven.surefire</groupId> -->
-<!--						<artifactId>surefire-junit47</artifactId> -->
-<!--						<version>2.18.1</version> -->
-<!--					</dependency> -->
-<!--				</dependencies> -->
-<!--				<configuration> -->
-<!--					<groups>gov.usgs.cida.wqp.DBIntegrationTest</groups> -->
-<!--					<groups>gov.usgs.cida.wqp.FullIntegrationTest</groups> -->
-<!--				</configuration> -->
-<!--				<executions> -->
-<!--					<execution> -->
-<!--						<goals> -->
-<!--						<goal>integration-test</goal> -->
-<!--						</goals> -->
-<!--						<configuration> -->
-<!--						<includes> -->
-<!--							<include>**/*.class</include> -->
-<!--						</includes> -->
-<!--						</configuration> -->
-<!--					</execution> -->
-<!--				<execution> -->
-<!--				<id>verify</id> -->
-<!--				<phase>verify</phase> -->
-<!--				<goals> -->
-<!--				<goal>verify</goal> -->
-<!--				</goals> -->
-<!--				</execution> -->
-<!--				</executions> -->
-<!--			</plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.18.1</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit47</artifactId>
+						<version>2.18.1</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<groups>gov.usgs.owi.nldi.DBIntegrationTest</groups>
+					<groups>gov.usgs.owi.nldi.FullIntegrationTest</groups>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+						<goal>integration-test</goal>
+						</goals>
+						<configuration>
+						<includes>
+							<include>**/*.class</include>
+						</includes>
+						</configuration>
+					</execution>
+				<execution>
+				<id>verify</id>
+				<phase>verify</phase>
+				<goals>
+				<goal>verify</goal>
+				</goals>
+				</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
-
-<!-- 	<repositories> -->
-<!-- <repository> -->
-<!-- <id>cida-qw-releases</id> -->
-<!-- <url>${cida.maven.url}/content/repositories/cida-qw-releases</url> -->
-<!-- </repository> -->
-<!-- <repository> -->
-<!-- <id>cida-qw-snapshots</id> -->
-<!-- <url>${cida.maven.url}/content/repositories/cida-qw-snapshots</url> -->
-<!-- </repository> -->
-<!-- 		<repository> -->
-<!-- 			<id>nexus-snapshots</id> -->
-<!-- 			<name>CIDA Nexus</name> -->
-<!-- 			<url>${cida.maven.url}/content/repositories/cida-snapshots/</url> -->
-<!-- 		</repository> -->
-<!-- <repository> -->
-<!-- <id>cida-thirdparty</id> -->
-<!-- <url>${cida.maven.url}/content/repositories/cida-thirdparty/</url> -->
-<!-- </repository> -->
-<!-- 		<repository> -->
-<!-- 			<id>nexus-public</id> -->
-<!-- 			<name>CIDA Nexus</name> -->
-<!-- 			<url>${cida.maven.url}/content/groups/public/</url> -->
-<!-- 		</repository> -->
-<!-- 	</repositories> -->
-
-<!-- 	<pluginRepositories> -->
-<!-- 		<pluginRepository> -->
-<!-- 			<id>plugin-nexus</id> -->
-<!-- 			<name>CIDA Plugin repo</name> -->
-<!-- 			<url>${cida.maven.url}/content/groups/public/</url> -->
-<!-- 		</pluginRepository> -->
-<!-- 	</pluginRepositories> -->
 
 </project>
