@@ -128,14 +128,20 @@ public class RestController {
     }
 
 	protected void streamResults(ITransformer transformer, String featureType, Map<String, Object> parameterMap) {
+		LOG.trace("start streaming");
 		ResultHandler<?> handler = new StreamingResultHandler(transformer);
 		streamingDao.stream(featureType, parameterMap, handler);
 		transformer.end();		
+		LOG.trace("done streaming");
 	}
 
 	protected void addHeaders(HttpServletResponse response, String featureType, Map<String, Object> parameterMap) {
+		LOG.trace("entering addHeaders");
+
 		response.setHeader(HEADER_CONTENT_TYPE, MIME_TYPE_GEOJSON);
 		response.setHeader(featureType + COUNT_SUFFIX, countDao.count(featureType, parameterMap));
+
+		LOG.trace("leaving addHeaders");
 	}
 
 }

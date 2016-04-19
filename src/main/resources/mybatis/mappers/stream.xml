@@ -3,20 +3,29 @@
 
 <mapper namespace="stream">
 
-	<select id="flowLine" resultType="java.util.LinkedHashMap" fetchSize="500">
-	    select nhdplus_comid,
-	    	   st_asgeojson(shape) shape
+	<select id="flowLine" resultType="java.util.LinkedHashMap" fetchSize="50">
+	    select tmp_navigation_results.nhdplus_comid,
+	           st_asgeojson(case
+	                          when tmp_navigation_results.fmeasure != nhdflowline_np21.fmeasure and
+	                               tmp_navigation_results.tmeasure != nhdflowline_np21.tmeasure
+	                            then st_geometryn(st_locatebetween(nhdflowline_np21.shape,
+	                                                               tmp_navigation_results.fmeasure,
+	                                                               tmp_navigation_results.tmeasure),
+	                                             1)
+	                          else nhdflowline_np21.shape
+	                        end) shape
 	      from nhdplus_navigation.tmp_navigation_results
+	           join nhdplus.nhdflowline_np21
+	             on tmp_navigation_results.nhdplus_comid = nhdflowline_np21.nhdplus_comid 
 	     where session_id = #{sessionId}
-	        order by totaldist, hydroseq
 	</select>
 
-	<select id="feature" resultType="java.util.LinkedHashMap" fetchSize="500">
+	<select id="feature" resultType="java.util.LinkedHashMap" fetchSize="50">
 	    select comid,
 	           identifier,
 	           name,
 	           uri,
-	    	   st_asgeojson(location) shape
+	           st_asgeojson(location) shape
 	      from nhdplus_navigation.tmp_navigation_results
 	           join nldi_data.feature
 	             on tmp_navigation_results.nhdplus_comid = feature.comid

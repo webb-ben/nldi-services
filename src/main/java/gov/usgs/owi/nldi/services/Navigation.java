@@ -36,12 +36,22 @@ public class Navigation {
 
 	public String navigate(OutputStream responseStream, final String comid, final String navigationMode,
 			final String distance, final String stopComid) {
-		
-		Map<String, Object> parameterMap = processParameters(comid, navigationMode, distance, stopComid);
-		
-		Map<?,?> navigationResult = navigationDao.navigate(parameterMap);
+		LOG.trace("entering navigation");
 
-		return interpretResult(responseStream, navigationResult);
+		Map<String, Object> parameterMap = processParameters(comid, navigationMode, distance, stopComid);
+		LOG.trace("parameters processed");
+
+		String sessionId = navigationDao.generateSessionId();
+		parameterMap.put("sessionId", sessionId);
+
+		Map<?,?> navigationResult = navigationDao.navigate(parameterMap);
+		LOG.trace("navigation built");
+
+//		return interpretResult(responseStream, navigationResult);
+		interpretResult(responseStream, navigationResult);
+		LOG.trace("leaving navigation");
+
+		return sessionId;
 	}
 
 	protected Map<String, Object> processParameters(final String comid, final String navigationMode,
@@ -70,22 +80,28 @@ public class Navigation {
 		//An Error Result - {navigate=(,,,,-1,"Valid navigation type codes are UM, UT, DM, DD and PP.",)}
 		//Another Error - {navigate=(13297246,1.1545800000,13297198,48.5846800000,310,"Start ComID must have a hydroseq greater than the hydroseq for stop ComID.",{f170f490-00ad-11e6-8f62-0242ac110003})}
 		//A Good Result - {navigate=(13297246,0.0000000000,,,0,,{4d06cca2-001e-11e6-b9d0-0242ac110003})}
-		LOG.debug("return from navigate:" + navigationResult.get(NavigationDao.NAVIGATE).toString());
+//		LOG.debug("return from navigate:" + navigationResult.get(NavigationDao.NAVIGATE).toString());
 
 		String sessionId = null;
 		
 		try {
-			String resultCsv = navigationResult.get(NavigationDao.NAVIGATE).toString().replace("(", "").replace(")", "");
+//			String resultCsv = navigationResult.get(NavigationDao.NAVIGATE).toString().replace("(", "").replace(")", "");
+			String resultCsv = navigationResult.get("navigate_vpu_core").toString().replace("(", "").replace(")", "");
 			CsvMapper mapper = new CsvMapper();
 			mapper.enable(CsvParser.Feature.WRAP_AS_ARRAY);
 			MappingIterator<String[]> mi = mapper.readerFor(String[].class).readValues(resultCsv);
 			while (mi.hasNext()) {
 				String[] result = mi.next();
 		
-				if ("0".equals(result[4])) {
-					sessionId = result[6];
-				} else {
-					String msg = "{\"errorCode\":" + result[4] + ", \"errorMessage\":\"" + result[5] + "\"}";
+//				if ("0".equals(result[4])) {
+//					sessionId = result[6];
+//				} else {
+//					String msg = "{\"errorCode\":" + result[4] + ", \"errorMessage\":\"" + result[5] + "\"}";
+//					LOG.debug(msg);
+//					responseStream.write(msg.getBytes());
+//				}
+				if (!"0".equals(result[15])) {
+					String msg = "{\"errorCode\":" + result[15] + ", \"errorMessage\":\"" + result[16] + "\"}";
 					LOG.debug(msg);
 					responseStream.write(msg.getBytes());
 				}

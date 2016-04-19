@@ -20,4 +20,16 @@ public class NavigationDao extends BaseDao {
 		return getSqlSession().selectOne(NS + NAVIGATE, parameterMap);
 	}
 
+	public String getCache(Map<String, Object> parameterMap) {
+		return getSqlSession().selectOne(NS + "getCache", parameterMap);
+	}
+
+	public String generateSessionId() {
+		return getSqlSession().selectOne(NS + "generateSessionId");
+	}
+
+	public void insertCache(Map<String, Object> parameterMap) {
+		getSqlSession().insert(NS + "insertCache", parameterMap);
+	}
+
 }

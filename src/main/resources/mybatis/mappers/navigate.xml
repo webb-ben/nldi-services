@@ -3,8 +3,27 @@
 
 <mapper namespace="navigate">
 
+<!-- 	<select id="navigate" resultType="java.util.LinkedHashMap" > -->
+<!-- 		select nhdplus_navigation.navigate(                 -->
+<!--              pnavigationtype           := <choose><when test="navigationMode != null">#{navigationMode,jdbcType=VARCHAR}</when><otherwise>'UT'</otherwise></choose>      -->
+<!--             ,pstartcomid               := <choose><when test="comid != null">#{comid,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose> -->
+<!--             ,pstartpermanentidentifier := null      -->
+<!--             ,pstartreachcode           := null      -->
+<!--             ,pstartmeasure             := null -->
+<!--             ,pstopcomid                := <choose><when test="stopComid != null">#{stopComid,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose>      -->
+<!--             ,pstoppermanentidentifier  := null      -->
+<!--             ,pstopreachcode            := null      -->
+<!--             ,pstopmeasure              := null     -->
+<!--             ,pmaxdistancekm            := <choose><when test="distance != null">#{distance,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose>    -->
+<!--             ,pmaxflowtimehour          := null      -->
+<!--             ,pdebug                    := 'FALSE'    -->
+<!--             ,paddflowlineattributes    := 'FALSE'   -->
+<!--             ,paddflowlinegeometry      := 'FALSE'   -->
+<!--          ); -->
+<!-- 	</select> -->
+
 	<select id="navigate" resultType="java.util.LinkedHashMap" >
-		select nhdplus_navigation.navigate(                
+		select nhdplus_navigation.navigate_vpu_core(                
              pnavigationtype           := <choose><when test="navigationMode != null">#{navigationMode,jdbcType=VARCHAR}</when><otherwise>'UT'</otherwise></choose>     
             ,pstartcomid               := <choose><when test="comid != null">#{comid,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose>
             ,pstartpermanentidentifier := null     
@@ -15,19 +34,35 @@
             ,pstopreachcode            := null     
             ,pstopmeasure              := null    
             ,pmaxdistancekm            := <choose><when test="distance != null">#{distance,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose>   
-            ,pmaxflowtimehour          := null     
-            ,pdebug                    := 'FALSE'   
-            ,paddflowlineattributes    := 'TRUE'  
-            ,paddflowlinegeometry      := 'TRUE'  
+            ,pmaxflowtimehour          := null
+            ,psessionid                := #{sessionId,jdbcType=VARCHAR}
+            ,pdebug                    := 'FALSE' 
          );
 	</select>
 
-    <select id="select" resultType="java.util.LinkedHashMap" fetchSize="500">
-        select nhdplus_comid,
-        	   st_asgeojson(shape) shape
-          from nhdplus_navigation.tmp_navigation_results
-         where session_id = #{sessionId}
-            order by totaldist, hydroseq
-     </select>
+	<select id="getCache" resultType="String">
+		select session_id
+		  from nhdplus_navigation.navigation_cache_status
+		 where return_code = 0 and
+		       start_comid = #{comid} and
+		       navigation_mode = #{navigationMode}
+		<if test="null != maxDistance">
+			and max_distance = #{maxDistance}
+		</if>
+		<if test="null != stopComid">
+			and stop_comid = #{stopComid}
+		</if>
+	</select>
 
-</mapper>       
+	<select id="generateSessionId" resultType="String">
+		select '{' || uuid_generate_v1() || '}'
+	</select>
+
+	<insert id="insertCache">
+		insert into nhdplus_navigation.navigation_cache_status
+			(objectid, session_id, start_comid, navigation_mode, max_distance, stop_comid, return_code, status_message, session_datestamp)
+		values (nextval('nhdplus_navigation.tmp_navigation_status_seq'), #{sessionId}, #{comid}, #{navigationMode}, #{maxDistance},
+		        #{stopComid}, #{returnCode}, #{statusMessage}, (abstime(('now'::text)::timestamp(6) with time zone)))
+	</insert>
+
+</mapper>
