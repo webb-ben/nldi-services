@@ -114,7 +114,7 @@ public class Navigation {
 			LOG.error("Unable to stream error message", e);
 		}
 
-		parameterMap.put("returnCode", resultCode);
+		parameterMap.put("returnCode", Integer.valueOf(resultCode));
 		parameterMap.put("statusMessage", statusMessage);
 		navigationDao.insertCache(parameterMap);
 		return sessionId;
