@@ -41,7 +41,7 @@
 	</select>
 
 	<select id="getCache" resultType="String">
-		select session_id
+		select min(session_id) session_id
 		  from nhdplus_navigation.navigation_cache_status
 		 where return_code = 0 and
 		       start_comid = #{comid} and
