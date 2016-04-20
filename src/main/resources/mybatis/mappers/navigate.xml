@@ -3,27 +3,8 @@
 
 <mapper namespace="navigate">
 
-<!-- 	<select id="navigate" resultType="java.util.LinkedHashMap" > -->
-<!-- 		select nhdplus_navigation.navigate(                 -->
-<!--              pnavigationtype           := <choose><when test="navigationMode != null">#{navigationMode,jdbcType=VARCHAR}</when><otherwise>'UT'</otherwise></choose>      -->
-<!--             ,pstartcomid               := <choose><when test="comid != null">#{comid,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose> -->
-<!--             ,pstartpermanentidentifier := null      -->
-<!--             ,pstartreachcode           := null      -->
-<!--             ,pstartmeasure             := null -->
-<!--             ,pstopcomid                := <choose><when test="stopComid != null">#{stopComid,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose>      -->
-<!--             ,pstoppermanentidentifier  := null      -->
-<!--             ,pstopreachcode            := null      -->
-<!--             ,pstopmeasure              := null     -->
-<!--             ,pmaxdistancekm            := <choose><when test="distance != null">#{distance,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose>    -->
-<!--             ,pmaxflowtimehour          := null      -->
-<!--             ,pdebug                    := 'FALSE'    -->
-<!--             ,paddflowlineattributes    := 'FALSE'   -->
-<!--             ,paddflowlinegeometry      := 'FALSE'   -->
-<!--          ); -->
-<!-- 	</select> -->
-
 	<select id="navigate" resultType="java.util.LinkedHashMap" >
-		select nhdplus_navigation.navigate_vpu_core(                
+		select nhdplus_navigation.navigate(                
              pnavigationtype           := <choose><when test="navigationMode != null">#{navigationMode,jdbcType=VARCHAR}</when><otherwise>'UT'</otherwise></choose>     
             ,pstartcomid               := <choose><when test="comid != null">#{comid,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose>
             ,pstartpermanentidentifier := null     
@@ -34,11 +15,30 @@
             ,pstopreachcode            := null     
             ,pstopmeasure              := null    
             ,pmaxdistancekm            := <choose><when test="distance != null">#{distance,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose>   
-            ,pmaxflowtimehour          := null
-            ,psessionid                := #{sessionId,jdbcType=VARCHAR}
-            ,pdebug                    := 'FALSE' 
+            ,pmaxflowtimehour          := null     
+            ,pdebug                    := 'FALSE'   
+            ,paddflowlineattributes    := 'FALSE'  
+            ,paddflowlinegeometry      := 'FALSE'  
          );
 	</select>
+
+<!-- 	<select id="navigate" resultType="java.util.LinkedHashMap" > -->
+<!-- 		select nhdplus_navigation.navigate_vpu_core(                 -->
+<!--              pnavigationtype           := <choose><when test="navigationMode != null">#{navigationMode,jdbcType=VARCHAR}</when><otherwise>'UT'</otherwise></choose>      -->
+<!--             ,pstartcomid               := <choose><when test="comid != null">#{comid,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose> -->
+<!--             ,pstartpermanentidentifier := null      -->
+<!--             ,pstartreachcode           := null      -->
+<!--             ,pstartmeasure             := null -->
+<!--             ,pstopcomid                := <choose><when test="stopComid != null">#{stopComid,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose>      -->
+<!--             ,pstoppermanentidentifier  := null      -->
+<!--             ,pstopreachcode            := null      -->
+<!--             ,pstopmeasure              := null     -->
+<!--             ,pmaxdistancekm            := <choose><when test="distance != null">#{distance,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose>    -->
+<!--             ,pmaxflowtimehour          := null -->
+<!--             ,psessionid                := #{sessionId,jdbcType=VARCHAR} -->
+<!--             ,pdebug                    := 'FALSE'  -->
+<!--          ); -->
+<!-- 	</select> -->
 
 	<select id="getCache" resultType="String">
 		select min(session_id) session_id

@@ -56,15 +56,15 @@ public class NavigationTest {
 	@Test
 	public void interpretResultTest() {
 		OutputStream baos = new ByteArrayOutputStream();
-		assertEquals("{4d06cca2-001e-11e6-b9d0-0242ac110003}", navigation.interpretResult(null, null, goodResult()));
+		assertEquals("{4d06cca2-001e-11e6-b9d0-0242ac110003}", navigation.interpretResult(null, goodResult()));
 		
-		assertNull(navigation.interpretResult(null, null, badResult1()));
+		assertNull(navigation.interpretResult(null, badResult1()));
 
-		assertNull(navigation.interpretResult(baos, null, badResult1()));
+		assertNull(navigation.interpretResult(baos, badResult1()));
 		assertEquals("{\"errorCode\":-1, \"errorMessage\":\"Valid navigation type codes are UM, UT, DM, DD and PP.\"}", baos.toString());
 		
 		baos = new ByteArrayOutputStream();
-		assertNull(navigation.interpretResult(baos, null, badResult2()));
+		assertNull(navigation.interpretResult(baos, badResult2()));
 		assertEquals("{\"errorCode\":310, \"errorMessage\":\"Start ComID must have a hydroseq greater than the hydroseq for stop ComID.\"}", baos.toString());
 	}
 
