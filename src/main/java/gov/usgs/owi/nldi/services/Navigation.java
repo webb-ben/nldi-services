@@ -97,7 +97,8 @@ public class Navigation {
 				String[] result = mi.next();
 
 				resultCode = result[4];
-				statusMessage = result[6];
+				statusMessage = result[5];
+				sessionId = result[6];
 //				resultCode = result[15];
 //				statusMessage = result[16];
 				if (!"0".equals(resultCode)) {
@@ -106,7 +107,7 @@ public class Navigation {
 					responseStream.write(msg.getBytes());
 				}
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			LOG.error("Unable to stream error message", e);
 		}
 

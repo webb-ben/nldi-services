@@ -77,13 +77,13 @@ public class RestController {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			}
 
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			LOG.error("Handle me better" + e.getLocalizedMessage(), e);
 		} finally {
 			if (null != responseStream) {
 				try {
 					responseStream.flush();
-				} catch (IOException e) {
+				} catch (Throwable e) {
 					//Just log, cause we obviously can't tell the client
 					LOG.error("Error flushing response stream", e);
 				}

@@ -60,7 +60,7 @@ public class DemoController {
 	
 			transformer.end();
 
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			LOG.error("Handle me better" + e.getLocalizedMessage(), e);
 		} finally {
 			if (null != responseStream) {
