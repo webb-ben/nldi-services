@@ -4,7 +4,7 @@
 <mapper namespace="navigate">
 
 	<select id="navigate" resultType="java.util.LinkedHashMap" >
-		select nhdplus_navigation.navigate(                
+		select nhdplus_navigation.navigate_cached(                
              pnavigationtype           := <choose><when test="navigationMode != null">#{navigationMode,jdbcType=VARCHAR}</when><otherwise>'UT'</otherwise></choose>     
             ,pstartcomid               := <choose><when test="comid != null">#{comid,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose>
             ,pstartpermanentidentifier := null     
@@ -54,16 +54,16 @@
 		</if>
 	</select>
 
-	<select id="generateSessionId" resultType="String">
-		select '{' || uuid_generate_v1() || '}'
-	</select>
+<!-- 	<select id="generateSessionId" resultType="String"> -->
+<!-- 		select '{' || uuid_generate_v1() || '}' -->
+<!-- 	</select> -->
 
-	<insert id="insertCache">
-		insert into nhdplus_navigation.navigation_cache_status
-			(objectid, session_id, start_comid, navigation_mode, max_distance, stop_comid, return_code, status_message, session_datestamp)
-		values (nextval('nhdplus_navigation.tmp_navigation_status_seq'), #{sessionId,jdbcType=VARCHAR}, #{comid,jdbcType=NUMERIC},
-		        #{navigationMode,jdbcType=VARCHAR}, #{maxDistance,jdbcType=NUMERIC}, #{stopComid,jdbcType=NUMERIC},
-		        #{returnCode,jdbcType=NUMERIC}, #{statusMessage,jdbcType=VARCHAR}, (abstime(('now'::text)::timestamp(6) with time zone)))
-	</insert>
+<!-- 	<insert id="insertCache"> -->
+<!-- 		insert into nhdplus_navigation.navigation_cache_status -->
+<!-- 			(objectid, session_id, start_comid, navigation_mode, max_distance, stop_comid, return_code, status_message, session_datestamp) -->
+<!-- 		values (nextval('nhdplus_navigation.tmp_navigation_status_seq'), #{sessionId,jdbcType=VARCHAR}, #{comid,jdbcType=NUMERIC}, -->
+<!-- 		        #{navigationMode,jdbcType=VARCHAR}, #{maxDistance,jdbcType=NUMERIC}, #{stopComid,jdbcType=NUMERIC}, -->
+<!-- 		        #{returnCode,jdbcType=NUMERIC}, #{statusMessage,jdbcType=VARCHAR}, (abstime(('now'::text)::timestamp(6) with time zone))) -->
+<!-- 	</insert> -->
 
 </mapper>

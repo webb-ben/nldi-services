@@ -22,6 +22,7 @@
 		<logback-classic-version>1.1.5</logback-classic-version>
 		<postgresql-version>9.4.1208.jre7</postgresql-version>
 		<jackson-version>2.7.3</jackson-version>
+		<jkeylockmanager-version>2.1.0</jkeylockmanager-version>
 		<additionalparam>-Xdoclint:none</additionalparam>
 	</properties>
 
@@ -115,7 +116,11 @@
 		    <artifactId>jackson-dataformat-csv</artifactId>
 		    <version>${jackson-version}</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>de.jkeylockmanager</groupId>
+			<artifactId>jkeylockmanager</artifactId>
+			<version>${jkeylockmanager-version}</version>
+		</dependency>		
 		<!-- Test dependencies -->
 
 		<dependency>

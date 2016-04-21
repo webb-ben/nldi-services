@@ -29,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import de.jkeylockmanager.manager.KeyLockManager;
+import de.jkeylockmanager.manager.KeyLockManagers;
+
 @Controller
 @RequestMapping(value="/comid/{comid}/navigate/{navigationMode}")
 public class RestController {
@@ -50,6 +53,8 @@ public class RestController {
 	protected final StreamingDao streamingDao;
 	protected final Navigation navigation;
 
+	private final KeyLockManager lockManager = KeyLockManagers.newLock();
+
 	@Autowired
 	public RestController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation) {
 		countDao = inCountDao;
@@ -67,7 +72,7 @@ public class RestController {
 
 		try {
 			responseStream = new BufferedOutputStream(response.getOutputStream());
-			String sessionId = navigation.navigate(responseStream, comid, navigationMode, distance, stopComid);
+			String sessionId = getSessionId(responseStream, comid, navigationMode, distance, stopComid);
 			if (null != sessionId) {
 				Map<String, Object> parameterMap = new HashMap<> ();
 				parameterMap.put(SESSION_ID, sessionId);
@@ -102,7 +107,7 @@ public class RestController {
 
 		try {
 			responseStream = new BufferedOutputStream(response.getOutputStream());
-			String sessionId = navigation.navigate(responseStream, comid, navigationMode, distance, stopComid);
+			String sessionId = getSessionId(responseStream, comid, navigationMode, distance, stopComid);
 			if (null != sessionId) {
 				Map<String, Object> parameterMap = new HashMap<> ();
 				parameterMap.put(SESSION_ID, sessionId);
@@ -125,7 +130,7 @@ public class RestController {
 				}
 			}
 		}
-    }
+	}
 
 	protected void streamResults(ITransformer transformer, String featureType, Map<String, Object> parameterMap) {
 		LOG.trace("start streaming");
@@ -144,4 +149,9 @@ public class RestController {
 		LOG.trace("leaving addHeaders");
 	}
 
+	protected String getSessionId(OutputStream responseStream, final String comid, final String navigationMode,
+			final String distance, final String stopComid) {
+		String key = comid + "|" + navigationMode + "|" + distance + "|" + stopComid;
+		return lockManager.executeLocked(key, () -> navigation.navigate(responseStream, comid, navigationMode, distance, stopComid));
+	}
 }
