@@ -19,14 +19,14 @@ public abstract class MapToJsonTransformer extends OutputStream implements ITran
 		this.target = target;
 		init();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void write(Object result) {
 		if (null == result) {
 			return;
 		}
-		
+
 		if (result instanceof Map) {
 			Map<String, Object> resultMap = (Map<String, Object>) result;
 			writeData(resultMap);
@@ -54,9 +54,9 @@ public abstract class MapToJsonTransformer extends OutputStream implements ITran
 	protected void writeData(Map<String, Object> resultMap) {
 		try {
 			g.writeStartObject();
-			
+
 			g.writeStringField("type", "Feature");
-			
+
 			g.writeFieldName("geometry");
 			g.writeStartObject();
 			g.writeRaw(getValue(resultMap, "shape").replace("{", "").replace("}", ""));
@@ -65,7 +65,7 @@ public abstract class MapToJsonTransformer extends OutputStream implements ITran
 			g.writeObjectFieldStart("properties");
 			writeProperties(resultMap);
 			g.writeEndObject();
-			
+
 			g.writeEndObject();
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing json", e);

@@ -14,9 +14,8 @@ public class CountDao extends BaseDao {
 	public CountDao(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory);
 	}
-	
+
 	public String count(String featureType, Map<String, Object> parameterMap) {
 		return Integer.toString(getSqlSession().selectOne(NS + featureType, parameterMap));
 	}
-
 }

@@ -42,14 +42,12 @@ public class Navigation {
 		LOG.trace("parameters processed");
 
 		String sessionId = navigationDao.getCache(parameterMap);
-//		parameterMap.put("sessionId", sessionId);
 
 		if (null == sessionId) {
 			Map<?,?> navigationResult = navigationDao.navigate(parameterMap);
 			LOG.trace("navigation built");
-	
+
 			sessionId = interpretResult(responseStream, navigationResult);
-//		interpretResult(responseStream, parameterMap, navigationResult);
 
 		}
 		LOG.trace("leaving navigation");
@@ -77,26 +75,24 @@ public class Navigation {
 			LOG.debug("stopComid:" + stopComid);
 			parameterMap.put(STOP_COMID, NumberUtils.parseNumber(stopComid, Integer.class));
 		}
-					
+
 		LOG.debug("Request Parameters:" + parameterMap.toString());
 
 		return parameterMap;
 	}
 
-//	protected String interpretResult(OutputStream responseStream, Map<String, Object> parameterMap, Map<?,?> navigationResult) {
 	protected String interpretResult(OutputStream responseStream, Map<?,?> navigationResult) {
 		//An Error Result - {navigate=(,,,,-1,"Valid navigation type codes are UM, UT, DM, DD and PP.",)}
 		//Another Error - {navigate=(13297246,1.1545800000,13297198,48.5846800000,310,"Start ComID must have a hydroseq greater than the hydroseq for stop ComID.",{f170f490-00ad-11e6-8f62-0242ac110003})}
 		//A Good Result - {navigate=(13297246,0.0000000000,,,0,,{4d06cca2-001e-11e6-b9d0-0242ac110003})}
-		LOG.debug("return from navigate:" + navigationResult.get(NavigationDao.NAVIGATE + "_cached").toString());
+		LOG.debug("return from navigate:" + navigationResult.get(NavigationDao.NAVIGATE_CACHED).toString());
 
 		String sessionId = null;
 		String resultCode = null;
 		String statusMessage = null;
 
 		try {
-			String resultCsv = navigationResult.get(NavigationDao.NAVIGATE + "_cached").toString().replace("(", "").replace(")", "");
-//			String resultCsv = navigationResult.get("navigate_vpu_core").toString().replace("(", "").replace(")", "");
+			String resultCsv = navigationResult.get(NavigationDao.NAVIGATE_CACHED).toString().replace("(", "").replace(")", "");
 			CsvMapper mapper = new CsvMapper();
 			mapper.enable(CsvParser.Feature.WRAP_AS_ARRAY);
 			MappingIterator<String[]> mi = mapper.readerFor(String[].class).readValues(resultCsv);
@@ -105,10 +101,10 @@ public class Navigation {
 
 				resultCode = result[4];
 				statusMessage = result[5];
-				sessionId = result[6];
-//				resultCode = result[15];
-//				statusMessage = result[16];
-				if (!"0".equals(resultCode)) {
+
+				if ("0".equals(resultCode)) {
+					sessionId = result[6];
+				} else {
 					String msg = "{\"errorCode\":" + resultCode + ", \"errorMessage\":\"" + statusMessage + "\"}";
 					LOG.debug(msg);
 					responseStream.write(msg.getBytes());
@@ -118,9 +114,6 @@ public class Navigation {
 			LOG.error("Unable to stream error message", e);
 		}
 
-//		parameterMap.put("returnCode", Integer.valueOf(resultCode));
-//		parameterMap.put("statusMessage", statusMessage);
-//		navigationDao.insertCache(parameterMap);
 		return sessionId;
 	}
 

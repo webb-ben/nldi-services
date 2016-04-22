@@ -16,18 +16,18 @@ public class FlowLineTransformerTest {
 
 	protected FlowLineTransformer transformer;
 	protected ByteArrayOutputStream baos;
-	
-    @Before
-    public void initTest() {
+
+	@Before
+	public void initTest() {
 		baos = new ByteArrayOutputStream();
-        transformer = new FlowLineTransformer(baos);
-        transformer.init();
-    }
-    
-    @After
-    public void closeTest() throws IOException {
-    	transformer.close();
-    }
+		transformer = new FlowLineTransformer(baos);
+		transformer.init();
+	}
+
+	@After
+	public void closeTest() throws IOException {
+		transformer.close();
+	}
 
 	@Test
 	public void writePropertiesTest() {

@@ -17,17 +17,17 @@ public class FeatureTransformerTest {
 	protected FeatureTransformer transformer;
 	protected ByteArrayOutputStream baos;
 	
-    @Before
-    public void initTest() {
+	@Before
+	public void initTest() {
 		baos = new ByteArrayOutputStream();
-        transformer = new FeatureTransformer(baos);
-        transformer.init();
-    }
-    
-    @After
-    public void closeTest() throws IOException {
-    	transformer.close();
-    }
+		transformer = new FeatureTransformer(baos);
+		transformer.init();
+	}
+
+	@After
+	public void closeTest() throws IOException {
+		transformer.close();
+	}
 
 	@Test
 	public void writePropertiesTest() {

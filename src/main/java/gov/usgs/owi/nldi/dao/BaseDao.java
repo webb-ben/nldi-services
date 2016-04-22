@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class BaseDao extends SqlSessionDaoSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(BaseDao.class);
-	
+
 	public static final String FLOW_LINES = "flowLine";
 	public static final String FEATURES = "feature";
 

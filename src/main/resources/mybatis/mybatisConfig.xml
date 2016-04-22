@@ -11,12 +11,12 @@
 		<setting name="lazyLoadingEnabled" value="false"/>
 		<setting name="aggressiveLazyLoading" value="false"/>
 	</settings>
-	
+
 	<typeAliases>
 		<typeAlias alias="LinkedHashMap" type="java.util.LinkedHashMap"/>
 	</typeAliases>
-	
+
 	<typeHandlers>
 	</typeHandlers>
-   
+
 </configuration>

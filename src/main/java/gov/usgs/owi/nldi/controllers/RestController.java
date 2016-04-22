@@ -36,17 +36,17 @@ import de.jkeylockmanager.manager.KeyLockManagers;
 @RequestMapping(value="/comid/{comid}/navigate/{navigationMode}")
 public class RestController {
 	private static final Logger LOG = LoggerFactory.getLogger(RestController.class);
-	
+
 	public static final String DATA_SOURCE = "dataSource";
 
 	public static final String NAVIGATE = "navigate";
 	public static final String SESSION_ID = "sessionId";
 	public static final String COUNT_SUFFIX = "_count";
-	
+
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	public static final String MIME_TYPE_GEOJSON = "application/vnd.geo+json";
-    public static final String FEATURE_COUNT_HEADER = BaseDao.FEATURES + COUNT_SUFFIX;
-    public static final String FLOW_LINES_COUNT_HEADER = BaseDao.FLOW_LINES + COUNT_SUFFIX;
+	public static final String FEATURE_COUNT_HEADER = BaseDao.FEATURES + COUNT_SUFFIX;
+	public static final String FLOW_LINES_COUNT_HEADER = BaseDao.FLOW_LINES + COUNT_SUFFIX;
 
 
 	protected final CountDao countDao;
@@ -63,11 +63,11 @@ public class RestController {
 	}
 
 	@RequestMapping(method=RequestMethod.GET)
-    public void getFlowlines(HttpServletRequest request, HttpServletResponse response,
-    		@PathVariable(Navigation.COMID) String comid,
-    		@PathVariable(Navigation.NAVIGATION_MODE) String navigationMode,
-    		@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
-    		@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
+	public void getFlowlines(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable(Navigation.COMID) String comid,
+			@PathVariable(Navigation.NAVIGATION_MODE) String navigationMode,
+			@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
+			@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
 		OutputStream responseStream = null;
 
 		try {
@@ -94,15 +94,15 @@ public class RestController {
 				}
 			}
 		}
-    }
+	}
 
 	@RequestMapping(value="{dataSource}", method=RequestMethod.GET)
-    public void getFeatures(HttpServletRequest request, HttpServletResponse response,
-    		@PathVariable(Navigation.COMID) String comid,
-    		@PathVariable(Navigation.NAVIGATION_MODE) String navigationMode,
-    		@PathVariable(value=DATA_SOURCE) String dataSource,
-    		@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
-    		@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
+	public void getFeatures(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable(Navigation.COMID) String comid,
+			@PathVariable(Navigation.NAVIGATION_MODE) String navigationMode,
+			@PathVariable(value=DATA_SOURCE) String dataSource,
+			@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
+			@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
 		OutputStream responseStream = null;
 
 		try {
@@ -154,4 +154,5 @@ public class RestController {
 		String key = comid + "|" + navigationMode + "|" + distance + "|" + stopComid;
 		return lockManager.executeLocked(key, () -> navigation.navigate(responseStream, comid, navigationMode, distance, stopComid));
 	}
+
 }

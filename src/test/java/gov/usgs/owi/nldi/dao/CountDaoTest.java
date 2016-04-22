@@ -16,7 +16,7 @@ import gov.usgs.owi.nldi.controllers.RestController;
 @Category(DBIntegrationTest.class)
 public class CountDaoTest extends BaseSpringTest {
 
-	@Autowired 
+	@Autowired
 	CountDao countDao;
 	
 	@Test

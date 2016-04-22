@@ -16,10 +16,10 @@ import org.junit.Test;
 public class MapToJsonTransformerTest {
 
 	public static final String HEADER_TEXT = "{\"type\":\"FeatureCollection\",\"features\":[";
-	
+
 	protected TTransformer transformer;
 	protected ByteArrayOutputStream baos;
-	
+
 	private class TTransformer extends MapToJsonTransformer {
 		public int writeDataCalled = 0;
 		public int writePropertiesCalled = 0;
@@ -43,16 +43,16 @@ public class MapToJsonTransformerTest {
 	}
 	
 
-    @Before
-    public void initTest() {
+	@Before
+	public void initTest() {
 		baos = new ByteArrayOutputStream();
-        transformer = new TTransformer(baos);
-    }
-    
-    @After
-    public void closeTest() throws IOException {
-    	transformer.close();
-    }
+		transformer = new TTransformer(baos);
+	}
+
+	@After
+	public void closeTest() throws IOException {
+		transformer.close();
+	}
 
 	@Test
 	public void writeTest() {
@@ -129,14 +129,14 @@ public class MapToJsonTransformerTest {
 		}
 
 	}
-	
+
 	@Test
 	public void endTestData() {
 		try {
 			transformer.g.writeStartObject();
 			transformer.g.writeFieldName("abc");
 			transformer.g.writeStartArray();
-			
+
 			transformer.end();
 			assertEquals(52, baos.size());
 			assertEquals(HEADER_TEXT + "{\"abc\":[]}]}",

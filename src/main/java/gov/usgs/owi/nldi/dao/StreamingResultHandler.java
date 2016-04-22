@@ -11,8 +11,7 @@ public class StreamingResultHandler implements ResultHandler<Object> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(StreamingResultHandler.class);
 	private final ITransformer transformer;
-	
-	
+
 	public StreamingResultHandler(ITransformer transformer) {
 		LOG.trace("streaming handler constructed");
 		this.transformer = transformer;

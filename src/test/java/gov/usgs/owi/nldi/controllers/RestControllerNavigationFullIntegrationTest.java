@@ -22,17 +22,17 @@ import gov.usgs.owi.nldi.FullIntegrationTest;
 @Category(FullIntegrationTest.class)
 public class RestControllerNavigationFullIntegrationTest extends BaseSpringTest {
 
-    @Autowired
-    private WebApplicationContext wac;
+	@Autowired
+	private WebApplicationContext wac;
 
-    private MockMvc mockMvc;
+	private MockMvc mockMvc;
 	
-    @Before
-    public void setup() {
-    	mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-    }
-    
-    //UT Testing
+	@Before
+	public void setup() {
+		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+	}
+
+	//UT Testing
 	@Test
 	public void getComidUtTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/UT"))
@@ -42,7 +42,7 @@ public class RestControllerNavigationFullIntegrationTest extends BaseSpringTest 
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-        		sameJSONObjectAs(new JSONObject(getCompareFile("comid_13293474_UT.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13293474_UT.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
@@ -54,10 +54,10 @@ public class RestControllerNavigationFullIntegrationTest extends BaseSpringTest 
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-        		sameJSONObjectAs(new JSONObject(getCompareFile("comid_13297246_UT_distance_10.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13297246_UT_distance_10.geojson"))).allowingAnyArrayOrdering());
 	}
 
-    //UM Testing
+	//UM Testing
 	@Test
 	public void getComidUmTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/UM"))
@@ -67,7 +67,7 @@ public class RestControllerNavigationFullIntegrationTest extends BaseSpringTest 
 				 .andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-        		sameJSONObjectAs(new JSONObject(getCompareFile("comid_13293474_UM.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13293474_UM.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
@@ -79,10 +79,10 @@ public class RestControllerNavigationFullIntegrationTest extends BaseSpringTest 
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-        		sameJSONObjectAs(new JSONObject(getCompareFile("comid_13297246_UM_distance_10.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13297246_UM_distance_10.geojson"))).allowingAnyArrayOrdering());
 	}
 
-    //DM Testing
+	//DM Testing
 	@Test
 	public void getComidDmTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13296790/navigate/DM"))
@@ -92,7 +92,7 @@ public class RestControllerNavigationFullIntegrationTest extends BaseSpringTest 
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-        		sameJSONObjectAs(new JSONObject(getCompareFile("comid_13296790_DM.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13296790_DM.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
@@ -104,10 +104,10 @@ public class RestControllerNavigationFullIntegrationTest extends BaseSpringTest 
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-        		sameJSONObjectAs(new JSONObject(getCompareFile("comid_13293474_DM_distance_10.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13293474_DM_distance_10.geojson"))).allowingAnyArrayOrdering());
 	}
 
-    //DD Testing - Except we really don't have any diversions in the test data...
+	//DD Testing - Except we really don't have any diversions in the test data...
 	@Test
 	public void getComidDdTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13297242/navigate/DD"))
@@ -117,7 +117,7 @@ public class RestControllerNavigationFullIntegrationTest extends BaseSpringTest 
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-        		sameJSONObjectAs(new JSONObject(getCompareFile("comid_13297242_DD.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13297242_DD.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
@@ -129,7 +129,7 @@ public class RestControllerNavigationFullIntegrationTest extends BaseSpringTest 
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-        		sameJSONObjectAs(new JSONObject(getCompareFile("comid_13293506_DD_distance_10.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13293506_DD_distance_10.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	//PP Testing
@@ -142,7 +142,7 @@ public class RestControllerNavigationFullIntegrationTest extends BaseSpringTest 
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-        		sameJSONObjectAs(new JSONObject(getCompareFile("comid_13297246_PP_stop_13297198.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13297246_PP_stop_13297198.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
@@ -154,7 +154,7 @@ public class RestControllerNavigationFullIntegrationTest extends BaseSpringTest 
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-        		sameJSONObjectAs(new JSONObject(getCompareFile("comid_13297198_PP_stop_13297246.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13297198_PP_stop_13297246.geojson"))).allowingAnyArrayOrdering());
 	}
 
 }

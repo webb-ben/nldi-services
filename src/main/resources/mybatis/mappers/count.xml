@@ -4,20 +4,20 @@
 <mapper namespace="count">
 
 	<select id="flowLine" resultType="Integer">
-	    select count(*)
-	      from nhdplus_navigation.tmp_navigation_results
-	     where session_id = #{sessionId}
+		select count(*)
+		  from nhdplus_navigation.tmp_navigation_results
+		 where session_id = #{sessionId}
 	</select>
 
 	<select id="feature" resultType="Integer">
-	    select count(*)
-	      from nhdplus_navigation.tmp_navigation_results
-	           join nldi_data.feature
-	             on tmp_navigation_results.nhdplus_comid = feature.comid
-	           join nldi_data.crawler_source
-	             on feature.crawler_source_id = crawler_source.crawler_source_id
-	     where session_id = #{sessionId}  and
-	           lower(source_suffix) = #{dataSource}
+		select count(*)
+		  from nhdplus_navigation.tmp_navigation_results
+		       join nldi_data.feature
+		         on tmp_navigation_results.nhdplus_comid = feature.comid
+		       join nldi_data.crawler_source
+		         on feature.crawler_source_id = crawler_source.crawler_source_id
+		 where session_id = #{sessionId}  and
+		       lower(source_suffix) = #{dataSource}
 	</select>
 
 </mapper>
