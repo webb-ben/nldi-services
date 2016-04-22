@@ -46,8 +46,8 @@
 		 where return_code = 0 and
 		       start_comid = #{comid} and
 		       navigation_mode = #{navigationMode}
-		<if test="null != maxDistance">
-			and max_distance = #{maxDistance}
+		<if test="null != distance">
+			and max_distance = #{distance}
 		</if>
 		<if test="null != stopComid">
 			and stop_comid = #{stopComid}
