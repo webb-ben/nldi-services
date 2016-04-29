@@ -95,6 +95,17 @@ public class RestControllerNavigationFullIntegrationTest extends BaseSpringTest 
 				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13296790_DM.geojson"))).allowingAnyArrayOrdering());
 	}
 
+	public void getComidDmDiversionsNotIncludedTest() throws Exception {
+		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DM"))
+				.andExpect(status().isOk())
+				.andExpect(header().string(RestController.FLOW_LINES_COUNT_HEADER, "5"))
+				.andExpect(header().string(RestController.HEADER_CONTENT_TYPE, RestController.MIME_TYPE_GEOJSON))
+				.andReturn();
+
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13294310_DM.geojson"))).allowingAnyArrayOrdering());
+	}
+
 	@Test
 	public void getComidDmDistanceTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/DM?distance=10"))
@@ -107,29 +118,29 @@ public class RestControllerNavigationFullIntegrationTest extends BaseSpringTest 
 				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13293474_DM_distance_10.geojson"))).allowingAnyArrayOrdering());
 	}
 
-	//DD Testing - Except we really don't have any diversions in the test data...
+	//DD Testing
 	@Test
 	public void getComidDdTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297242/navigate/DD"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DD"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(RestController.FLOW_LINES_COUNT_HEADER, "4"))
+				.andExpect(header().string(RestController.FLOW_LINES_COUNT_HEADER, "49"))
 				.andExpect(header().string(RestController.HEADER_CONTENT_TYPE, RestController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13297242_DD.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13294310_DD.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
 	public void getComidDdDistanceTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13293506/navigate/DD?distance=10"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DD?distance=11"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(RestController.FLOW_LINES_COUNT_HEADER, "8"))
+				.andExpect(header().string(RestController.FLOW_LINES_COUNT_HEADER, "11"))
 				.andExpect(header().string(RestController.HEADER_CONTENT_TYPE, RestController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13293506_DD_distance_10.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile("comid_13294310_DD_distance_11.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	//PP Testing
