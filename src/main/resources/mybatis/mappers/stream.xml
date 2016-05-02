@@ -3,27 +3,28 @@
 
 <mapper namespace="stream">
 
-	<select id="flowLine" resultType="java.util.LinkedHashMap" fetchSize="500">
-	    select nhdplus_comid,
-	    	   st_asgeojson(shape) shape
-	      from nhdplus_navigation.tmp_navigation_results
-	     where session_id = #{sessionId}
-	        order by totaldist, hydroseq
+	<select id="flowLine" resultType="java.util.LinkedHashMap" fetchSize="50">
+		select tmp_navigation_results.nhdplus_comid,
+		       st_asgeojson(nhdflowline_np21.shape) shape
+		  from nhdplus_navigation.tmp_navigation_results
+		       join nhdplus.nhdflowline_np21
+		         on tmp_navigation_results.nhdplus_comid = nhdflowline_np21.nhdplus_comid 
+		 where session_id = #{sessionId}
 	</select>
 
-	<select id="feature" resultType="java.util.LinkedHashMap" fetchSize="500">
-	    select comid,
-	           identifier,
-	           name,
-	           uri,
-	    	   st_asgeojson(location) shape
-	      from nhdplus_navigation.tmp_navigation_results
-	           join nldi_data.feature
-	             on tmp_navigation_results.nhdplus_comid = feature.comid
-	           join nldi_data.crawler_source
-	             on feature.crawler_source_id = crawler_source.crawler_source_id
-	     where session_id = #{sessionId}  and
-	           lower(source_suffix) = #{dataSource}
+	<select id="feature" resultType="java.util.LinkedHashMap" fetchSize="50">
+		select comid,
+		       identifier,
+		       name,
+		       uri,
+		       st_asgeojson(location) shape
+		  from nhdplus_navigation.tmp_navigation_results
+		       join nldi_data.feature
+		         on tmp_navigation_results.nhdplus_comid = feature.comid
+		       join nldi_data.crawler_source
+		         on feature.crawler_source_id = crawler_source.crawler_source_id
+		 where session_id = #{sessionId}  and
+		       lower(source_suffix) = #{dataSource}
 	</select>
 
 </mapper>

@@ -14,12 +14,12 @@ public class JndiConfig {
 	private final Context ctx;
 	
 	public JndiConfig() throws NamingException {
-        ctx = new InitialContext();
+		ctx = new InitialContext();
 	}
 
-    @Bean
-    public DataSource dataSource() throws Exception {
-        return (DataSource) ctx.lookup("java:comp/env/jdbc/NLDI");
-    }
+	@Bean
+	public DataSource dataSource() throws Exception {
+		return (DataSource) ctx.lookup("java:comp/env/jdbc/NLDI");
+	}
 
 }

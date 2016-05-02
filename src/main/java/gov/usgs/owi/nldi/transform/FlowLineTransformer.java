@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.util.Map;
 
 public class FlowLineTransformer extends MapToJsonTransformer {
-
 	public FlowLineTransformer(OutputStream target) {
 		super(target);
 	}

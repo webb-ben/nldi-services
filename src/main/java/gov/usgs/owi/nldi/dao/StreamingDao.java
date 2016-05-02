@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class StreamingDao extends BaseDao {
 	private static final String NS = "stream.";
-	
+
 	@Autowired
 	public StreamingDao(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory);
 	}
-	
+
 	public void stream(String featureType, Map<String, Object> parameterMap, ResultHandler<?> handler) {
 		if (null == handler) {
 			throw new IllegalArgumentException("A ResultHandler is required for the StreamingDao.stream");

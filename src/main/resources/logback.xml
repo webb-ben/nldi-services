@@ -22,13 +22,13 @@
 		</timeBasedFileNamingAndTriggeringPolicy>
 	</appender>
 	
-	<root level="ERROR">
+	<root level="INFO">
 		<appender-ref ref="stdout" />
 		<appender-ref ref="file" />
 	</root>
 
 	<logger name="gov.usgs" level="INFO" />
-	<logger name="org.springframework" level="ERROR" />
-	<logger name="org.mybatis" level="ERROR" />
-	<logger name="java.sql" level="ERROR" />
+	<logger name="org.springframework" level="INFO" />
+	<logger name="org.mybatis" level="INFO" />
+	<logger name="java.sql" level="INFO" />
 </configuration>

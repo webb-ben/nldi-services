@@ -19,9 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Category(DBIntegrationTest.class)
 public class StreamingDaoTest extends BaseSpringTest {
 
-	@Autowired 
+	@Autowired
 	StreamingDao streamingDao;
-	
+
 	private class TestResultHandler implements ResultHandler<Object> {
 		//TODO put the results somewhere to check them and allow them to be cleared between queries
 //		public ArrayList<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
@@ -72,12 +72,12 @@ public class StreamingDaoTest extends BaseSpringTest {
 				fail("Expected a RuntimeException, but got " + e.getLocalizedMessage());
 			}
 		}
-		
+
 		streamingDao.stream(BaseDao.FLOW_LINES, parameterMap, handler);
-		
+
 		parameterMap.put(RestController.SESSION_ID, "abc");
 		streamingDao.stream(BaseDao.FLOW_LINES, parameterMap, handler);
-		
+
 	}
 
 	@Test
@@ -109,12 +109,12 @@ public class StreamingDaoTest extends BaseSpringTest {
 				fail("Expected a RuntimeException, but got " + e.getLocalizedMessage());
 			}
 		}
-		
+
 		streamingDao.stream(BaseDao.FEATURES, parameterMap, handler);
-		
+
 		parameterMap.put(RestController.SESSION_ID, "abc");
 		streamingDao.stream(BaseDao.FEATURES, parameterMap, handler);
-		
+
 	}
 
 }

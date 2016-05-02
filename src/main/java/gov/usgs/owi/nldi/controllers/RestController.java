@@ -29,26 +29,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import de.jkeylockmanager.manager.KeyLockManager;
+import de.jkeylockmanager.manager.KeyLockManagers;
+
 @Controller
 @RequestMapping(value="/comid/{comid}/navigate/{navigationMode}")
 public class RestController {
 	private static final Logger LOG = LoggerFactory.getLogger(RestController.class);
-	
+
 	public static final String DATA_SOURCE = "dataSource";
 
 	public static final String NAVIGATE = "navigate";
 	public static final String SESSION_ID = "sessionId";
 	public static final String COUNT_SUFFIX = "_count";
-	
+
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	public static final String MIME_TYPE_GEOJSON = "application/vnd.geo+json";
-    public static final String FEATURE_COUNT_HEADER = BaseDao.FEATURES + COUNT_SUFFIX;
-    public static final String FLOW_LINES_COUNT_HEADER = BaseDao.FLOW_LINES + COUNT_SUFFIX;
+	public static final String FEATURE_COUNT_HEADER = BaseDao.FEATURES + COUNT_SUFFIX;
+	public static final String FLOW_LINES_COUNT_HEADER = BaseDao.FLOW_LINES + COUNT_SUFFIX;
 
 
 	protected final CountDao countDao;
 	protected final StreamingDao streamingDao;
 	protected final Navigation navigation;
+
+	private final KeyLockManager lockManager = KeyLockManagers.newLock();
 
 	@Autowired
 	public RestController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation) {
@@ -58,16 +63,16 @@ public class RestController {
 	}
 
 	@RequestMapping(method=RequestMethod.GET)
-    public void getFlowlines(HttpServletRequest request, HttpServletResponse response,
-    		@PathVariable(Navigation.COMID) String comid,
-    		@PathVariable(Navigation.NAVIGATION_MODE) String navigationMode,
-    		@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
-    		@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
+	public void getFlowlines(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable(Navigation.COMID) String comid,
+			@PathVariable(Navigation.NAVIGATION_MODE) String navigationMode,
+			@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
+			@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
 		OutputStream responseStream = null;
 
 		try {
 			responseStream = new BufferedOutputStream(response.getOutputStream());
-			String sessionId = navigation.navigate(responseStream, comid, navigationMode, distance, stopComid);
+			String sessionId = getSessionId(responseStream, comid, navigationMode, distance, stopComid);
 			if (null != sessionId) {
 				Map<String, Object> parameterMap = new HashMap<> ();
 				parameterMap.put(SESSION_ID, sessionId);
@@ -77,32 +82,32 @@ public class RestController {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			}
 
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			LOG.error("Handle me better" + e.getLocalizedMessage(), e);
 		} finally {
 			if (null != responseStream) {
 				try {
 					responseStream.flush();
-				} catch (IOException e) {
+				} catch (Throwable e) {
 					//Just log, cause we obviously can't tell the client
 					LOG.error("Error flushing response stream", e);
 				}
 			}
 		}
-    }
+	}
 
 	@RequestMapping(value="{dataSource}", method=RequestMethod.GET)
-    public void getFeatures(HttpServletRequest request, HttpServletResponse response,
-    		@PathVariable(Navigation.COMID) String comid,
-    		@PathVariable(Navigation.NAVIGATION_MODE) String navigationMode,
-    		@PathVariable(value=DATA_SOURCE) String dataSource,
-    		@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
-    		@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
+	public void getFeatures(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable(Navigation.COMID) String comid,
+			@PathVariable(Navigation.NAVIGATION_MODE) String navigationMode,
+			@PathVariable(value=DATA_SOURCE) String dataSource,
+			@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
+			@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
 		OutputStream responseStream = null;
 
 		try {
 			responseStream = new BufferedOutputStream(response.getOutputStream());
-			String sessionId = navigation.navigate(responseStream, comid, navigationMode, distance, stopComid);
+			String sessionId = getSessionId(responseStream, comid, navigationMode, distance, stopComid);
 			if (null != sessionId) {
 				Map<String, Object> parameterMap = new HashMap<> ();
 				parameterMap.put(SESSION_ID, sessionId);
@@ -125,17 +130,29 @@ public class RestController {
 				}
 			}
 		}
-    }
+	}
 
 	protected void streamResults(ITransformer transformer, String featureType, Map<String, Object> parameterMap) {
+		LOG.trace("start streaming");
 		ResultHandler<?> handler = new StreamingResultHandler(transformer);
 		streamingDao.stream(featureType, parameterMap, handler);
 		transformer.end();		
+		LOG.trace("done streaming");
 	}
 
 	protected void addHeaders(HttpServletResponse response, String featureType, Map<String, Object> parameterMap) {
+		LOG.trace("entering addHeaders");
+
 		response.setHeader(HEADER_CONTENT_TYPE, MIME_TYPE_GEOJSON);
 		response.setHeader(featureType + COUNT_SUFFIX, countDao.count(featureType, parameterMap));
+
+		LOG.trace("leaving addHeaders");
+	}
+
+	protected String getSessionId(OutputStream responseStream, final String comid, final String navigationMode,
+			final String distance, final String stopComid) {
+		String key = comid + "|" + navigationMode + "|" + distance + "|" + stopComid;
+		return lockManager.executeLocked(key, () -> navigation.navigate(responseStream, comid, navigationMode, distance, stopComid));
 	}
 
 }
