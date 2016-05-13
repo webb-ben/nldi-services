@@ -24,11 +24,25 @@
 		<jackson-version>2.7.3</jackson-version>
 		<jkeylockmanager-version>2.1.0</jkeylockmanager-version>
 		<additionalparam>-Xdoclint:none</additionalparam>
+		<cida.maven.url>http://internal.cida.usgs.gov/maven</cida.maven.url>
 	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>cida-releases</id>
+			<name>CIDA Releases</name>
+			<url>${cida.maven.url}/content/repositories/cida-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>cida-snapshots</id>
+			<name>CIDA Snapshots</name>
+			<url>${cida.maven.url}/content/repositories/cida-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<scm>
 		<connection>scm:git:https://github.com/ACWI-SSWD/nldi-services.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com:ACWI-SSWD/nldi-services.git</developerConnection>
+		<developerConnection>scm:git:ssh://git@github.com/ACWI-SSWD/nldi-services.git</developerConnection>
 		<url>https://github.com/ACWI-SSWD/nldi-services</url>
 		<tag>HEAD</tag>
 	</scm>
