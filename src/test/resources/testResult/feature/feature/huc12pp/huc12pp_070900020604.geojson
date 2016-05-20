@@ -1,0 +1,17 @@
+{
+	"type": "FeatureCollection",
+	"features": [{
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.3702469111916, 43.0950620130377]
+		},
+		"properties": {
+			"source": "hu12pp",
+			"identifier": "070900020604",
+			"name": "070900020604",
+			"uri": "070900020604",
+			"comid": "13294312"
+		}
+	}]
+}

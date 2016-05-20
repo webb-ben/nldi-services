@@ -1,0 +1,121 @@
+{
+	"type": "FeatureCollection",
+	"features": [{
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.4631902424829, 43.1955902879081]
+		},
+		"properties": {
+			"source": "hu12pp",
+			"identifier": "070900020601",
+			"name": "070900020601",
+			"uri": "070900020601",
+			"comid": "13293480"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.4256525802169, 43.1409362817633]
+		},
+		"properties": {
+			"source": "hu12pp",
+			"identifier": "070900020602",
+			"name": "070900020602",
+			"uri": "070900020602",
+			"comid": "13294300"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.3702469111916, 43.0950620130377]
+		},
+		"properties": {
+			"source": "hu12pp",
+			"identifier": "070900020604",
+			"name": "070900020604",
+			"uri": "070900020604",
+			"comid": "13294312"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.3214631320277, 43.0352328710351]
+		},
+		"properties": {
+			"source": "hu12pp",
+			"identifier": "070900020702",
+			"name": "070900020702",
+			"uri": "070900020702",
+			"comid": "13302592"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.3054766528898, 43.0088387761818]
+		},
+		"properties": {
+			"source": "hu12pp",
+			"identifier": "070900020703",
+			"name": "070900020703",
+			"uri": "070900020703",
+			"comid": "13294360"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.2229641208076, 42.9690484353445]
+		},
+		"properties": {
+			"source": "hu12pp",
+			"identifier": "070900020902",
+			"name": "070900020902",
+			"uri": "070900020902",
+			"comid": "13296606"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.2148305143197, 42.9085920935008]
+		},
+		"properties": {
+			"source": "hu12pp",
+			"identifier": "070900020903",
+			"name": "070900020903",
+			"uri": "070900020903",
+			"comid": "13297196"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.1727074964863, 42.8439427439369]
+		},
+		"properties": {
+			"source": "hu12pp",
+			"identifier": "070900020904",
+			"name": "070900020904",
+			"uri": "070900020904",
+			"comid": "13296756"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.1234184320259, 42.7926315636361]
+		},
+		"properties": {
+			"source": "hu12pp",
+			"identifier": "070900020905",
+			"name": "070900020905",
+			"uri": "070900020905",
+			"comid": "13296798"
+		}
+	}]
+}

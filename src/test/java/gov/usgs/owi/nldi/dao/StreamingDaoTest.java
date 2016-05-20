@@ -1,20 +1,29 @@
 package gov.usgs.owi.nldi.dao;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
-import gov.usgs.owi.nldi.BaseSpringTest;
-import gov.usgs.owi.nldi.DBIntegrationTest;
-import gov.usgs.owi.nldi.controllers.RestController;
+import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import gov.usgs.owi.nldi.BaseSpringTest;
+import gov.usgs.owi.nldi.DBIntegrationTest;
+import gov.usgs.owi.nldi.controllers.LinkedDataController;
+import gov.usgs.owi.nldi.controllers.NetworkController;
 
 @Category(DBIntegrationTest.class)
 public class StreamingDaoTest extends BaseSpringTest {
@@ -75,7 +84,7 @@ public class StreamingDaoTest extends BaseSpringTest {
 
 		streamingDao.stream(BaseDao.FLOW_LINES, parameterMap, handler);
 
-		parameterMap.put(RestController.SESSION_ID, "abc");
+		parameterMap.put(NetworkController.SESSION_ID, "abc");
 		streamingDao.stream(BaseDao.FLOW_LINES, parameterMap, handler);
 
 	}
@@ -112,9 +121,25 @@ public class StreamingDaoTest extends BaseSpringTest {
 
 		streamingDao.stream(BaseDao.FEATURES, parameterMap, handler);
 
-		parameterMap.put(RestController.SESSION_ID, "abc");
+		parameterMap.put(NetworkController.SESSION_ID, "abc");
 		streamingDao.stream(BaseDao.FEATURES, parameterMap, handler);
+	}
 
+	@Test
+	public void getFeatureTest() throws IOException, JSONException {
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put(LinkedDataController.FEATURE_SOURCE, "wqp");
+		parameterMap.put(LinkedDataController.FEATURE_ID, "USGS-05427880");
+		Map<String, Object> results = streamingDao.get(BaseDao.FEATURE, parameterMap);
+		assertEquals("Water Quality Portal", results.get("source_name"));
+		assertEquals("USGS-05427880", results.get("identifier"));
+		assertEquals("SIXMILE CREEK AT STATE HIGHWAY 19 NEAR WAUNAKEE,WI", results.get("name"));
+		assertEquals("http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427880/", results.get("uri"));
+		assertEquals(13294132, results.get("comid"));
+		assertNull(results.get("reachcode"));
+		assertNull(results.get("measure"));
+		assertThat(new JSONObject("{\"type\": \"Point\", \"coordinates\": [-89.4728889, 43.1922222]}"),
+				sameJSONObjectAs(new JSONObject(results.get("shape").toString())).allowingAnyArrayOrdering());
 	}
 
 }

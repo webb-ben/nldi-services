@@ -12,7 +12,13 @@
 
 
 <form name="QueryTypeForm">
-    <label>ComID</label><input aria-label="ComID" property="comID" name="ComIDField"></input>
+    <select name="SourceType" property="source_type" size="1">
+        <option selected="selected"> </option>
+        <option value="comid">comid</option>
+        <option value="wqp">wqp</option>
+        <option value="huc12pp">huc12pp</option>
+    </select>
+    <input aria-label="ComID" property="comID" name="ComIDField"></input>
     <label>Query Type</label>
     <select name="QueryType" property="query_type" size="1">
         <option selected="selected"> </option>
@@ -83,17 +89,18 @@ function addLineDataToMap(data, map) {
 }
 
 //you will need to replace this with the actual url of the endpoint once the CORS headers are properly set
-var nldiURL = "http://cidasddvasnldi.cr.usgs.gov:8080/nldi-services/comid/";
-//var nldiURL = "http://localhost:8080/nldi-services/comid/";
+//var nldiURL = "http://cidasddvasnldi.cr.usgs.gov:8080/nldi-services/";
+var nldiURL = "http://localhost:8080/nldi-services/";
 
 function on_submit_action()
     {
 
-        var e=document.getElementsByName("QueryType")[0];
+    var f=document.getElementsByName("SourceType")[0];
+    var e=document.getElementsByName("QueryType")[0];
         var c=document.getElementsByName("ComIDField")[0];
         var d=document.getElementsByName("DistanceField")[0];
-        var wqpURL = nldiURL+c.value+"/navigate/"+e.value+"/wqp";
-        var nhdURL = nldiURL+c.value+"/navigate/"+e.value;
+        var wqpURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value+"/wqp";
+        var nhdURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value;
         console.log(d.value);
         console.log(wqpURL);
         //$.get(wqpURL, {}, function(data) { addPointDataToMap(data, map); };);

@@ -1,0 +1,19 @@
+{
+	"type": "FeatureCollection",
+	"features": [{
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.4728889, 43.1922222]
+		},
+		"properties": {
+			"source": "Water Quality Portal",
+			"identifier": "USGS-05427880",
+			"name": "SIXMILE CREEK AT STATE HIGHWAY 19 NEAR WAUNAKEE,WI",
+			"uri": "http://waterqualitydata.us/NWIS/USGS-WI/USGS-05427880/",
+			"comid": "13294132",
+			"reachcode": "",
+			"measure": ""
+		}
+	}]
+}

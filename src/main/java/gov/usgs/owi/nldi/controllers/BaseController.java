@@ -1,5 +1,20 @@
 package gov.usgs.owi.nldi.controllers;
 
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.ibatis.session.ResultHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+
+import de.jkeylockmanager.manager.KeyLockManager;
+import de.jkeylockmanager.manager.KeyLockManagers;
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.CountDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
@@ -9,33 +24,8 @@ import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import gov.usgs.owi.nldi.transform.FlowLineTransformer;
 import gov.usgs.owi.nldi.transform.ITransformer;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.ibatis.session.ResultHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import de.jkeylockmanager.manager.KeyLockManager;
-import de.jkeylockmanager.manager.KeyLockManagers;
-
-@Controller
-@RequestMapping(value="/comid/{comid}/navigate/{navigationMode}")
-public class RestController {
-	private static final Logger LOG = LoggerFactory.getLogger(RestController.class);
+public abstract class BaseController {
+	private static final Logger LOG = LoggerFactory.getLogger(BaseController.class);
 
 	public static final String DATA_SOURCE = "dataSource";
 
@@ -55,21 +45,16 @@ public class RestController {
 
 	private final KeyLockManager lockManager = KeyLockManagers.newLock();
 
-	@Autowired
-	public RestController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation) {
+	public BaseController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation) {
 		countDao = inCountDao;
 		streamingDao = inStreamingDao;
 		navigation = inNavigation;
 	}
 
-	@RequestMapping(method=RequestMethod.GET)
-	public void getFlowlines(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable(Navigation.COMID) String comid,
-			@PathVariable(Navigation.NAVIGATION_MODE) String navigationMode,
-			@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
-			@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
-		OutputStream responseStream = null;
+	protected void streamFlowLines(HttpServletResponse response,
+			String comid, String navigationMode, String stopComid, String distance) {
 
+		OutputStream responseStream = null;
 		try {
 			responseStream = new BufferedOutputStream(response.getOutputStream());
 			String sessionId = getSessionId(responseStream, comid, navigationMode, distance, stopComid);
@@ -96,15 +81,10 @@ public class RestController {
 		}
 	}
 
-	@RequestMapping(value="{dataSource}", method=RequestMethod.GET)
-	public void getFeatures(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable(Navigation.COMID) String comid,
-			@PathVariable(Navigation.NAVIGATION_MODE) String navigationMode,
-			@PathVariable(value=DATA_SOURCE) String dataSource,
-			@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
-			@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
-		OutputStream responseStream = null;
+	protected void streamFeatures(HttpServletResponse response,
+			String comid, String navigationMode, String stopComid, String distance, String dataSource) {
 
+		OutputStream responseStream = null;
 		try {
 			responseStream = new BufferedOutputStream(response.getOutputStream());
 			String sessionId = getSessionId(responseStream, comid, navigationMode, distance, stopComid);
@@ -117,7 +97,7 @@ public class RestController {
 			} else {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			}
-
+	
 		} catch (Exception e) {
 			LOG.error("Handle me better" + e.getLocalizedMessage(), e);
 		} finally {
@@ -136,14 +116,18 @@ public class RestController {
 		LOG.trace("start streaming");
 		ResultHandler<?> handler = new StreamingResultHandler(transformer);
 		streamingDao.stream(featureType, parameterMap, handler);
-		transformer.end();		
+		transformer.end();
 		LOG.trace("done streaming");
+	}
+
+	protected void addContentHeader(HttpServletResponse response) {
+		response.setHeader(HEADER_CONTENT_TYPE, MIME_TYPE_GEOJSON);
 	}
 
 	protected void addHeaders(HttpServletResponse response, String featureType, Map<String, Object> parameterMap) {
 		LOG.trace("entering addHeaders");
 
-		response.setHeader(HEADER_CONTENT_TYPE, MIME_TYPE_GEOJSON);
+		addContentHeader(response);
 		response.setHeader(featureType + COUNT_SUFFIX, countDao.count(featureType, parameterMap));
 
 		LOG.trace("leaving addHeaders");

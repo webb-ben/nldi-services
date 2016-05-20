@@ -3,13 +3,13 @@
 
 <mapper namespace="count">
 
-	<select id="flowLine" resultType="Integer">
+	<select id="flowLines" resultType="Integer">
 		select count(*)
 		  from nhdplus_navigation.tmp_navigation_results
 		 where session_id = #{sessionId}
 	</select>
 
-	<select id="feature" resultType="Integer">
+	<select id="features" resultType="Integer">
 		select count(*)
 		  from nhdplus_navigation.tmp_navigation_results
 		       join nldi_data.feature

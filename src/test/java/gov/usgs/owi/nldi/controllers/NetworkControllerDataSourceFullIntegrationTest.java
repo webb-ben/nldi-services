@@ -23,12 +23,14 @@ import gov.usgs.owi.nldi.FullIntegrationTest;
 
 @Category(FullIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
-public class RestControllerDataSourceFullIntegrationTest extends BaseSpringTest {
+public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTest {
 
 	@Autowired
 	private WebApplicationContext wac;
 
 	private MockMvc mockMvc;
+
+	private static final String RESULT_FOLDER  = "network/feature/wqp/";
 
 	@Before
 	public void setup() {
@@ -40,24 +42,24 @@ public class RestControllerDataSourceFullIntegrationTest extends BaseSpringTest 
 	public void getComidUtTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/UT/wqp"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(RestController.FEATURE_COUNT_HEADER, "22"))
-				.andExpect(header().string(RestController.HEADER_CONTENT_TYPE, RestController.MIME_TYPE_GEOJSON))
+				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "22"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile("feature/wqp/comid_13293474_UT.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293474_UT.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
 	public void getComidUtDistanceTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UT/wqp?distance=10"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(RestController.FEATURE_COUNT_HEADER, "6"))
-				.andExpect(header().string(RestController.HEADER_CONTENT_TYPE, RestController.MIME_TYPE_GEOJSON))
+				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "6"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile("feature/wqp/comid_13297246_UT_distance_10.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_10.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	//UM Testing
@@ -65,24 +67,24 @@ public class RestControllerDataSourceFullIntegrationTest extends BaseSpringTest 
 	public void getComidUmTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/UM/wqp"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(RestController.FEATURE_COUNT_HEADER, "17"))
-				.andExpect(header().string(RestController.HEADER_CONTENT_TYPE, RestController.MIME_TYPE_GEOJSON))
+				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "17"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile("feature/wqp/comid_13293474_UM.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293474_UM.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
 	public void getComidUmDistanceTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UM/wqp?distance=10"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(RestController.FEATURE_COUNT_HEADER, "6"))
-				.andExpect(header().string(RestController.HEADER_CONTENT_TYPE, RestController.MIME_TYPE_GEOJSON))
+				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "6"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile("feature/wqp/comid_13297246_UM_distance_10.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297246_UM_distance_10.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	//DM Testing
@@ -90,24 +92,24 @@ public class RestControllerDataSourceFullIntegrationTest extends BaseSpringTest 
 	public void getComidDmTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13296790/navigate/DM/wqp"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(RestController.FEATURE_COUNT_HEADER, "6"))
-				.andExpect(header().string(RestController.HEADER_CONTENT_TYPE, RestController.MIME_TYPE_GEOJSON))
+				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "6"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile("feature/wqp/comid_13296790_DM.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13296790_DM.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
 	public void getComidDmDistanceTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/DM/wqp?distance=10"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(RestController.FEATURE_COUNT_HEADER, "31"))
-				.andExpect(header().string(RestController.HEADER_CONTENT_TYPE, RestController.MIME_TYPE_GEOJSON))
+				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "31"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile("feature/wqp/comid_13293474_DM_distance_10.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293474_DM_distance_10.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	//DD Testing - Except we really don't have any diversions in the test data...
@@ -115,24 +117,24 @@ public class RestControllerDataSourceFullIntegrationTest extends BaseSpringTest 
 	public void getComidDdTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13297242/navigate/DD/wqp"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(RestController.FEATURE_COUNT_HEADER, "5"))
-				.andExpect(header().string(RestController.HEADER_CONTENT_TYPE, RestController.MIME_TYPE_GEOJSON))
+				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "5"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile("feature/wqp/comid_13297242_DD.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297242_DD.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
 	public void getComidDdDistanceTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13293506/navigate/DD/wqp?distance=10"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(RestController.FEATURE_COUNT_HEADER, "22"))
-				.andExpect(header().string(RestController.HEADER_CONTENT_TYPE, RestController.MIME_TYPE_GEOJSON))
+				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "22"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile("feature/wqp/comid_13293506_DD_distance_10.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293506_DD_distance_10.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	//PP Testing
@@ -140,24 +142,24 @@ public class RestControllerDataSourceFullIntegrationTest extends BaseSpringTest 
 	public void getComidPpStopComidInvalidTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/PP/wqp?stopComid=13297198"))
 				.andExpect(status().isBadRequest())
-				.andExpect(header().string(RestController.FEATURE_COUNT_HEADER, (String)null))
-				.andExpect(header().string(RestController.HEADER_CONTENT_TYPE, (String)null))
+				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, (String)null))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, (String)null))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile("feature/wqp/comid_13297246_PP_stop_13297198.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297246_PP_stop_13297198.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
 	public void getComidPpStopComidTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13297198/navigate/PP/wqp?stopComid=13297246"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(RestController.FEATURE_COUNT_HEADER, "14"))
-				.andExpect(header().string(RestController.HEADER_CONTENT_TYPE, RestController.MIME_TYPE_GEOJSON))
+				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "16"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile("feature/wqp/comid_13297198_PP_stop_13297246.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297198_PP_stop_13297246.geojson"))).allowingAnyArrayOrdering());
 	}
 
 }
