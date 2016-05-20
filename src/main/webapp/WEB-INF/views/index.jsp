@@ -89,8 +89,8 @@ function addLineDataToMap(data, map) {
 }
 
 //you will need to replace this with the actual url of the endpoint once the CORS headers are properly set
-//var nldiURL = "http://cidasddvasnldi.cr.usgs.gov:8080/nldi-services/";
-var nldiURL = "http://localhost:8080/nldi-services/";
+var nldiURL = "http://cidasddvasnldi.cr.usgs.gov:8080/nldi-services/";
+//var nldiURL = "http://localhost:8080/nldi-services/";
 
 function on_submit_action()
     {
