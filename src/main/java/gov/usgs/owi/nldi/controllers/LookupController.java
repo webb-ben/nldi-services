@@ -23,7 +23,6 @@ import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.services.Navigation;
-import gov.usgs.owi.nldi.springinit.TestSpringConfig;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
 
 @Controller
@@ -52,7 +51,7 @@ public class LookupController {
 		rtn.add(comid);
 
 		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put(ROOT_URL, TestSpringConfig.TEST_ROOT_URL);
+		parameterMap.put(ROOT_URL, rootUrl);
 		rtn.addAll(lookupDao.getList(BaseDao.DATA_SOURCES, parameterMap));
 
 		return rtn;
