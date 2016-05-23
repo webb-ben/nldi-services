@@ -22,4 +22,9 @@ public class JndiConfig {
 		return (DataSource) ctx.lookup("java:comp/env/jdbc/NLDI");
 	}
 
+	@Bean
+	public String rootUrl() throws NamingException {
+		return (String) ctx.lookup("java:comp/env/nldi/displayUrl");
+	}
+
 }

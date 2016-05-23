@@ -1,0 +1,21 @@
+[{
+	"source": "comid",
+	"sourceName": "NHDPlus comid",
+	"features": "http://owi-test.usgs.gov:8080/test-url/comid"
+}, {
+	"source": "huc12pp",
+	"sourceName": "huc12pp",
+	"features": "http://owi-test.usgs.gov:8080/test-url/huc12pp"
+}, {
+	"source": "NWIS",
+	"sourceName": "USGS_NHD_StreamGages_ActiveContinuous",
+	"features": "http://owi-test.usgs.gov:8080/test-url/NWIS"
+}, {
+	"source": "TEST",
+	"sourceName": "TEST Source",
+	"features": "http://owi-test.usgs.gov:8080/test-url/TEST"
+}, {
+	"source": "WQP",
+	"sourceName": "Water Quality Portal",
+	"features": "http://owi-test.usgs.gov:8080/test-url/WQP"
+}]

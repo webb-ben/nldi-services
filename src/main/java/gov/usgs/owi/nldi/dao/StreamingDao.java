@@ -23,7 +23,4 @@ public class StreamingDao extends BaseDao {
 		getSqlSession().select(NS + featureType, parameterMap, handler);
 	}
 
-	public Map<String, Object> get(String featureType, Map<String, Object> parameterMap) {
-		return getSqlSession().selectOne(NS + featureType, parameterMap);
-	}
 }

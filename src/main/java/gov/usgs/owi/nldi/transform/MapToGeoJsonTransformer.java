@@ -7,16 +7,26 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
-public abstract class MapToJsonTransformer extends OutputStream implements ITransformer {
+import gov.usgs.owi.nldi.dao.BaseDao;
+
+public abstract class MapToGeoJsonTransformer extends OutputStream implements ITransformer {
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
+	public static final String FEATURE_COLLECTION = "FeatureCollection";
+	public static final String FEATURE_INIT_CAP = "Feature";
+	public static final String GEOMETRY = "geometry";
+	public static final String PROPERTIES = "properties";
+	public static final String SHAPE = "shape";
+	public static final String TYPE = "type";
 
 	protected OutputStream target;
+	protected String rootUrl;
 	protected JsonFactory f;
 	protected JsonGenerator g;
 
-	public MapToJsonTransformer(OutputStream target) {
+	public MapToGeoJsonTransformer(OutputStream target, String rootUrl) {
 		this.target = target;
+		this.rootUrl = rootUrl;
 		init();
 	}
 
@@ -43,8 +53,8 @@ public abstract class MapToJsonTransformer extends OutputStream implements ITran
 		try {
 			g = f.createGenerator(target);
 			g.writeStartObject();
-			g.writeStringField("type", "FeatureCollection");
-			g.writeFieldName("features");
+			g.writeStringField(TYPE, FEATURE_COLLECTION);
+			g.writeFieldName(BaseDao.FEATURES);
 			g.writeStartArray();
 		} catch (IOException e) {
 			throw new RuntimeException("Error starting json document", e);
@@ -55,14 +65,14 @@ public abstract class MapToJsonTransformer extends OutputStream implements ITran
 		try {
 			g.writeStartObject();
 
-			g.writeStringField("type", "Feature");
+			g.writeStringField(TYPE, FEATURE_INIT_CAP);
 
-			g.writeFieldName("geometry");
+			g.writeFieldName(GEOMETRY);
 			g.writeStartObject();
-			g.writeRaw(getValue(resultMap, "shape").replace("{", "").replace("}", ""));
+			g.writeRaw(getValue(resultMap, SHAPE).replace("{", "").replace("}", ""));
 			g.writeEndObject();
 
-			g.writeObjectFieldStart("properties");
+			g.writeObjectFieldStart(PROPERTIES);
 			writeProperties(resultMap);
 			g.writeEndObject();
 
@@ -96,6 +106,6 @@ public abstract class MapToJsonTransformer extends OutputStream implements ITran
 		}
 	}
 
-	abstract void writeProperties(Map<String, Object> resultMap);
+	abstract void writeProperties(Map<String, Object> resultMap) throws IOException;
 
 }

@@ -5,14 +5,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import gov.usgs.owi.nldi.ApplicationVersion;
+
 @Controller
 public class DemoController {
 
-	@RequestMapping(value="/", method=RequestMethod.GET)
+	@RequestMapping(value="/demo", method=RequestMethod.GET)
 	public ModelAndView entry() {
 		
-		ModelAndView mv = new ModelAndView("index.jsp");
-//		mv.addObject("version", ApplicationVersion.getVersion());
+		ModelAndView mv = new ModelAndView("demo");
+		mv.addObject("version", ApplicationVersion.getVersion());
 
 		return mv;
 	}

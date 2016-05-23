@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +20,9 @@ import gov.usgs.owi.nldi.services.Navigation;
 public class NetworkController extends BaseController {
 
 	@Autowired
-	public NetworkController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation) {
-		super(inCountDao, inStreamingDao, inNavigation);
+	public NetworkController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation,
+			@Qualifier("rootUrl") String inRootUrl) {
+		super(inCountDao, inStreamingDao, inNavigation, inRootUrl);
 	}
 
 	@RequestMapping(method=RequestMethod.GET)

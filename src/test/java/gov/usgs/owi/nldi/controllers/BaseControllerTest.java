@@ -22,6 +22,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import gov.usgs.owi.nldi.dao.CountDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.Navigation;
+import gov.usgs.owi.nldi.springinit.TestSpringConfig;
+import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import gov.usgs.owi.nldi.transform.ITransformer;
 
 public class BaseControllerTest {
@@ -38,7 +40,7 @@ public class BaseControllerTest {
 
 	private class TestBaseController extends BaseController {
 		public TestBaseController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation) {
-			super(inCountDao, inStreamingDao, inNavigation);
+			super(inCountDao, inStreamingDao, inNavigation, TestSpringConfig.TEST_ROOT_URL);
 		}
 	}
 	
@@ -83,12 +85,12 @@ public class BaseControllerTest {
 	public void streamFeaturesTest() {
 		when(countDao.count(anyString(), anyMap())).thenReturn("912");
 		when(navigation.navigate(any(OutputStream.class), anyString(), anyString(), anyString(), anyString())).thenReturn(null, "abc");
-		controller.streamFeatures(response, "comid", "navigationMode", "stopComid", "distance", "dataSource");
+		controller.streamFeatures(response, FeatureTransformer.COMID, "navigationMode", "stopComid", "distance", "dataSource");
 		verify(countDao, never()).count(anyString(), anyMap());
 		verify(streamingDao, never()).stream(anyString(), anyMap(), any(ResultHandler.class));
 		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
 
-		controller.streamFeatures(response, "comid", "navigationMode", "stopComid", "distance", "dataSource");
+		controller.streamFeatures(response, FeatureTransformer.COMID, "navigationMode", "stopComid", "distance", "dataSource");
 		verify(countDao).count(anyString(), anyMap());
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
 	}
@@ -98,12 +100,12 @@ public class BaseControllerTest {
 	public void streamFlowLinesTest() {
 		when(countDao.count(anyString(), anyMap())).thenReturn("912");
 		when(navigation.navigate(any(OutputStream.class), anyString(), anyString(), anyString(), anyString())).thenReturn(null, "abc");
-		controller.streamFlowLines(response, "comid", "navigationMode", "stopComid", "distance");
+		controller.streamFlowLines(response, FeatureTransformer.COMID, "navigationMode", "stopComid", "distance");
 		verify(countDao, never()).count(anyString(), anyMap());
 		verify(streamingDao, never()).stream(anyString(), anyMap(), any(ResultHandler.class));
 		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
 
-		controller.streamFlowLines(response, "comid", "navigationMode", "stopComid", "distance");
+		controller.streamFlowLines(response, FeatureTransformer.COMID, "navigationMode", "stopComid", "distance");
 		verify(countDao).count(anyString(), anyMap());
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
 	}

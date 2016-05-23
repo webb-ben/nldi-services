@@ -17,6 +17,7 @@ import de.jkeylockmanager.manager.KeyLockManager;
 import de.jkeylockmanager.manager.KeyLockManagers;
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.CountDao;
+import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.dao.StreamingResultHandler;
 import gov.usgs.owi.nldi.services.Navigation;
@@ -29,7 +30,7 @@ public abstract class BaseController {
 
 	public static final String DATA_SOURCE = "dataSource";
 
-	public static final String NAVIGATE = "navigate";
+	public static final String NAVIGATE = NavigationDao.NAVIGATE;
 	public static final String SESSION_ID = "sessionId";
 	public static final String COUNT_SUFFIX = "_count";
 
@@ -42,13 +43,15 @@ public abstract class BaseController {
 	protected final CountDao countDao;
 	protected final StreamingDao streamingDao;
 	protected final Navigation navigation;
+	protected final String rootUrl;
 
 	private final KeyLockManager lockManager = KeyLockManagers.newLock();
 
-	public BaseController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation) {
+	public BaseController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation, String inRootUrl) {
 		countDao = inCountDao;
 		streamingDao = inStreamingDao;
 		navigation = inNavigation;
+		rootUrl = inRootUrl;
 	}
 
 	protected void streamFlowLines(HttpServletResponse response,
@@ -62,7 +65,7 @@ public abstract class BaseController {
 				Map<String, Object> parameterMap = new HashMap<> ();
 				parameterMap.put(SESSION_ID, sessionId);
 				addHeaders(response, BaseDao.FLOW_LINES, parameterMap);
-				streamResults(new FlowLineTransformer(responseStream), BaseDao.FLOW_LINES, parameterMap);
+				streamResults(new FlowLineTransformer(responseStream, rootUrl), BaseDao.FLOW_LINES, parameterMap);
 			} else {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			}
@@ -93,7 +96,7 @@ public abstract class BaseController {
 				parameterMap.put(SESSION_ID, sessionId);
 				parameterMap.put(DATA_SOURCE, dataSource.toLowerCase());
 				addHeaders(response, BaseDao.FEATURES, parameterMap);
-				streamResults(new FeatureTransformer(responseStream), BaseDao.FEATURES, parameterMap);
+				streamResults(new FeatureTransformer(responseStream, rootUrl), BaseDao.FEATURES, parameterMap);
 			} else {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			}
@@ -135,7 +138,7 @@ public abstract class BaseController {
 
 	protected String getSessionId(OutputStream responseStream, final String comid, final String navigationMode,
 			final String distance, final String stopComid) {
-		String key = comid + "|" + navigationMode + "|" + distance + "|" + stopComid;
+		String key = String.join("|", comid, navigationMode, distance, stopComid);
 		return lockManager.executeLocked(key, () -> navigation.navigate(responseStream, comid, navigationMode, distance, stopComid));
 	}
 

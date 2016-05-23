@@ -12,19 +12,8 @@
 		 where session_id = #{sessionId}
 	</select>
 
-	<sql id="featureProperties">
-		crawler_source.source_name,
-		feature.identifier,
-		feature.name,
-		feature.uri,
-		feature.comid,
-		feature.reachcode,
-		feature.measure,
-		st_asgeojson(feature.location) shape
-	</sql>
-
 	<select id="features" resultType="java.util.LinkedHashMap" fetchSize="50">
-		select <include refid="featureProperties"/>
+		select <include refid="lookup.featureProperties"/>
 		  from nhdplus_navigation.tmp_navigation_results
 		       join nldi_data.feature
 		         on tmp_navigation_results.nhdplus_comid = feature.comid
@@ -35,12 +24,7 @@
 	</select>
 
 	<select id="feature" resultType="java.util.LinkedHashMap" fetchSize="50">
-		select <include refid="featureProperties"/>
-		  from nldi_data.feature
-		       join nldi_data.crawler_source
-		         on feature.crawler_source_id = crawler_source.crawler_source_id
-		 where identifier = #{featureID}  and
-		       lower(source_suffix) = #{featureSource}
+		<include refid="lookup.featureSql"/>
 	</select>
 
 </mapper>

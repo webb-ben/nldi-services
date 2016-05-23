@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.CountDao;
+import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
@@ -30,10 +32,13 @@ public class LinkedDataController extends BaseController {
 
 	public static final String FEATURE_SOURCE = "featureSource";
 	public static final String FEATURE_ID = "featureID";
+	protected final LookupDao lookupDao;
 
 	@Autowired
-	public LinkedDataController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation) {
-		super(inCountDao, inStreamingDao, inNavigation);
+	public LinkedDataController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation,
+			LookupDao inLookupDao, @Qualifier("rootUrl") String inRootUrl) {
+		super(inCountDao, inStreamingDao, inNavigation, inRootUrl);
+		this.lookupDao = inLookupDao;
 	}
 
 	@RequestMapping(method=RequestMethod.GET)
@@ -48,7 +53,7 @@ public class LinkedDataController extends BaseController {
 			parameterMap.put(FEATURE_SOURCE, featureSource);
 			parameterMap.put(FEATURE_ID, featureID);
 			addContentHeader(response);
-			streamResults(new FeatureTransformer(responseStream), BaseDao.FEATURE, parameterMap);
+			streamResults(new FeatureTransformer(responseStream, rootUrl), BaseDao.FEATURE, parameterMap);
 
 		} catch (Throwable e) {
 			LOG.error("Handle me better" + e.getLocalizedMessage(), e);
@@ -92,7 +97,7 @@ public class LinkedDataController extends BaseController {
 		parameterMap.put(FEATURE_SOURCE, featureSource);
 		parameterMap.put(FEATURE_ID, featureID);
 
-		Map<String, Object> feature = streamingDao.get(BaseDao.FEATURE, parameterMap);
+		Map<String, Object> feature = lookupDao.getOne(BaseDao.FEATURE, parameterMap);
 		return feature.get(Navigation.COMID).toString();
 	}
 

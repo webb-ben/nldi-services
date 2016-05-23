@@ -69,14 +69,14 @@ public class NavigationDaoTest extends BaseSpringTest {
 		//This one is golden
 		parameterMap.clear();
 		parameterMap.put(Navigation.COMID, NumberUtils.parseNumber("1329374", Integer.class));
-		parameterMap.put(Navigation.NAVIGATION_MODE, "UT");
+		parameterMap.put(Navigation.NAVIGATION_MODE, Navigation.UT);
 
 		assertEquals("6a6", navigationDao.getCache(parameterMap));
 
 		//This one is golden (note that "10a10" sorts before "8a8")
 		parameterMap.clear();
 		parameterMap.put(Navigation.COMID, NumberUtils.parseNumber("13297246", Integer.class));
-		parameterMap.put(Navigation.NAVIGATION_MODE, "UM");
+		parameterMap.put(Navigation.NAVIGATION_MODE, Navigation.UM);
 
 		assertEquals("10a10", navigationDao.getCache(parameterMap));
 
@@ -91,7 +91,7 @@ public class NavigationDaoTest extends BaseSpringTest {
 		//This does exist, but has a bad return code
 		parameterMap.clear();
 		parameterMap.put(Navigation.COMID, NumberUtils.parseNumber("13297246", Integer.class));
-		parameterMap.put(Navigation.NAVIGATION_MODE, "DM");
+		parameterMap.put(Navigation.NAVIGATION_MODE, Navigation.DM);
 
 		assertNull(navigationDao.getCache(parameterMap));
 
