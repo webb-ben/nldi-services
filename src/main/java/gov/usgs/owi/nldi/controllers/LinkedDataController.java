@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,7 +78,12 @@ public class LinkedDataController extends BaseController {
 			@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
 			@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
 
-		streamFlowLines(response, getComid(featureSource, featureID), navigationMode, stopComid, distance);
+		String comid = getComid(featureSource, featureID);
+		if (null == comid) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+		} else {
+			streamFlowLines(response, comid, navigationMode, stopComid, distance);
+		}
 	}
 
 	@RequestMapping(value="/navigate/{navigationMode}/{dataSource}", method=RequestMethod.GET)
@@ -89,7 +95,12 @@ public class LinkedDataController extends BaseController {
 			@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
 			@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
 
-		streamFeatures(response, getComid(featureSource, featureID), navigationMode, stopComid, distance, dataSource);
+		String comid = getComid(featureSource, featureID);
+		if (null == comid) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+		} else {
+			streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource);
+		}
 	}
 
 	protected String getComid(String featureSource, String featureID) {
@@ -98,7 +109,11 @@ public class LinkedDataController extends BaseController {
 		parameterMap.put(FEATURE_ID, featureID);
 
 		Map<String, Object> feature = lookupDao.getOne(BaseDao.FEATURE, parameterMap);
-		return feature.get(Navigation.COMID).toString();
+		if (null == feature || !feature.containsKey(Navigation.COMID)) {
+			return null;
+		} else {
+			return feature.get(Navigation.COMID).toString();
+		}
 	}
 
 }

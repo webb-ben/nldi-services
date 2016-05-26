@@ -23,6 +23,7 @@ import gov.usgs.owi.nldi.FullIntegrationTest;
 
 @Category(FullIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
+@DatabaseSetup("classpath:/testData/featureWqp.xml")
 public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTest {
 
 	@Autowired

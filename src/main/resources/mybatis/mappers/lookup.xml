@@ -21,7 +21,7 @@
 		       join nldi_data.crawler_source
 		         on feature.crawler_source_id = crawler_source.crawler_source_id
 		 where identifier = #{featureID}  and
-		       lower(source_suffix) = #{featureSource}
+		       lower(source_suffix) = lower(#{featureSource})
 	</sql>
 
 	<select id="feature" resultType="java.util.LinkedHashMap">
@@ -31,7 +31,7 @@
 	<select id="dataSources" resultType="java.util.LinkedHashMap">
 		select source_suffix source,
 		       source_name "sourceName",
-		       #{rootUrl,jdbcType=VARCHAR} || '/' || source_suffix features
+		       #{rootUrl,jdbcType=VARCHAR} || '/' || lower(source_suffix) features
 		  from nldi_data.crawler_source
 		     order by source_suffix
 	</select>

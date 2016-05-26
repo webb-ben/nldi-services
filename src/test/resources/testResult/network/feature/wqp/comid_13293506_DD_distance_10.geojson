@@ -13,7 +13,7 @@
 			"name": "DN-08/09E/33-0089",
 			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-430731089261701/",
 			"comid": "13294304",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/USGS-430731089261701/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-430731089261701/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -28,7 +28,7 @@
 			"name": "Yahara River estuary below middle basin",
 			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10044183/",
 			"comid": "13294284",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/WIDNR_WQX-10044183/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10044183/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -43,7 +43,7 @@
 			"name": "Yahara River at Westport Rd Near Madison WI",
 			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-133394/",
 			"comid": "13294290",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/WIDNR_WQX-133394/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-133394/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -58,7 +58,7 @@
 			"name": "YAHARA RIVER AT STATE HIGHWAY 113 AT MADISON, WI",
 			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427850/",
 			"comid": "13293576",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/USGS-05427850/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-05427850/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -73,7 +73,7 @@
 			"name": "DN-08/09E/26-1185",
 			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-430805089240001/",
 			"comid": "13294298",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/USGS-430805089240001/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-430805089240001/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -88,7 +88,7 @@
 			"name": "LAKE MENDOTA - GOVERNOR NELSON STATE PARK BEACH",
 			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-133456/",
 			"comid": "13294304",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/WIDNR_WQX-133456/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-133456/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -103,7 +103,7 @@
 			"name": "Cherokee Marsh - Yahara River",
 			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10039184/",
 			"comid": "13293506",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/WIDNR_WQX-10039184/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10039184/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -118,7 +118,7 @@
 			"name": "Yahara River -- Access",
 			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10017815/",
 			"comid": "13294290",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/WIDNR_WQX-10017815/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10017815/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -133,7 +133,7 @@
 			"name": "LAKE MENDOTA NEAR YAHARA R. INLET WATER DEPTH ABOUT 5 FEET",
 			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10031711/",
 			"comid": "13294298",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/WIDNR_WQX-10031711/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10031711/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -148,7 +148,7 @@
 			"name": "DN-08/09E/26-0041",
 			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-430832089234101/",
 			"comid": "13294290",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/USGS-430832089234101/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-430832089234101/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -163,7 +163,7 @@
 			"name": "DN-08/09E/13-1067",
 			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-431002089215501/",
 			"comid": "13294280",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/USGS-431002089215501/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-431002089215501/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -178,7 +178,7 @@
 			"name": "DN-08/09E/35-1186",
 			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-430800089240001/",
 			"comid": "13294298",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/USGS-430800089240001/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-430800089240001/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -193,7 +193,7 @@
 			"name": "CHEROKEE PARK AMBIENT AIR TEMPERATURE @ MADISON,WI",
 			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-430916089224300/",
 			"comid": "13294280",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/USGS-430916089224300/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-430916089224300/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -208,7 +208,7 @@
 			"name": "Yahara River at Sth 113 At Madison WI",
 			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-133040/",
 			"comid": "13293576",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/WIDNR_WQX-133040/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-133040/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -223,7 +223,7 @@
 			"name": "Yahara River - Yahara River 23 Bel Stoughton",
 			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10001216/",
 			"comid": "13294290",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/WIDNR_WQX-10001216/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10001216/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -238,7 +238,7 @@
 			"name": "DN-08/09E/34-0077",
 			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-430758089242901/",
 			"comid": "13294304",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/USGS-430758089242901/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-430758089242901/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -253,7 +253,7 @@
 			"name": "Lake Mendota - Yahara Bay",
 			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10031720/",
 			"comid": "13294304",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/WIDNR_WQX-10031720/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10031720/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -268,7 +268,7 @@
 			"name": "Lake Mendota -- Governor Nelson State Park",
 			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10017818/",
 			"comid": "13294304",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/WIDNR_WQX-10017818/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10017818/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -283,7 +283,7 @@
 			"name": "YAHARA RIVER AT WESTPORT ROAD NEAR MADISON, WI",
 			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427851/",
 			"comid": "13293576",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/USGS-05427851/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-05427851/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -298,7 +298,7 @@
 			"name": "Cherokee Marsh - Yahara River",
 			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10039185/",
 			"comid": "13294280",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/WIDNR_WQX-10039185/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10039185/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -313,7 +313,7 @@
 			"name": "Yahara River estuary below upper basin",
 			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10044182/",
 			"comid": "13294280",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/WIDNR_WQX-10044182/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10044182/navigate"
 		}
 	}, {
 		"type": "Feature",
@@ -328,7 +328,7 @@
 			"name": "DN-08/09E/23-1104",
 			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-430944089231501/",
 			"comid": "13294280",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/USGS-430944089231501/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-430944089231501/navigate"
 		}
 	}]
 }

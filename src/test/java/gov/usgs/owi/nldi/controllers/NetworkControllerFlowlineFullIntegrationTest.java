@@ -16,10 +16,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+
 import gov.usgs.owi.nldi.BaseSpringTest;
 import gov.usgs.owi.nldi.FullIntegrationTest;
 
 @Category(FullIntegrationTest.class)
+@DatabaseSetup("classpath:/testData/crawlerSource.xml")
 public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest {
 
 	@Autowired

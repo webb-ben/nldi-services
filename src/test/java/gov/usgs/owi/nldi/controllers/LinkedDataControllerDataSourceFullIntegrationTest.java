@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+
 import gov.usgs.owi.nldi.BaseSpringTest;
 
 public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSpringTest {
@@ -46,6 +48,7 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 
 	//Linked Object Testing huc12pp
 	@Test
+	@DatabaseSetup("classpath:/testData/featureHuc12pp.xml")
 	public void gethuc12ppTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/huc12pp/070900020604"))
 				.andExpect(status().isOk())
@@ -58,6 +61,7 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 
 	//Navigation Within Datasource Testing
 	@Test
+	@DatabaseSetup("classpath:/testData/featureWqp.xml")
 	public void getWqpUtTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/wqp/USGS-05427880/navigate/UT/wqp"))
 				.andExpect(status().isOk())
@@ -71,6 +75,8 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 
 	//Navigation Different Datasource Testing
 	@Test
+	@DatabaseSetup("classpath:/testData/featureHuc12pp.xml")
+	@DatabaseSetup("classpath:/testData/featureWqp.xml")
 	public void getWqpDmTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/wqp/USGS-05427880/navigate/DM/huc12pp"))
 				.andExpect(status().isOk())
@@ -80,6 +86,12 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_DM_huc12pp.geojson"))).allowingAnyArrayOrdering());
+	}
+
+	@Test
+	public void badInputTest() throws Exception {
+		mockMvc.perform(get("/wqx/USGS-05427880/navigate/DM/huc12pp"))
+				.andExpect(status().isNotFound());
 	}
 
 }

@@ -7,15 +7,15 @@
 	"sourceName": "huc12pp",
 	"features": "http://owi-test.usgs.gov:8080/test-url/huc12pp"
 }, {
-	"source": "NWIS",
-	"sourceName": "USGS_NHD_StreamGages_ActiveContinuous",
-	"features": "http://owi-test.usgs.gov:8080/test-url/NWIS"
+	"source": "np21_nwis",
+	"sourceName": "HNDPlusV2_NWIS_Gages",
+	"features": "http://owi-test.usgs.gov:8080/test-url/np21_nwis"
 }, {
 	"source": "TEST",
 	"sourceName": "TEST Source",
-	"features": "http://owi-test.usgs.gov:8080/test-url/TEST"
+	"features": "http://owi-test.usgs.gov:8080/test-url/test"
 }, {
 	"source": "WQP",
 	"sourceName": "Water Quality Portal",
-	"features": "http://owi-test.usgs.gov:8080/test-url/WQP"
+	"features": "http://owi-test.usgs.gov:8080/test-url/wqp"
 }]

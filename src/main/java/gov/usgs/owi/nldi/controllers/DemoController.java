@@ -13,7 +13,7 @@ public class DemoController {
 	@RequestMapping(value="/demo", method=RequestMethod.GET)
 	public ModelAndView entry() {
 		
-		ModelAndView mv = new ModelAndView("demo");
+		ModelAndView mv = new ModelAndView("demo.jsp");
 		mv.addObject("version", ApplicationVersion.getVersion());
 
 		return mv;

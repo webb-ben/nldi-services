@@ -13,7 +13,7 @@
 			"name": "SIXMILE CREEK AT STATE HIGHWAY 19 NEAR WAUNAKEE,WI",
 			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427880/",
 			"comid": "13294132",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/WQP/USGS-05427880/navigate"
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-05427880/navigate"
 		}
 	}]
 }

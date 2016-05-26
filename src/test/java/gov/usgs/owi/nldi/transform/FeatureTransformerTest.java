@@ -53,7 +53,7 @@ public class FeatureTransformerTest {
 			assertEquals(321, baos.size());
 			assertEquals(MapToGeoJsonTransformerTest.HEADER_TEXT + "{\"source\":\"sourceValue\",\"sourceName\":\"sourceNameValue\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\","
 					+ "\"uri\":\"uriValue\",\"comid\":\"47439231\",\"reachcode\":\"05020002004263\",\"measure\":\"1.38233\","
-					+ "\"navigation\":\"" + TestSpringConfig.TEST_ROOT_URL + "/sourceValue/identifierValue/navigate\"}",
+					+ "\"navigation\":\"" + TestSpringConfig.TEST_ROOT_URL + "/sourcevalue/identifierValue/navigate\"}",
 					new String(baos.toByteArray(), MapToGeoJsonTransformer.DEFAULT_ENCODING));
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
@@ -79,10 +79,10 @@ public class FeatureTransformerTest {
 			assertEquals(MapToGeoJsonTransformerTest.HEADER_TEXT
 					+ "{\"source\":\"sourceValue\",\"sourceName\":\"sourceNameValue\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\","
 						+ "\"uri\":\"uriValue\",\"comid\":\"47439231\",\"reachcode\":\"05020002004263\",\"measure\":\"1.38233\","
-						+ "\"navigation\":\"" + TestSpringConfig.TEST_ROOT_URL + "/sourceValue/identifierValue/navigate\"}"
+						+ "\"navigation\":\"" + TestSpringConfig.TEST_ROOT_URL + "/sourcevalue/identifierValue/navigate\"}"
 					+ ",{\"source\":\"source2Value\",\"sourceName\":\"sourceName2Value\",\"identifier\":\"identifier2Value\",\"name\":\"name2Value\","
 						+ "\"uri\":\"uri2Value\",\"comid\":\"81149213\","
-						+ "\"navigation\":\"" + TestSpringConfig.TEST_ROOT_URL + "/source2Value/identifier2Value/navigate\"}",
+						+ "\"navigation\":\"" + TestSpringConfig.TEST_ROOT_URL + "/source2value/identifier2Value/navigate\"}",
 					new String(baos.toByteArray(), MapToGeoJsonTransformer.DEFAULT_ENCODING));
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());

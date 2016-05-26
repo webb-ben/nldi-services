@@ -48,7 +48,7 @@ public class TestSpringConfig implements EnvironmentAware {
 		dbUnitDbConfig.setQualifiedTableNames(true);
 		return dbUnitDbConfig;
 	}
-	
+
 	@Bean
 	public DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection() throws Exception {
 		DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection = new DatabaseDataSourceConnectionFactoryBean();

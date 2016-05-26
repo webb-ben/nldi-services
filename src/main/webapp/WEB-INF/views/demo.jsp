@@ -65,10 +65,12 @@ var geojsonhuc12ppMarkerOptions = {
 
 function onEachPointFeature(feature, layer) {
             var popupText = "Data Source: " + feature.properties.source
+                + "<br>Data Source Name: " + feature.properties.sourceName
                 + "<br>Station Name: " + feature.properties.name
                 + "<br>Station ID: " + feature.properties.identifier
                 + "<br>Station ComID: " + feature.properties.comid
-                + "<br>Station Data: " + "<a href="+feature.properties.uri+">click for csv</a>";
+                + "<br>Station Data: " + "<a href="+feature.properties.uri+">click for csv</a>"
+                + "<br>Station Navigation Options: " + "<a href="+feature.properties.navigation+">click for options</a>";
             layer.bindPopup(popupText);
             }
 
@@ -99,8 +101,9 @@ function addLineDataToMap(data, map) {
 }
 
 //you will need to replace this with the actual url of the endpoint once the CORS headers are properly set
-var nldiURL = "http://cidasddvasnldi.cr.usgs.gov:8080/nldi-services/";
+//var nldiURL = "http://cidasddvasnldi.cr.usgs.gov:8080/nldi-services/";
 //var nldiURL = "http://localhost:8080/nldi-services/";
+var nldiURL = "";
 
 function on_submit_action()
     {

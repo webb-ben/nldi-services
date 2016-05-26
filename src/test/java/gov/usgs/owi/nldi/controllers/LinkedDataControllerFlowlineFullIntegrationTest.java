@@ -16,10 +16,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+
 import gov.usgs.owi.nldi.BaseSpringTest;
 import gov.usgs.owi.nldi.FullIntegrationTest;
 
 @Category(FullIntegrationTest.class)
+@DatabaseSetup("classpath:/testData/crawlerSource.xml")
 public class LinkedDataControllerFlowlineFullIntegrationTest extends BaseSpringTest {
 
 	@Autowired
@@ -36,6 +39,7 @@ public class LinkedDataControllerFlowlineFullIntegrationTest extends BaseSpringT
 	}
 
 	@Test
+	@DatabaseSetup("classpath:/testData/featureWqp.xml")
 	public void getWqpUMTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/wqp/USGS-05427880/navigate/UM"))
 				.andExpect(status().isOk())
@@ -48,6 +52,7 @@ public class LinkedDataControllerFlowlineFullIntegrationTest extends BaseSpringT
 	}
 
 	@Test
+	@DatabaseSetup("classpath:/testData/featureHuc12pp.xml")
 	public void getHuc12ppDM10Test() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/huc12pp/070900020601/navigate/DM?distance=10"))
 				.andExpect(status().isOk())
@@ -57,6 +62,12 @@ public class LinkedDataControllerFlowlineFullIntegrationTest extends BaseSpringT
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_HUC, "huc12pp_070900020601_DM_distance_10.geojson"))).allowingAnyArrayOrdering());
+	}
+
+	@Test
+	public void badInputTest() throws Exception {
+		mockMvc.perform(get("/wqx/USGS-05427880/navigate/DM"))
+				.andExpect(status().isNotFound());
 	}
 
 }

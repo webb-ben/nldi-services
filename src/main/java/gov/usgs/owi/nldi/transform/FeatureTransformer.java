@@ -2,6 +2,7 @@ package gov.usgs.owi.nldi.transform;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +42,7 @@ public class FeatureTransformer extends MapToGeoJsonTransformer {
 		if (StringUtils.isNotEmpty(getValue(resultMap, MEASURE))) {
 			g.writeStringField(MEASURE, getValue(resultMap, MEASURE));
 		}
-		g.writeStringField(NAVIGATION, String.join("/", rootUrl, source, identifier, NavigationDao.NAVIGATE));
+		g.writeStringField(NAVIGATION, String.join("/", rootUrl, source.toLowerCase(), URLEncoder.encode(identifier, DEFAULT_ENCODING), NavigationDao.NAVIGATE));
 	}
 
 }

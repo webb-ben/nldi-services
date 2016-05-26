@@ -54,6 +54,7 @@ public class LookupControllerFullIntegrationTest extends BaseSpringTest {
 
 	//Navigation Types Testing
 	@Test
+	@DatabaseSetup("classpath:/testData/featureWqp.xml")
 	public void getNavigationTypesTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/wqp/USGS-05427880/navigate"))
 				.andExpect(status().isOk())

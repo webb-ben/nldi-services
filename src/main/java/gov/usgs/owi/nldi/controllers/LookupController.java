@@ -1,5 +1,7 @@
 package gov.usgs.owi.nldi.controllers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -24,6 +26,7 @@ import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
+import gov.usgs.owi.nldi.transform.MapToGeoJsonTransformer;
 
 @Controller
 public class LookupController {
@@ -61,7 +64,7 @@ public class LookupController {
 	@ResponseBody
 	public Map<String, Object> getNavigationTypes(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(LinkedDataController.FEATURE_SOURCE) String featureSource,
-			@PathVariable(LinkedDataController.FEATURE_ID) String featureID) {
+			@PathVariable(LinkedDataController.FEATURE_ID) String featureID) throws UnsupportedEncodingException {
 		Map<String, Object> rtn = new LinkedHashMap<>();
 
 		//Verify that the source and identifier are valid
@@ -73,10 +76,14 @@ public class LookupController {
 		if (null == results || results.isEmpty()) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		} else {
-			rtn.put(Navigation.UPSTREAM_MAIN, String.join("/", rootUrl, featureSource, featureID, NavigationDao.NAVIGATE, Navigation.UM));
-			rtn.put(Navigation.UPSTREAM_TRIBUTARIES, String.join("/", rootUrl, featureSource, featureID, NavigationDao.NAVIGATE, Navigation.UT));
-			rtn.put(Navigation.DOWNSTREAM_MAIN, String.join("/", rootUrl, featureSource, featureID, NavigationDao.NAVIGATE, Navigation.DM));
-			rtn.put(Navigation.DOWNSTREAM_DIVERSIONS, String.join("/", rootUrl, featureSource, featureID, NavigationDao.NAVIGATE, Navigation.DD));
+			rtn.put(Navigation.UPSTREAM_MAIN, 
+					String.join("/", rootUrl, featureSource.toLowerCase(), URLEncoder.encode(featureID, MapToGeoJsonTransformer.DEFAULT_ENCODING), NavigationDao.NAVIGATE, Navigation.UM));
+			rtn.put(Navigation.UPSTREAM_TRIBUTARIES, 
+					String.join("/", rootUrl, featureSource.toLowerCase(), URLEncoder.encode(featureID, MapToGeoJsonTransformer.DEFAULT_ENCODING), NavigationDao.NAVIGATE, Navigation.UT));
+			rtn.put(Navigation.DOWNSTREAM_MAIN, 
+					String.join("/", rootUrl, featureSource.toLowerCase(), URLEncoder.encode(featureID, MapToGeoJsonTransformer.DEFAULT_ENCODING), NavigationDao.NAVIGATE, Navigation.DM));
+			rtn.put(Navigation.DOWNSTREAM_DIVERSIONS, 
+					String.join("/", rootUrl, featureSource.toLowerCase(), URLEncoder.encode(featureID, MapToGeoJsonTransformer.DEFAULT_ENCODING), NavigationDao.NAVIGATE, Navigation.DD));
 		}
 
 		return rtn;
