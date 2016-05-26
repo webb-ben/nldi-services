@@ -9,6 +9,7 @@ import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -18,7 +19,10 @@ import org.springframework.web.context.WebApplicationContext;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import gov.usgs.owi.nldi.BaseSpringTest;
+import gov.usgs.owi.nldi.FullIntegrationTest;
 
+@Category(FullIntegrationTest.class)
+@DatabaseSetup("classpath:/testData/crawlerSource.xml")
 public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSpringTest {
 
 	@Autowired
@@ -36,6 +40,7 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 
 	//Linked Object Testing WQP
 	@Test
+	@DatabaseSetup("classpath:/testData/featureWqp.xml")
 	public void getWqpTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/wqp/USGS-05427880"))
 				.andExpect(status().isOk())
