@@ -1,5 +1,6 @@
 package gov.usgs.owi.nldi.springinit;
 
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory;
@@ -17,6 +18,7 @@ import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
 @PropertySource(value = "classpath:test.properties")
 public class TestSpringConfig implements EnvironmentAware {
 
+	public static final String TEST_ROOT_URL = "http://owi-test.usgs.gov:8080/test-url";
 	private Environment env;
 
 	@Bean
@@ -33,6 +35,10 @@ public class TestSpringConfig implements EnvironmentAware {
 		env = environment;
 	}
 
+	@Bean
+	public String rootUrl() throws NamingException {
+		return TEST_ROOT_URL;
+	}
 
 	//Beans to support DBunit for unit testing with PostgreSQL.
 	@Bean
@@ -42,7 +48,7 @@ public class TestSpringConfig implements EnvironmentAware {
 		dbUnitDbConfig.setQualifiedTableNames(true);
 		return dbUnitDbConfig;
 	}
-	
+
 	@Bean
 	public DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection() throws Exception {
 		DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection = new DatabaseDataSourceConnectionFactoryBean();

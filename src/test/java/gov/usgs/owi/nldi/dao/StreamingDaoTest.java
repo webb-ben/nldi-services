@@ -1,9 +1,6 @@
 package gov.usgs.owi.nldi.dao;
 
 import static org.junit.Assert.fail;
-import gov.usgs.owi.nldi.BaseSpringTest;
-import gov.usgs.owi.nldi.DBIntegrationTest;
-import gov.usgs.owi.nldi.controllers.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +12,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import gov.usgs.owi.nldi.BaseSpringTest;
+import gov.usgs.owi.nldi.DBIntegrationTest;
+import gov.usgs.owi.nldi.controllers.NetworkController;
 
 @Category(DBIntegrationTest.class)
 public class StreamingDaoTest extends BaseSpringTest {
@@ -75,7 +76,7 @@ public class StreamingDaoTest extends BaseSpringTest {
 
 		streamingDao.stream(BaseDao.FLOW_LINES, parameterMap, handler);
 
-		parameterMap.put(RestController.SESSION_ID, "abc");
+		parameterMap.put(NetworkController.SESSION_ID, "abc");
 		streamingDao.stream(BaseDao.FLOW_LINES, parameterMap, handler);
 
 	}
@@ -112,9 +113,8 @@ public class StreamingDaoTest extends BaseSpringTest {
 
 		streamingDao.stream(BaseDao.FEATURES, parameterMap, handler);
 
-		parameterMap.put(RestController.SESSION_ID, "abc");
+		parameterMap.put(NetworkController.SESSION_ID, "abc");
 		streamingDao.stream(BaseDao.FEATURES, parameterMap, handler);
-
 	}
 
 }

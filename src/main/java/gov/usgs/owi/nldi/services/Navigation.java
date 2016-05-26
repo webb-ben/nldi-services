@@ -17,15 +17,24 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvParser;
 
 import gov.usgs.owi.nldi.dao.NavigationDao;
+import gov.usgs.owi.nldi.transform.FeatureTransformer;
 
 @Service
 public class Navigation {
 	private static final Logger LOG = LoggerFactory.getLogger(Navigation.class);
 
-	public static final String COMID = "comid";
-	public static final String NAVIGATION_MODE = "navigationMode";
-	public static final String STOP_COMID = "stopComid";
+	public static final String COMID = FeatureTransformer.COMID;
+	public static final String DD = "DD";
 	public static final String DISTANCE = "distance";
+	public static final String DM = "DM";
+	public static final String DOWNSTREAM_DIVERSIONS = "downstreamDiversions";
+	public static final String DOWNSTREAM_MAIN = "downstreamMain";
+	public static final String NAVIGATION_MODE = "navigationMode";
+	public static final String UM = "UM";
+	public static final String UT = "UT";
+	public static final String UPSTREAM_MAIN = "upstreamMain";
+	public static final String UPSTREAM_TRIBUTARIES = "upstreamTributaries";
+	public static final String STOP_COMID = "stopComid";
 
 	protected final NavigationDao navigationDao;
 

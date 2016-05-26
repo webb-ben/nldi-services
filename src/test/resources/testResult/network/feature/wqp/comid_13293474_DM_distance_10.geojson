@@ -1,0 +1,469 @@
+{
+	"type": "FeatureCollection",
+	"features": [{
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.30992, 43.19465]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-10011959",
+			"name": "Harbison Creek Sth 19 Upstream To Inlet Spring",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10011959/",
+			"comid": "13293496",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10011959/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.2642819, 43.2088812]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-431232089155100",
+			"name": "TOKEN CREEK RAIN GAGE NUMBER 1 NEAR TOKEN CREEK,WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-431232089155100/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-431232089155100/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.2638889, 43.2011111]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-05427762",
+			"name": "TOKEN CREEK @ CNTY TRNK HGHWAY C NR TOKEN CREEK,WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427762/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-05427762/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.263572, 43.200831]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-133470",
+			"name": "TOKEN CREEK - CTH C",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-133470/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-133470/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.329226, 43.180953]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-133053",
+			"name": "Token Creek at Daentl Rd Bridge",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-133053/",
+			"comid": "13294138",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-133053/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.272404, 43.198489]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-133422",
+			"name": "MARSHALL MILLPOND - DEEP HOLE",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-133422/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-133422/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.29945, 43.194763]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-10011994",
+			"name": "TOKEN CREEK - STH 19 TO ISLAND",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10011994/",
+			"comid": "13293484",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10011994/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.35614, 43.175865]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-10013299",
+			"name": "Token Creek 1",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10013299/",
+			"comid": "13294138",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10013299/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.3202, 43.18608]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-10011992",
+			"name": "Token Creek - Upstream Of County Park",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10011992/",
+			"comid": "13294138",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10011992/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.2616667, 43.2019444]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-054277615",
+			"name": "TOKEN CREEK SHONUS BRANCH AT SUN PRAIRIE, WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-054277615/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-054277615/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.324169, 43.1819]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-133051",
+			"name": "Token Creek at Sth 51",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-133051/",
+			"comid": "13294138",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-133051/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.2605556, 43.2011111]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-054277605",
+			"name": "TOKEN CREEK WEST BRANCH SHONUS BR @ SUN PRAIRIE,WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-054277605/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-054277605/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.2577778, 43.1975]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-05427759",
+			"name": "SHONUS DENT BASIN LOWER POND OUTL @ SUN PRAIRIE,WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427759/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-05427759/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.2612264, 43.2011037]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-05427761",
+			"name": "TOKEN CREEK TRIB. @ STONEHAVEN DR @ SUN PRAIRIE,WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427761/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-05427761/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.32463, 43.181812]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-133492",
+			"name": "Token Creek - Near Madison WI",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-133492/",
+			"comid": "13294138",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-133492/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.291637, 43.198521]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-133427",
+			"name": "Token Creek Millpond at Portage Rd dam",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-133427/",
+			"comid": "13294276",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-133427/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.3298404, 43.1808745]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-10010940",
+			"name": "Token Creek - Token Creek At Daentl Rd",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10010940/",
+			"comid": "13294138",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10010940/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.29387, 43.196644]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-10032543",
+			"name": "Token Creek at Portage Road",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10032543/",
+			"comid": "13293484",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10032543/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.294544, 43.196453]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-133329",
+			"name": "TOKEN CREEK - FISH POND (HATCHERY)",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-133329/",
+			"comid": "13293484",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-133329/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.2930556, 43.1980556]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-05427767",
+			"name": "TOKEN CREEK AT TOKEN CREEK, WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427767/",
+			"comid": "13294276",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-05427767/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.26, 43.2008333]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-054277602",
+			"name": "TOKEN CREEK EAST BRANCH SHONUS BR @ SUN PRAIRIE,WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-054277602/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-054277602/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.2619444, 43.2022222]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-054277505",
+			"name": "TOKEN CREEK UPSTREAM SHONUS BRNCH @ SUN PRAIRIE,WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-054277505/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-054277505/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.25858, 43.199245]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-133421",
+			"name": "Token Creek Trib - Near Sun Prairie WI",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-133421/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-133421/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.3245612, 43.1811043]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-05427800",
+			"name": "TOKEN CREEK NEAR MADISON, WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427800/",
+			"comid": "13294138",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-05427800/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.3097222, 43.1947222]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-05427793",
+			"name": "TOKEN CREEK HARBISON TRB @ STH 19 @ TOKEN CREEK,WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427793/",
+			"comid": "13293496",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-05427793/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.2635731, 43.2010344]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-10010941",
+			"name": "TOKEN CREEK - TOKEN CREEK AT CTH C",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10010941/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10010941/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.31251, 43.19108]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-10011958",
+			"name": "Harbison Creek Carp Pond Upstream To Sth 19",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10011958/",
+			"comid": "13293496",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-10011958/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.3127778, 43.1888889]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-05427796",
+			"name": "TOKEN CR HARBISON TRB @ POND OTL NR TOKEN CREEK,WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427796/",
+			"comid": "13293496",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-05427796/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.31003, 43.194427]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "WIDNR_WQX-133484",
+			"name": "TOHERN CREEK - TRIB",
+			"uri": "http://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-133484/",
+			"comid": "13293496",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/WIDNR_WQX-133484/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.2566667, 43.1961111]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-05427758",
+			"name": "SHONUS DENT BASIN UPPER POND OUTL @ SUN PRAIRIE,WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427758/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-05427758/navigate"
+		}
+	}, {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [-89.2583333, 43.1994444]
+		},
+		"properties": {
+			"source": "WQP",
+			"sourceName": "Water Quality Portal",
+			"identifier": "USGS-05427760",
+			"name": "TOKEN CREEK TRIBUTARY NEAR SUN PRAIRIE, WI",
+			"uri": "http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427760/",
+			"comid": "13293474",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/wqp/USGS-05427760/navigate"
+		}
+	}]
+}

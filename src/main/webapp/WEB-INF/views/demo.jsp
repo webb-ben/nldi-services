@@ -10,9 +10,16 @@
 </head>
 <body>
 
-
+NLDI Services ${version}
 <form name="QueryTypeForm">
-    <label>ComID</label><input aria-label="ComID" property="comID" name="ComIDField"></input>
+	<label>Source</label>
+    <select name="SourceType" property="source_type" size="1">
+        <option selected="selected"> </option>
+        <option value="comid">comid</option>
+        <option value="wqp">wqp</option>
+        <option value="huc12pp">huc12pp</option>
+    </select>
+    <label>identifier</label><input aria-label="ComID" property="comID" name="ComIDField"></input>
     <label>Query Type</label>
     <select name="QueryType" property="query_type" size="1">
         <option selected="selected"> </option>
@@ -38,7 +45,7 @@ L.esri.basemapLayer("Gray").addTo(map);
   }).addTo(map);
 map.setView([35.9908385, -78.9005222], 3);
 
-var geojsonMarkerOptions = {
+var geojsonWqpMarkerOptions = {
     radius: 4,
     fillColor: "#ff7800",
     color: "#000",
@@ -47,12 +54,23 @@ var geojsonMarkerOptions = {
     fillOpacity: 0.8
 };
 
+var geojsonhuc12ppMarkerOptions = {
+	    radius: 4,
+	    fillColor: "#b2ff59",
+	    color: "#000",
+	    weight: 1,
+	    opacity: 1,
+	    fillOpacity: 0.8
+	};
+
 function onEachPointFeature(feature, layer) {
-            var popupText = "Data Source: " + "WQP"
+            var popupText = "Data Source: " + feature.properties.source
+                + "<br>Data Source Name: " + feature.properties.sourceName
                 + "<br>Station Name: " + feature.properties.name
                 + "<br>Station ID: " + feature.properties.identifier
                 + "<br>Station ComID: " + feature.properties.comid
-                + "<br>Station Data: " + "<a href="+feature.properties.uri+">click for csv</a>";
+                + "<br>Station Data: " + "<a href="+feature.properties.uri+">click for csv</a>"
+                + "<br>Station Navigation Options: " + "<a href="+feature.properties.navigation+">click for options</a>";
             layer.bindPopup(popupText);
             }
 
@@ -62,11 +80,11 @@ function onEachLineFeature(feature, layer) {
             layer.bindPopup(popupText);
             }
 
-function addPointDataToMap(data, map) {
+function addPointDataToMap(data, map, markerOptions) {
     var pointLayer = L.geoJson(data, {
         onEachFeature: onEachPointFeature,
         pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, geojsonMarkerOptions);
+        return L.circleMarker(latlng, markerOptions);
         }
         });
     pointLayer.addTo(map);
@@ -83,24 +101,29 @@ function addLineDataToMap(data, map) {
 }
 
 //you will need to replace this with the actual url of the endpoint once the CORS headers are properly set
-var nldiURL = "http://cidasddvasnldi.cr.usgs.gov:8080/nldi-services/comid/";
-//var nldiURL = "http://localhost:8080/nldi-services/comid/";
+//var nldiURL = "http://cidasddvasnldi.cr.usgs.gov:8080/nldi-services/";
+//var nldiURL = "http://localhost:8080/nldi-services/";
+var nldiURL = "";
 
 function on_submit_action()
     {
 
-        var e=document.getElementsByName("QueryType")[0];
+    var f=document.getElementsByName("SourceType")[0];
+    var e=document.getElementsByName("QueryType")[0];
         var c=document.getElementsByName("ComIDField")[0];
         var d=document.getElementsByName("DistanceField")[0];
-        var wqpURL = nldiURL+c.value+"/navigate/"+e.value+"/wqp";
-        var nhdURL = nldiURL+c.value+"/navigate/"+e.value;
+        var wqpURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value+"/wqp";
+        var huc12ppURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value+"/huc12pp";
+        var nhdURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value;
         console.log(d.value);
         console.log(wqpURL);
         //$.get(wqpURL, {}, function(data) { addPointDataToMap(data, map); };);
         console.log("getting sites");
-        $.getJSON( wqpURL, {distance:d.value}, function(data) { addPointDataToMap(data, map); });
+        $.getJSON( wqpURL, {distance:d.value}, function(data) { addPointDataToMap(data, map, geojsonWqpMarkerOptions); });
         console.log("sites added, getting streams");
         $.getJSON( nhdURL, {distance:d.value}, function(data) { addLineDataToMap(data, map); });
+        console.log("sites and stream added, getting huc12pp");
+        $.getJSON( huc12ppURL, {distance:d.value}, function(data) { addPointDataToMap(data, map, geojsonhuc12ppMarkerOptions); });
 
 
     }

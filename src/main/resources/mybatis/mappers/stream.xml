@@ -3,7 +3,7 @@
 
 <mapper namespace="stream">
 
-	<select id="flowLine" resultType="java.util.LinkedHashMap" fetchSize="50">
+	<select id="flowLines" resultType="java.util.LinkedHashMap" fetchSize="50">
 		select tmp_navigation_results.nhdplus_comid,
 		       st_asgeojson(nhdflowline_np21.shape) shape
 		  from nhdplus_navigation.tmp_navigation_results
@@ -12,12 +12,8 @@
 		 where session_id = #{sessionId}
 	</select>
 
-	<select id="feature" resultType="java.util.LinkedHashMap" fetchSize="50">
-		select comid,
-		       identifier,
-		       name,
-		       uri,
-		       st_asgeojson(location) shape
+	<select id="features" resultType="java.util.LinkedHashMap" fetchSize="50">
+		select <include refid="lookup.featureProperties"/>
 		  from nhdplus_navigation.tmp_navigation_results
 		       join nldi_data.feature
 		         on tmp_navigation_results.nhdplus_comid = feature.comid
@@ -25,6 +21,10 @@
 		         on feature.crawler_source_id = crawler_source.crawler_source_id
 		 where session_id = #{sessionId}  and
 		       lower(source_suffix) = #{dataSource}
+	</select>
+
+	<select id="feature" resultType="java.util.LinkedHashMap" fetchSize="50">
+		<include refid="lookup.featureSql"/>
 	</select>
 
 </mapper>

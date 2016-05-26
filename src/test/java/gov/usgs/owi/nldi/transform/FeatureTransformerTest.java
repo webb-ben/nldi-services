@@ -12,6 +12,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import gov.usgs.owi.nldi.springinit.TestSpringConfig;
+
 public class FeatureTransformerTest {
 
 	protected FeatureTransformer transformer;
@@ -20,7 +22,7 @@ public class FeatureTransformerTest {
 	@Before
 	public void initTest() {
 		baos = new ByteArrayOutputStream();
-		transformer = new FeatureTransformer(baos);
+		transformer = new FeatureTransformer(baos, TestSpringConfig.TEST_ROOT_URL);
 		transformer.init();
 	}
 
@@ -32,31 +34,40 @@ public class FeatureTransformerTest {
 	@Test
 	public void writePropertiesTest() {
 		Map<String, Object> map = new HashMap<>();
-		map.put("shape", "{\"type\":\"LineString\",\"coordinates\":[[-89.2572407051921, 43.2039759978652],[-89.2587703019381, 43.204960398376]]}");
-		map.put("nhdplus_comid", "13293474");
-		map.put("comid", "47439231");
-		map.put("identifier", "identifierValue");
-		map.put("name", "nameValue");
-		map.put("uri", "uriValue");
+		map.put(MapToGeoJsonTransformer.SHAPE, "{\"type\":\"LineString\",\"coordinates\":[[-89.2572407051921, 43.2039759978652],[-89.2587703019381, 43.204960398376]]}");
+		map.put(FlowLineTransformer.NHDPLUS_COMID, "13293474");
+		map.put(FeatureTransformer.COMID, "47439231");
+		map.put(FeatureTransformer.IDENTIFIER, "identifierValue");
+		map.put(FeatureTransformer.NAME, "nameValue");
+		map.put(FeatureTransformer.URI, "uriValue");
+		map.put(FeatureTransformer.SOURCE, "sourceValue");
+		map.put(FeatureTransformer.SOURCE_NAME_DB, "sourceNameValue");
+		map.put(FeatureTransformer.REACHCODE, "05020002004263");
+		map.put(FeatureTransformer.MEASURE, 1.3823300000);
 		try {
 			transformer.g.writeStartObject();
 			transformer.writeProperties(map);
 			transformer.g.writeEndObject();
 			//need to flush the JsonGenerator to get at output. 
 			transformer.g.flush();
-			assertEquals(127, baos.size());
-			assertEquals(MapToJsonTransformerTest.HEADER_TEXT + "{\"comid\":\"47439231\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\",\"uri\":\"uriValue\"}",
-					new String(baos.toByteArray(), MapToJsonTransformer.DEFAULT_ENCODING));
+			assertEquals(321, baos.size());
+			assertEquals(MapToGeoJsonTransformerTest.HEADER_TEXT + "{\"source\":\"sourceValue\",\"sourceName\":\"sourceNameValue\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\","
+					+ "\"uri\":\"uriValue\",\"comid\":\"47439231\",\"reachcode\":\"05020002004263\",\"measure\":\"1.38233\","
+					+ "\"navigation\":\"" + TestSpringConfig.TEST_ROOT_URL + "/sourcevalue/identifierValue/navigate\"}",
+					new String(baos.toByteArray(), MapToGeoJsonTransformer.DEFAULT_ENCODING));
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
 		}
 
-		map.put("shape", "{\"type\":\"LineString\",\"coordinates\":[[-89.2489906027913, 43.2102229967713],[-89.2497089058161, 43.2099935933948]]}");
-		map.put("nhdplus_comid", "13294118");
-		map.put("comid", "81149213");
-		map.put("identifier", "identifier2Value");
-		map.put("name", "name2Value");
-		map.put("uri", "uri2Value");
+		map.clear();
+		map.put(MapToGeoJsonTransformer.SHAPE, "{\"type\":\"LineString\",\"coordinates\":[[-89.2489906027913, 43.2102229967713],[-89.2497089058161, 43.2099935933948]]}");
+		map.put(FlowLineTransformer.NHDPLUS_COMID, "13294118");
+		map.put(FeatureTransformer.COMID, "81149213");
+		map.put(FeatureTransformer.IDENTIFIER, "identifier2Value");
+		map.put(FeatureTransformer.NAME, "name2Value");
+		map.put(FeatureTransformer.URI, "uri2Value");
+		map.put(FeatureTransformer.SOURCE, "source2Value");
+		map.put(FeatureTransformer.SOURCE_NAME_DB, "sourceName2Value");
 
 		try {
 			transformer.g.writeStartObject();
@@ -64,10 +75,15 @@ public class FeatureTransformerTest {
 			transformer.g.writeEndObject();
 			//need to flush the JsonGenerator to get at output. 
 			transformer.g.flush();
-			assertEquals(218, baos.size());
-			assertEquals(MapToJsonTransformerTest.HEADER_TEXT + "{\"comid\":\"47439231\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\",\"uri\":\"uriValue\"}"
-					+ ",{\"comid\":\"81149213\",\"identifier\":\"identifier2Value\",\"name\":\"name2Value\",\"uri\":\"uri2Value\"}",
-					new String(baos.toByteArray(), MapToJsonTransformer.DEFAULT_ENCODING));
+			assertEquals(561, baos.size());
+			assertEquals(MapToGeoJsonTransformerTest.HEADER_TEXT
+					+ "{\"source\":\"sourceValue\",\"sourceName\":\"sourceNameValue\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\","
+						+ "\"uri\":\"uriValue\",\"comid\":\"47439231\",\"reachcode\":\"05020002004263\",\"measure\":\"1.38233\","
+						+ "\"navigation\":\"" + TestSpringConfig.TEST_ROOT_URL + "/sourcevalue/identifierValue/navigate\"}"
+					+ ",{\"source\":\"source2Value\",\"sourceName\":\"sourceName2Value\",\"identifier\":\"identifier2Value\",\"name\":\"name2Value\","
+						+ "\"uri\":\"uri2Value\",\"comid\":\"81149213\","
+						+ "\"navigation\":\"" + TestSpringConfig.TEST_ROOT_URL + "/source2value/identifier2Value/navigate\"}",
+					new String(baos.toByteArray(), MapToGeoJsonTransformer.DEFAULT_ENCODING));
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
 		}

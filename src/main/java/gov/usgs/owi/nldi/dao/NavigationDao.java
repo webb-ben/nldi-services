@@ -8,9 +8,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class NavigationDao extends BaseDao {
+
 	public static final String NAVIGATE = "navigate";
 	public static final String NAVIGATE_CACHED = NAVIGATE + "_cached";
 	private static final String NS = NAVIGATE + ".";
+	private static final String GET_CACHE = "getCache";
 
 	@Autowired
 	public NavigationDao(SqlSessionFactory sqlSessionFactory) {
@@ -22,7 +24,7 @@ public class NavigationDao extends BaseDao {
 	}
 
 	public String getCache(Map<String, Object> parameterMap) {
-		return getSqlSession().selectOne(NS + "getCache", parameterMap);
+		return getSqlSession().selectOne(NS + GET_CACHE, parameterMap);
 	}
 
 }
