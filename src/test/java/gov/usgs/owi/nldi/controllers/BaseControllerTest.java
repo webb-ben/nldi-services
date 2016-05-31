@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.owi.nldi.dao.CountDao;
+import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.springinit.TestSpringConfig;
@@ -31,6 +32,8 @@ public class BaseControllerTest {
 	@Mock
 	private CountDao countDao;
 	@Mock
+	private LookupDao lookupDao;
+	@Mock
 	private StreamingDao streamingDao;
 	@Mock
 	private Navigation navigation;
@@ -39,8 +42,8 @@ public class BaseControllerTest {
 	private MockHttpServletResponse response;
 
 	private class TestBaseController extends BaseController {
-		public TestBaseController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation) {
-			super(inCountDao, inStreamingDao, inNavigation, TestSpringConfig.TEST_ROOT_URL);
+		public TestBaseController(CountDao inCountDao, LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation) {
+			super(inCountDao, inLookupDao, inStreamingDao, inNavigation, TestSpringConfig.TEST_ROOT_URL);
 		}
 	}
 	
@@ -49,7 +52,7 @@ public class BaseControllerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		controller = new TestBaseController(countDao, streamingDao, navigation);
+		controller = new TestBaseController(countDao, lookupDao, streamingDao, navigation);
 		response = new MockHttpServletResponse();
 	}
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import gov.usgs.owi.nldi.dao.CountDao;
+import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.Navigation;
 
@@ -20,9 +21,9 @@ import gov.usgs.owi.nldi.services.Navigation;
 public class NetworkController extends BaseController {
 
 	@Autowired
-	public NetworkController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation,
-			@Qualifier("rootUrl") String inRootUrl) {
-		super(inCountDao, inStreamingDao, inNavigation, inRootUrl);
+	public NetworkController(CountDao inCountDao, LookupDao inLookupDao, StreamingDao inStreamingDao,
+			Navigation inNavigation, @Qualifier("rootUrl") String inRootUrl) {
+		super(inCountDao, inLookupDao, inStreamingDao, inNavigation, inRootUrl);
 	}
 
 	@RequestMapping(method=RequestMethod.GET)

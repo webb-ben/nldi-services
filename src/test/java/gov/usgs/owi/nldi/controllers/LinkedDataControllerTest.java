@@ -35,13 +35,13 @@ public class LinkedDataControllerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		controller = new LinkedDataController(countDao, streamingDao, navigation, lookupDao, TestSpringConfig.TEST_ROOT_URL);
+		controller = new LinkedDataController(countDao, lookupDao, streamingDao, navigation, TestSpringConfig.TEST_ROOT_URL);
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void getComidTest() {
-		when(lookupDao.getOne(anyString(), anyMap())).thenReturn(goodFeature(), null, missingFeature());
+		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(goodFeature(), null, missingFeature());
 
 		assertEquals("12345", controller.getComid("abc", "def"));
 

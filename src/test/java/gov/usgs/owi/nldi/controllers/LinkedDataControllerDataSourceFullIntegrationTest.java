@@ -70,7 +70,7 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 	public void getWqpUtTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/wqp/USGS-05427880/navigate/UT/wqp"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "12"))
+				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "13"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
