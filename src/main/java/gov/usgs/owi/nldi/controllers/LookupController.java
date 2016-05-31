@@ -22,25 +22,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import gov.usgs.owi.nldi.dao.BaseDao;
+import gov.usgs.owi.nldi.dao.CountDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.NavigationDao;
+import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import gov.usgs.owi.nldi.transform.MapToGeoJsonTransformer;
 
 @Controller
-public class LookupController {
+public class LookupController extends BaseController {
 
 	public static final String ROOT_URL = "rootUrl";
 
-	protected final LookupDao lookupDao;
-	protected final String rootUrl;
-
 	@Autowired
-	public LookupController(LookupDao inLookupDao,
-			@Qualifier("rootUrl") String inRootUrl) {
-		this.lookupDao = inLookupDao;
-		this.rootUrl = inRootUrl;
+	public LookupController(CountDao inCountDao, LookupDao inLookupDao, StreamingDao inStreamingDao,
+			Navigation inNavigation, @Qualifier("rootUrl") String inRootUrl) {
+		super(inCountDao, inLookupDao, inStreamingDao, inNavigation, inRootUrl);
 	}
 
 	@RequestMapping(method=RequestMethod.GET, value="/", produces=MediaType.APPLICATION_JSON_VALUE)
@@ -71,7 +69,7 @@ public class LookupController {
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put(LinkedDataController.FEATURE_SOURCE, featureSource);
 		parameterMap.put(LinkedDataController.FEATURE_ID, featureID);
-		Map<String, Object> results = lookupDao.getOne(BaseDao.FEATURE, parameterMap);
+		List<Map<String, Object>> results = lookupDao.getList(BaseDao.FEATURE, parameterMap);
 
 		if (null == results || results.isEmpty()) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());

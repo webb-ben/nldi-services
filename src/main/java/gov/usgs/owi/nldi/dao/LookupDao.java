@@ -16,7 +16,7 @@ public class LookupDao extends BaseDao {
 		super(sqlSessionFactory);
 	}
 
-	public Map<String, Object> getOne(String objectType, Map<String, Object> parameterMap) {
+	public Map<String, Object> getComid(String objectType, Map<String, Object> parameterMap) {
 		return getSqlSession().selectOne(NS + objectType, parameterMap);
 	}
 

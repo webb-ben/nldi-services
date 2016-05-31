@@ -33,13 +33,11 @@ public class LinkedDataController extends BaseController {
 
 	public static final String FEATURE_SOURCE = "featureSource";
 	public static final String FEATURE_ID = "featureID";
-	protected final LookupDao lookupDao;
 
 	@Autowired
-	public LinkedDataController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation,
-			LookupDao inLookupDao, @Qualifier("rootUrl") String inRootUrl) {
-		super(inCountDao, inStreamingDao, inNavigation, inRootUrl);
-		this.lookupDao = inLookupDao;
+	public LinkedDataController(CountDao inCountDao, LookupDao inLookupDao, StreamingDao inStreamingDao,
+			Navigation inNavigation, @Qualifier("rootUrl") String inRootUrl) {
+		super(inCountDao, inLookupDao, inStreamingDao, inNavigation, inRootUrl);
 	}
 
 	@RequestMapping(method=RequestMethod.GET)
@@ -108,7 +106,7 @@ public class LinkedDataController extends BaseController {
 		parameterMap.put(FEATURE_SOURCE, featureSource);
 		parameterMap.put(FEATURE_ID, featureID);
 
-		Map<String, Object> feature = lookupDao.getOne(BaseDao.FEATURE, parameterMap);
+		Map<String, Object> feature = lookupDao.getComid(BaseDao.FEATURE, parameterMap);
 		if (null == feature || !feature.containsKey(Navigation.COMID)) {
 			return null;
 		} else {

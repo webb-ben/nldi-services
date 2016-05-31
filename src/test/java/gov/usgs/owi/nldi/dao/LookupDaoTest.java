@@ -1,10 +1,7 @@
 package gov.usgs.owi.nldi.dao;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -12,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,16 +34,9 @@ public class LookupDaoTest extends BaseSpringTest {
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put(LinkedDataController.FEATURE_SOURCE, "wqp");
 		parameterMap.put(LinkedDataController.FEATURE_ID, "USGS-05427880");
-		Map<String, Object> results = lookupDao.getOne(BaseDao.FEATURE, parameterMap);
-		assertEquals("Water Quality Portal", results.get(FeatureTransformer.SOURCE_NAME_DB));
-		assertEquals("USGS-05427880", results.get(FeatureTransformer.IDENTIFIER));
-		assertEquals("SIXMILE CREEK AT STATE HIGHWAY 19 NEAR WAUNAKEE,WI", results.get(FeatureTransformer.NAME));
-		assertEquals("http://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427880/", results.get(FeatureTransformer.URI));
+		Map<String, Object> results = lookupDao.getComid(BaseDao.FEATURE, parameterMap);
+		assertEquals(1,results.size());
 		assertEquals(13294132, results.get(FeatureTransformer.COMID));
-		assertNull(results.get(FeatureTransformer.REACHCODE));
-		assertNull(results.get(FeatureTransformer.MEASURE));
-		assertThat(new JSONObject("{\"type\": \"Point\", \"coordinates\": [-89.4728889, 43.1922222]}"),
-				sameJSONObjectAs(new JSONObject(results.get("shape").toString())).allowingAnyArrayOrdering());
 	}
 
 	@Test

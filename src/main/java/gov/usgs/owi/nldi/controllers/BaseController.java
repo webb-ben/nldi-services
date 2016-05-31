@@ -24,6 +24,7 @@ import de.jkeylockmanager.manager.KeyLockManager;
 import de.jkeylockmanager.manager.KeyLockManagers;
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.CountDao;
+import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.dao.StreamingResultHandler;
@@ -48,14 +49,16 @@ public abstract class BaseController {
 
 
 	protected final CountDao countDao;
+	protected final LookupDao lookupDao;
 	protected final StreamingDao streamingDao;
 	protected final Navigation navigation;
 	protected final String rootUrl;
 
 	private final KeyLockManager lockManager = KeyLockManagers.newLock();
 
-	public BaseController(CountDao inCountDao, StreamingDao inStreamingDao, Navigation inNavigation, String inRootUrl) {
+	public BaseController(CountDao inCountDao, LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, String inRootUrl) {
 		countDao = inCountDao;
+		lookupDao = inLookupDao;
 		streamingDao = inStreamingDao;
 		navigation = inNavigation;
 		rootUrl = inRootUrl;

@@ -25,7 +25,8 @@
 	</sql>
 
 	<select id="feature" resultType="java.util.LinkedHashMap">
-		<include refid="lookup.featureSql"/>
+		select distinct comid
+		  from (<include refid="lookup.featureSql"/>) x
 	</select>
 
 	<select id="dataSources" resultType="java.util.LinkedHashMap">
