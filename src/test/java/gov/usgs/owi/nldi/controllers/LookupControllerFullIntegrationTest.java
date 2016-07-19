@@ -45,7 +45,7 @@ public class LookupControllerFullIntegrationTest extends BaseSpringTest {
 	public void getDataSourcesTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andReturn();
 
 		assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
@@ -58,7 +58,7 @@ public class LookupControllerFullIntegrationTest extends BaseSpringTest {
 	public void getNavigationTypesTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/wqp/USGS-05427880/navigate"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
@@ -69,11 +69,11 @@ public class LookupControllerFullIntegrationTest extends BaseSpringTest {
 	public void getNavigationTypesNotFoundTest() throws Exception {
 		mockMvc.perform(get("/wqx/USGS-05427880/navigate"))
 				.andExpect(status().isNotFound())
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE));
 
 		mockMvc.perform(get("/wqp/USGX-05427880/navigate"))
 				.andExpect(status().isNotFound())
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andReturn();
 	}
 
