@@ -22,7 +22,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 
 	@Autowired
 	DataSource dataSource;
-	
+
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 		configurer.enable();
@@ -32,8 +32,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 	public InternalResourceViewResolver setupViewResolver() {
 		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
 		resolver.setPrefix("/WEB-INF/views/");
-		resolver.setSuffix("");		// Making this empty so we can explicitly call each view we require (i.e. .jsp and .xml)
-
+		resolver.setSuffix(".jsp");
 		return resolver;
 	}
 

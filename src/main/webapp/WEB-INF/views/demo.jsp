@@ -3,7 +3,7 @@
 <!-- Load Leaflet from CDN-->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.css" />
   <script src="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.js"></script>
-<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-providers/1.1.7/leaflet-providers.min.js"></script>
 <!-- Load Esri Leaflet from CDN -->
   <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.8/esri-leaflet.js"></script>
@@ -33,15 +33,11 @@ NLDI Services ${version}
 </form>
 <div id="map" style="width: 100%; height: 600px;"></div>
 
-<script type="application/javascript">
-
-                </script>
-
 <script type="text/javascript">
 var map = L.map('map');
 L.esri.basemapLayer("Gray").addTo(map);
   L.esri.tiledMapLayer({
-    url: "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
+    url: "https://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
   }).addTo(map);
 map.setView([35.9908385, -78.9005222], 3);
 
@@ -100,10 +96,7 @@ function addLineDataToMap(data, map) {
     //map.fitBounds(L.geoJson(data).getBounds());
 }
 
-//you will need to replace this with the actual url of the endpoint once the CORS headers are properly set
-//var nldiURL = "http://cidasddvasnldi.cr.usgs.gov:8080/nldi-services/";
-//var nldiURL = "http://localhost:8080/nldi-services/";
-var nldiURL = "";
+var nldiURL = "../";
 
 function on_submit_action()
     {
