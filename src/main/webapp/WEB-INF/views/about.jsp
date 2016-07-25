@@ -1,5 +1,5 @@
 <head>
 </head>
 <body>
-Hello World!
+Hello World! ${version}
 </body>
