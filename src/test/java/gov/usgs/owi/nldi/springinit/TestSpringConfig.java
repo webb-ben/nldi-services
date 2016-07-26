@@ -40,6 +40,11 @@ public class TestSpringConfig implements EnvironmentAware {
 		return TEST_ROOT_URL;
 	}
 
+	@Bean
+	public String confluenceUrl() throws NamingException {
+		return TEST_ROOT_URL;
+	}
+
 	//Beans to support DBunit for unit testing with PostgreSQL.
 	@Bean
 	public DatabaseConfigBean dbUnitDatabaseConfig() {
