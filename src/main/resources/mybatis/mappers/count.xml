@@ -20,4 +20,41 @@
 		       lower(source_suffix) = #{dataSource}
 	</select>
 
+	<select id="flowLines2" resultType="Integer">
+		with recursive dm(comid, hydroseq, terminalpathid, dnhydroseq)
+		  as (select comid, hydroseq, terminalpathid, dnhydroseq
+		        from nhdplus.plusflowlinevaa_np21
+		       where comid = #{comid,jdbcType=NUMERIC}
+		      union all
+		      select x.comid, x.hydroseq, x.terminalpathid, x.dnhydroseq
+		        from nhdplus.plusflowlinevaa_np21 x,
+		             dm
+		       where x.hydroseq = dm.dnhydroseq and
+		             x.terminalpathid = dm.terminalpathid
+		     )
+		select count(*)
+		  from dm
+	</select>
+
+	<select id="features2" resultType="Integer">
+		with recursive dm(comid, hydroseq, terminalpathid, dnhydroseq)
+		  as (select comid, hydroseq, terminalpathid, dnhydroseq
+		        from nhdplus.plusflowlinevaa_np21
+		       where comid = #{comid,jdbcType=NUMERIC}
+		      union all
+		      select x.comid, x.hydroseq, x.terminalpathid, x.dnhydroseq
+		        from nhdplus.plusflowlinevaa_np21 x,
+		             dm
+		       where x.hydroseq = dm.dnhydroseq and
+		             x.terminalpathid = dm.terminalpathid
+		     )
+		select count(*)
+		  from dm
+		       join nldi_data.feature
+		         on dm.comid = feature.comid
+		       join nldi_data.crawler_source
+		         on feature.crawler_source_id = crawler_source.crawler_source_id
+		 where lower(source_suffix) = #{dataSource}
+	</select>
+
 </mapper>

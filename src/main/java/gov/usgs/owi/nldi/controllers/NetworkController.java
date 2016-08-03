@@ -32,7 +32,11 @@ public class NetworkController extends BaseController {
 			@PathVariable(Navigation.NAVIGATION_MODE) String navigationMode,
 			@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
 			@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
-		streamFlowLines(response, comid, navigationMode, stopComid, distance);
+		if ("XX".contentEquals(navigationMode)) {
+			streamFlowLines2(response, comid, navigationMode, stopComid, distance);
+		} else {
+			streamFlowLines(response, comid, navigationMode, stopComid, distance);
+		}
 	}
 
 	@RequestMapping(value="{dataSource}", method=RequestMethod.GET)
@@ -42,7 +46,11 @@ public class NetworkController extends BaseController {
 			@PathVariable(value=DATA_SOURCE) String dataSource,
 			@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
 			@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
-		streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource);
+		if ("XX".contentEquals(navigationMode)) {
+			streamFeatures2(response, comid, navigationMode, stopComid, distance, dataSource);
+		} else {
+			streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource);
+		}
 	}
 
 }

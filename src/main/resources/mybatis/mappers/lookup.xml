@@ -37,4 +37,18 @@
 		     order by source_suffix
 	</select>
 
+	<select id="flowLineVaa" resultType="java.util.LinkedHashMap">
+		select comid,
+		       reachcode,
+		       fmeasure,
+		       tmeasure,
+		       lengthkm,
+		       
+		       st_asgeojson(nhdflowline_np21.shape) shape
+		  from nhdplus_navigation.tmp_navigation_results
+		       join nhdplus.nhdflowline_np21
+		         on tmp_navigation_results.nhdplus_comid = nhdflowline_np21.nhdplus_comid 
+		 where session_id = #{sessionId}
+	</select>
+
 </mapper>

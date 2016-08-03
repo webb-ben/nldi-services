@@ -50,7 +50,7 @@ public class Navigation {
 		Map<String, Object> parameterMap = processParameters(comid, navigationMode, distance, stopComid);
 		LOG.trace("parameters processed");
 
-		String sessionId = navigationDao.getCache(parameterMap);
+		String sessionId = null;//navigationDao.getCache(parameterMap);
 
 		if (null == sessionId) {
 			Map<?,?> navigationResult = navigationDao.navigate(parameterMap);

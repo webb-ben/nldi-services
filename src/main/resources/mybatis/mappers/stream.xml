@@ -12,6 +12,46 @@
 		 where session_id = #{sessionId}
 	</select>
 
+	<select id="flowLines2" resultType="java.util.LinkedHashMap" fetchSize="50">
+		with recursive dm(comid, hydroseq, terminalpathid, dnhydroseq)
+		  as (select comid, hydroseq, terminalpathid, dnhydroseq
+		        from nhdplus.plusflowlinevaa_np21
+		       where comid = #{comid,jdbcType=NUMERIC}
+		      union all
+		      select x.comid, x.hydroseq, x.terminalpathid, x.dnhydroseq
+		        from nhdplus.plusflowlinevaa_np21 x,
+		             dm
+		       where x.hydroseq = dm.dnhydroseq and
+		             x.terminalpathid = dm.terminalpathid
+		     )
+		select nhdplus_comid,
+		       st_asgeojson(nhdflowline_np21.shape) shape
+		  from dm
+		       join nhdplus.nhdflowline_np21
+		         on dm.comid = nhdflowline_np21.nhdplus_comid
+	</select>
+
+	<select id="features2" resultType="java.util.LinkedHashMap" fetchSize="50">
+		with recursive dm(comid, hydroseq, terminalpathid, dnhydroseq)
+		  as (select comid, hydroseq, terminalpathid, dnhydroseq
+		        from nhdplus.plusflowlinevaa_np21
+		       where comid = #{comid,jdbcType=NUMERIC}
+		      union all
+		      select x.comid, x.hydroseq, x.terminalpathid, x.dnhydroseq
+		        from nhdplus.plusflowlinevaa_np21 x,
+		             dm
+		       where x.hydroseq = dm.dnhydroseq and
+		             x.terminalpathid = dm.terminalpathid
+		     )
+		select <include refid="lookup.featureProperties"/>
+		  from dm
+		       join nldi_data.feature
+		         on dm.comid = feature.comid
+		       join nldi_data.crawler_source
+		         on feature.crawler_source_id = crawler_source.crawler_source_id
+		 where lower(source_suffix) = #{dataSource}
+	</select>
+
 	<select id="features" resultType="java.util.LinkedHashMap" fetchSize="50">
 		select <include refid="lookup.featureProperties"/>
 		  from nhdplus_navigation.tmp_navigation_results
@@ -19,7 +59,7 @@
 		         on tmp_navigation_results.nhdplus_comid = feature.comid
 		       join nldi_data.crawler_source
 		         on feature.crawler_source_id = crawler_source.crawler_source_id
-		 where session_id = #{sessionId}  and
+		 where session_id = #{sessionId} and
 		       lower(source_suffix) = #{dataSource}
 	</select>
 

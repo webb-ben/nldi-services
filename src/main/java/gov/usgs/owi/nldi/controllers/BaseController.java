@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.util.NumberUtils;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -146,6 +147,57 @@ public abstract class BaseController {
 				try {
 					responseStream.flush();
 				} catch (IOException e) {
+					//Just log, cause we obviously can't tell the client
+					LOG.error("Error flushing response stream", e);
+				}
+			}
+		}
+	}
+
+	protected void streamFlowLines2(HttpServletResponse response,
+			String comid, String navigationMode, String stopComid, String distance) {
+
+		OutputStream responseStream = null;
+		try {
+			responseStream = new BufferedOutputStream(response.getOutputStream());
+			Map<String, Object> parameterMap = new HashMap<> ();
+			parameterMap.put(Navigation.COMID, NumberUtils.parseNumber(comid, Integer.class));
+			addHeaders(response, BaseDao.FLOW_LINES+"2", parameterMap);
+			streamResults(new FlowLineTransformer(responseStream, rootUrl), BaseDao.FLOW_LINES+"2", parameterMap);
+
+		} catch (Throwable e) {
+			LOG.error("Handle me better" + e.getLocalizedMessage(), e);
+		} finally {
+			if (null != responseStream) {
+				try {
+					responseStream.flush();
+				} catch (Throwable e) {
+					//Just log, cause we obviously can't tell the client
+					LOG.error("Error flushing response stream", e);
+				}
+			}
+		}
+	}
+
+	protected void streamFeatures2(HttpServletResponse response,
+			String comid, String navigationMode, String stopComid, String distance, String dataSource) {
+
+		OutputStream responseStream = null;
+		try {
+			responseStream = new BufferedOutputStream(response.getOutputStream());
+			Map<String, Object> parameterMap = new HashMap<> ();
+			parameterMap.put(Navigation.COMID, NumberUtils.parseNumber(comid, Integer.class));
+			parameterMap.put(DATA_SOURCE, dataSource.toLowerCase());
+			addHeaders(response, BaseDao.FEATURES+"2", parameterMap);
+			streamResults(new FeatureTransformer(responseStream, rootUrl), BaseDao.FEATURES+"2", parameterMap);
+
+		} catch (Throwable e) {
+			LOG.error("Handle me better" + e.getLocalizedMessage(), e);
+		} finally {
+			if (null != responseStream) {
+				try {
+					responseStream.flush();
+				} catch (Throwable e) {
 					//Just log, cause we obviously can't tell the client
 					LOG.error("Error flushing response stream", e);
 				}
