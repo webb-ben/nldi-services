@@ -8,6 +8,7 @@ import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
@@ -15,6 +16,7 @@ import com.github.springtestdbunit.bean.DatabaseConfigBean;
 import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
 
 @Configuration
+@Import(MybatisConfig.class)
 @PropertySource(value = "classpath:test.properties")
 public class TestSpringConfig implements EnvironmentAware {
 

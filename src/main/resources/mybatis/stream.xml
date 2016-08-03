@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="stream">
+
+    <select id="flowLines" resultType="java.util.LinkedHashMap" fetchSize="50">
+        select tmp_navigation_results.nhdplus_comid,
+               st_asgeojson(nhdflowline_np21.shape) shape
+          from nhdplus_navigation.tmp_navigation_results
+               join nhdplus.nhdflowline_np21
+                 on tmp_navigation_results.nhdplus_comid = nhdflowline_np21.nhdplus_comid 
+         where session_id = #{sessionId}
+    </select>
+
+    <select id="flowLines2" resultType="java.util.LinkedHashMap" fetchSize="50">
+        with recursive dm(comid, hydroseq, terminalpathid, dnhydroseq)
+          as (select comid, hydroseq, terminalpathid, dnhydroseq
+                from nhdplus.plusflowlinevaa_np21
+               where comid = #{comid,jdbcType=NUMERIC}
+              union all
+              select x.comid, x.hydroseq, x.terminalpathid, x.dnhydroseq
+                from nhdplus.plusflowlinevaa_np21 x,
+                     dm
+               where x.hydroseq = dm.dnhydroseq and
+                     x.terminalpathid = dm.terminalpathid
+             )
+        select nhdplus_comid,
+               st_asgeojson(nhdflowline_np21.shape) shape
+          from dm
+               join nhdplus.nhdflowline_np21
+                 on dm.comid = nhdflowline_np21.nhdplus_comid
+    </select>
+
+    <select id="features2" resultType="java.util.LinkedHashMap" fetchSize="50">
+        with recursive dm(comid, hydroseq, terminalpathid, dnhydroseq)
+          as (select comid, hydroseq, terminalpathid, dnhydroseq
+                from nhdplus.plusflowlinevaa_np21
+               where comid = #{comid,jdbcType=NUMERIC}
+              union all
+              select x.comid, x.hydroseq, x.terminalpathid, x.dnhydroseq
+                from nhdplus.plusflowlinevaa_np21 x,
+                     dm
+               where x.hydroseq = dm.dnhydroseq and
+                     x.terminalpathid = dm.terminalpathid
+             )
+        select <include refid="lookup.featureProperties"/>
+          from dm
+               join nldi_data.feature
+                 on dm.comid = feature.comid
+               join nldi_data.crawler_source
+                 on feature.crawler_source_id = crawler_source.crawler_source_id
+         where lower(source_suffix) = #{dataSource}
+    </select>
+
+    <select id="features" resultType="java.util.LinkedHashMap" fetchSize="50">
+        select <include refid="lookup.featureProperties"/>
+          from nhdplus_navigation.tmp_navigation_results
+               join nldi_data.feature
+                 on tmp_navigation_results.nhdplus_comid = feature.comid
+               join nldi_data.crawler_source
+                 on feature.crawler_source_id = crawler_source.crawler_source_id
+         where session_id = #{sessionId} and
+               lower(source_suffix) = #{dataSource}
+    </select>
+
+    <select id="feature" resultType="java.util.LinkedHashMap" fetchSize="50">
+        <include refid="lookup.featureSql"/>
+    </select>
+
+</mapper>

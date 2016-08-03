@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="lookup">
+
+    <sql id="featureProperties">
+        crawler_source.source_suffix source,
+        crawler_source.source_name,
+        feature.identifier,
+        feature.name,
+        feature.uri,
+        feature.comid,
+        feature.reachcode,
+        feature.measure,
+        st_asgeojson(feature.location) shape
+    </sql>
+
+    <sql id="featureSql">
+        select <include refid="lookup.featureProperties"/>
+          from nldi_data.feature
+               join nldi_data.crawler_source
+                 on feature.crawler_source_id = crawler_source.crawler_source_id
+         where identifier = #{featureID}  and
+               lower(source_suffix) = lower(#{featureSource})
+    </sql>
+
+    <select id="feature" resultType="java.util.LinkedHashMap">
+        select distinct comid
+          from (<include refid="lookup.featureSql"/>) x
+    </select>
+
+    <select id="dataSources" resultType="java.util.LinkedHashMap">
+        select source_suffix source,
+               source_name "sourceName",
+               #{rootUrl,jdbcType=VARCHAR} || '/' || lower(source_suffix) features
+          from nldi_data.crawler_source
+             order by source_suffix
+    </select>
+
+</mapper>
