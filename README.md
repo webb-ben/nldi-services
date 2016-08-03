@@ -7,8 +7,8 @@ The services are accessed via an http GET request. All navigation output is gene
 
 #### The root is {host}/nldi.
 Both a test and a production are exposed to the public:
-__http://cida-test.er.usgs.gov/nldi__ is the test root.
-__http://cida.usgs.gov/nldi__ is the production root.
+__https://cida-test.er.usgs.gov/nldi__ is the test root.
+__https://cida.usgs.gov/nldi__ is the production root.
 This endpoint will give you the valid dataSource names for the other endpoints. There is documentation at /about and a demo UI at /about/demo.
 
 #### Display Up/Down Stream Flow Lines
