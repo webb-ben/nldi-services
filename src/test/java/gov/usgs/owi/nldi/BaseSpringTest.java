@@ -26,6 +26,9 @@ import gov.usgs.owi.nldi.springinit.TestSpringConfig;
 @DbUnitConfiguration(dataSetLoader = ColumnSensingFlatXMLDataSetLoader.class)
 public abstract class BaseSpringTest {
 
+	public static final String RESULT_FOLDER_WQP  = "feature/feature/wqp/";
+	public static final String RESULT_FOLDER_HUC  = "feature/feature/huc12pp/";
+
 	public String getCompareFile(String folder, String file) throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(new ClassPathResource("testResult/" + folder + file).getInputStream()));
 	}

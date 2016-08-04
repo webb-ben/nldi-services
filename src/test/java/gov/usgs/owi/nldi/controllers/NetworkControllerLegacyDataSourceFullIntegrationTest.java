@@ -24,7 +24,7 @@ import gov.usgs.owi.nldi.FullIntegrationTest;
 @Category(FullIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
 @DatabaseSetup("classpath:/testData/featureWqp.xml")
-public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTest {
+public class NetworkControllerLegacyDataSourceFullIntegrationTest extends BaseSpringTest {
 
 	@Autowired
 	private WebApplicationContext wac;
@@ -41,7 +41,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 	//UT Testing
 	@Test
 	public void getComidUtTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/UT/wqp"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/UT/wqp?legacy=true"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "22"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -53,7 +53,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 
 	@Test
 	public void getComidUtDistanceTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UT/wqp?distance=10"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UT/wqp?distance=10&legacy=true"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "6"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -66,7 +66,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 	//UM Testing
 	@Test
 	public void getComidUmTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/UM/wqp"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/UM/wqp?legacy=true"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "17"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -78,7 +78,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 
 	@Test
 	public void getComidUmDistanceTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UM/wqp?distance=10"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UM/wqp?distance=10&legacy=true"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "6"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -91,7 +91,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 	//DM Testing
 	@Test
 	public void getComidDmTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13296790/navigate/DM/wqp"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13296790/navigate/DM/wqp?legacy=true"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "6"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -103,7 +103,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 
 	@Test
 	public void getComidDmDistanceTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/DM/wqp?distance=10"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/DM/wqp?distance=10&legacy=true"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "31"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -116,7 +116,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 	//DD Testing - Except we really don't have any diversions in the test data...
 	@Test
 	public void getComidDdTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297242/navigate/DD/wqp"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13297242/navigate/DD/wqp?legacy=true"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "5"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -128,7 +128,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 
 	@Test
 	public void getComidDdDistanceTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13293506/navigate/DD/wqp?distance=10"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13293506/navigate/DD/wqp?distance=10&legacy=true"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "22"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -141,7 +141,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 	//PP Testing
 	@Test
 	public void getComidPpStopComidInvalidTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/PP/wqp?stopComid=13297198"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/PP/wqp?stopComid=13297198&legacy=true"))
 				.andExpect(status().isBadRequest())
 				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, (String)null))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, (String)null))
@@ -153,7 +153,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 
 	@Test
 	public void getComidPpStopComidTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297198/navigate/PP/wqp?stopComid=13297246"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13297198/navigate/PP/wqp?stopComid=13297246&legacy=true"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "16"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))

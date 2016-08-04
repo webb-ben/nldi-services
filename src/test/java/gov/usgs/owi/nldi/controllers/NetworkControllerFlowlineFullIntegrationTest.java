@@ -47,7 +47,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293474_UT.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293474_UT.json"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_10.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_10.json"))).allowingAnyArrayOrdering());
 	}
 
 	//UM Testing
@@ -72,7 +72,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 				 .andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293474_UM.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293474_UM.json"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297246_UM_distance_10.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297246_UM_distance_10.json"))).allowingAnyArrayOrdering());
 	}
 
 	//DM Testing
@@ -97,7 +97,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13296790_DM.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13296790_DM.json"))).allowingAnyArrayOrdering());
 	}
 
 	public void getComidDmDiversionsNotIncludedTest() throws Exception {
@@ -108,7 +108,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294310_DM.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294310_DM.json"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
@@ -120,7 +120,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293474_DM_distance_10.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293474_DM_distance_10.json"))).allowingAnyArrayOrdering());
 	}
 
 	//DD Testing
@@ -133,7 +133,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294310_DD.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294310_DD.json"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
@@ -145,7 +145,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294310_DD_distance_11.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294310_DD_distance_11.json"))).allowingAnyArrayOrdering());
 	}
 
 	//PP Testing
@@ -158,7 +158,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297246_PP_stop_13297198.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297246_PP_stop_13297198.json"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
@@ -170,7 +170,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297198_PP_stop_13297246.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297198_PP_stop_13297246.json"))).allowingAnyArrayOrdering());
 	}
 
 }

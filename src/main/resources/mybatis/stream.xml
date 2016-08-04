@@ -3,7 +3,7 @@
 
 <mapper namespace="stream">
 
-    <select id="flowLines" resultType="java.util.LinkedHashMap" fetchSize="50">
+    <select id="flowLinesLegacy" resultType="java.util.LinkedHashMap" fetchSize="50">
         select tmp_navigation_results.nhdplus_comid,
                st_asgeojson(nhdflowline_np21.shape) shape
           from nhdplus_navigation.tmp_navigation_results
@@ -12,47 +12,31 @@
          where session_id = #{sessionId}
     </select>
 
-    <select id="flowLines2" resultType="java.util.LinkedHashMap" fetchSize="50">
-        with recursive dm(comid, hydroseq, terminalpathid, dnhydroseq)
-          as (select comid, hydroseq, terminalpathid, dnhydroseq
-                from nhdplus.plusflowlinevaa_np21
-               where comid = #{comid,jdbcType=NUMERIC}
-              union all
-              select x.comid, x.hydroseq, x.terminalpathid, x.dnhydroseq
-                from nhdplus.plusflowlinevaa_np21 x,
-                     dm
-               where x.hydroseq = dm.dnhydroseq and
-                     x.terminalpathid = dm.terminalpathid
-             )
+    <select id="flowLines" resultType="java.util.LinkedHashMap" fetchSize="50">
+        <include refid="navigate.DM"/>
         select nhdplus_comid,
                st_asgeojson(nhdflowline_np21.shape) shape
-          from dm
+          from nav
                join nhdplus.nhdflowline_np21
-                 on dm.comid = nhdflowline_np21.nhdplus_comid
-    </select>
-
-    <select id="features2" resultType="java.util.LinkedHashMap" fetchSize="50">
-        with recursive dm(comid, hydroseq, terminalpathid, dnhydroseq)
-          as (select comid, hydroseq, terminalpathid, dnhydroseq
-                from nhdplus.plusflowlinevaa_np21
-               where comid = #{comid,jdbcType=NUMERIC}
-              union all
-              select x.comid, x.hydroseq, x.terminalpathid, x.dnhydroseq
-                from nhdplus.plusflowlinevaa_np21 x,
-                     dm
-               where x.hydroseq = dm.dnhydroseq and
-                     x.terminalpathid = dm.terminalpathid
-             )
-        select <include refid="lookup.featureProperties"/>
-          from dm
-               join nldi_data.feature
-                 on dm.comid = feature.comid
-               join nldi_data.crawler_source
-                 on feature.crawler_source_id = crawler_source.crawler_source_id
-         where lower(source_suffix) = #{dataSource}
+                 on nav.comid = nhdflowline_np21.nhdplus_comid
+        <where>
+            <include refid="navigate.distanceDM"/>
+        </where>
     </select>
 
     <select id="features" resultType="java.util.LinkedHashMap" fetchSize="50">
+        <include refid="navigate.DM"/>
+        select <include refid="lookup.featureProperties"/>
+          from nav
+               join nldi_data.feature
+                 on nav.comid = feature.comid
+               join nldi_data.crawler_source
+                 on feature.crawler_source_id = crawler_source.crawler_source_id
+         where lower(source_suffix) = #{dataSource}
+               <include refid="navigate.distanceDM"/>
+    </select>
+
+    <select id="featuresLegacy" resultType="java.util.LinkedHashMap" fetchSize="50">
         select <include refid="lookup.featureProperties"/>
           from nhdplus_navigation.tmp_navigation_results
                join nldi_data.feature
@@ -64,7 +48,7 @@
     </select>
 
     <select id="feature" resultType="java.util.LinkedHashMap" fetchSize="50">
-        <include refid="lookup.featureSql"/>
+        <include refid="lookup.selectFeatures"/>
     </select>
 
 </mapper>

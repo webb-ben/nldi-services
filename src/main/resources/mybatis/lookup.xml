@@ -15,18 +15,52 @@
         st_asgeojson(feature.location) shape
     </sql>
 
-    <sql id="featureSql">
-        select <include refid="lookup.featureProperties"/>
-          from nldi_data.feature
-               join nldi_data.crawler_source
-                 on feature.crawler_source_id = crawler_source.crawler_source_id
-         where identifier = #{featureID}  and
-               lower(source_suffix) = lower(#{featureSource})
+    <sql id="comidProperties">
+        'comid' source,
+        'NHDPlus comid' source_name,
+        nhdflowline_np21.nhdplus_comid identifier,
+        nhdflowline_np21.nhdplus_comid comid,
+        st_asgeojson(nhdflowline_np21.shape) shape
+    </sql>
+
+    <sql id="selectFeatures">
+        select
+        <choose>
+            <when test="featureSource == 'comid'">
+                <include refid="lookup.comidProperties"/>
+                <include refid="lookup.comidFromWhere"/>
+            </when>
+            <otherwise>
+                <include refid="lookup.featureProperties"/>
+                <include refid="lookup.featureFromWhere"/>
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="featureFromWhere">
+         from nldi_data.feature
+              join nldi_data.crawler_source
+                on feature.crawler_source_id = crawler_source.crawler_source_id
+        where identifier = #{featureID} and
+              lower(source_suffix) = lower(#{featureSource})
+    </sql>
+
+    <sql id="comidFromWhere">
+         from nhdplus.nhdflowline_np21
+        where nhdplus_comid = #{featureID}::integer
     </sql>
 
     <select id="feature" resultType="java.util.LinkedHashMap">
-        select distinct comid
-          from (<include refid="lookup.featureSql"/>) x
+        <choose>
+            <when test="featureSource == 'comid'">
+                select distinct nhdplus_comid comid
+                  <include refid="lookup.comidFromWhere"/>
+            </when>
+            <otherwise>
+                select distinct comid
+                  <include refid="lookup.featureFromWhere"/>
+            </otherwise>
+        </choose>
     </select>
 
     <select id="dataSources" resultType="java.util.LinkedHashMap">

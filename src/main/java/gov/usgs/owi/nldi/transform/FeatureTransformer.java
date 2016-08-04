@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.StringUtils;
 
 import gov.usgs.owi.nldi.dao.NavigationDao;
 
@@ -36,10 +36,10 @@ public class FeatureTransformer extends MapToGeoJsonTransformer {
 		g.writeStringField(NAME, getValue(resultMap, NAME));
 		g.writeStringField(URI, getValue(resultMap, URI));
 		g.writeStringField(FeatureTransformer.COMID, getValue(resultMap, FeatureTransformer.COMID));
-		if (StringUtils.isNotEmpty(getValue(resultMap, REACHCODE))) {
+		if (StringUtils.hasText(getValue(resultMap, REACHCODE))) {
 			g.writeStringField(REACHCODE, getValue(resultMap, REACHCODE));
 		}
-		if (StringUtils.isNotEmpty(getValue(resultMap, MEASURE))) {
+		if (StringUtils.hasText(getValue(resultMap, MEASURE))) {
 			g.writeStringField(MEASURE, getValue(resultMap, MEASURE));
 		}
 		g.writeStringField(NAVIGATION, String.join("/", rootUrl, source.toLowerCase(), URLEncoder.encode(identifier, DEFAULT_ENCODING), NavigationDao.NAVIGATE));

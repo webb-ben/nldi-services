@@ -17,8 +17,8 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import gov.usgs.owi.nldi.BaseSpringTest;
 import gov.usgs.owi.nldi.DBIntegrationTest;
-import gov.usgs.owi.nldi.controllers.LinkedDataController;
 import gov.usgs.owi.nldi.controllers.LookupController;
+import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.springinit.TestSpringConfig;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
 
@@ -32,11 +32,21 @@ public class LookupDaoTest extends BaseSpringTest {
 	@Test
 	public void getFeatureTest() throws IOException, JSONException {
 		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put(LinkedDataController.FEATURE_SOURCE, "wqp");
-		parameterMap.put(LinkedDataController.FEATURE_ID, "USGS-05427880");
+		parameterMap.put(Parameters.FEATURE_SOURCE, "wqp");
+		parameterMap.put(Parameters.FEATURE_ID, "USGS-05427880");
 		Map<String, Object> results = lookupDao.getComid(BaseDao.FEATURE, parameterMap);
 		assertEquals(1,results.size());
 		assertEquals(13294132, results.get(FeatureTransformer.COMID));
+	}
+
+	@Test
+	public void getComidTest() throws IOException, JSONException {
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put(Parameters.FEATURE_SOURCE, "comid");
+		parameterMap.put(Parameters.FEATURE_ID, "13297246");
+		Map<String, Object> results = lookupDao.getComid(BaseDao.FEATURE, parameterMap);
+		assertEquals(1,results.size());
+		assertEquals(13297246, results.get(FeatureTransformer.COMID));
 	}
 
 	@Test

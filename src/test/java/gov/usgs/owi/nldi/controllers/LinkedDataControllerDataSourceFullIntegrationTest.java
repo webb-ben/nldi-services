@@ -30,38 +30,9 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 
 	private MockMvc mockMvc;
 
-	private static final String RESULT_FOLDER_WQP  = "feature/feature/wqp/";
-	private static final String RESULT_FOLDER_HUC  = "feature/feature/huc12pp/";
-
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-	}
-
-	//Linked Object Testing WQP
-	@Test
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
-	public void getWqpTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/wqp/USGS-05427880"))
-				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
-				.andReturn();
-
-		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880.geojson"))).allowingAnyArrayOrdering());
-	}
-
-	//Linked Object Testing huc12pp
-	@Test
-	@DatabaseSetup("classpath:/testData/featureHuc12pp.xml")
-	public void gethuc12ppTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/huc12pp/070900020604"))
-				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
-				.andReturn();
-
-		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_HUC, "huc12pp_070900020604.geojson"))).allowingAnyArrayOrdering());
 	}
 
 	//Navigation Within Datasource Testing
@@ -75,7 +46,7 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_UT_wqp.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_UT_wqp.json"))).allowingAnyArrayOrdering());
 	}
 
 	//Navigation Different Datasource Testing
@@ -90,7 +61,7 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_DM_huc12pp.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_DM_huc12pp.json"))).allowingAnyArrayOrdering());
 	}
 
 	@Test

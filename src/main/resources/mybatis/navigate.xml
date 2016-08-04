@@ -46,4 +46,23 @@
         </choose>
     </select>
 
+    <sql id="DM">
+        with recursive nav(comid, hydroseq, terminalpathid, dnhydroseq, pathlength, lengthkm, startlength, navlength)
+          as (select comid, hydroseq, terminalpathid, dnhydroseq, pathlength, lengthkm, pathlength + lengthkm startlength, lengthkm+0 navlength
+                from nhdplus.plusflowlinevaa_np21
+               where comid = #{comid,jdbcType=NUMERIC}
+              union all
+              select x.comid, x.hydroseq, x.terminalpathid, x.dnhydroseq, x.pathlength, x.lengthkm, nav.startlength, nav.navlength + x.lengthkm
+                from nhdplus.plusflowlinevaa_np21 x,
+                     nav
+               where x.hydroseq = nav.dnhydroseq and
+                     x.terminalpathid = nav.terminalpathid
+             )
+    </sql>
+
+    <sql id="distanceDM">
+        <if test="null != distance">
+            and nav.pathlength + nav.lengthkm >= nav.startlength - #{distance}
+        </if>
+    </sql>
 </mapper>

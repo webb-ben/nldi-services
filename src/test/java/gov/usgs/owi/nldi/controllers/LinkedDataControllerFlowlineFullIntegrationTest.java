@@ -48,7 +48,7 @@ public class LinkedDataControllerFlowlineFullIntegrationTest extends BaseSpringT
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_UM.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_UM.json"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
@@ -61,7 +61,7 @@ public class LinkedDataControllerFlowlineFullIntegrationTest extends BaseSpringT
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_HUC, "huc12pp_070900020601_DM_distance_10.geojson"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_HUC, "huc12pp_070900020601_DM_distance_10.json"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
