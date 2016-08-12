@@ -1,12 +1,16 @@
 package gov.usgs.owi.nldi.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
 import org.junit.Test;
+
+import gov.usgs.owi.nldi.NavigationMode;
 
 public class ParametersTest {
 
@@ -31,6 +35,30 @@ public class ParametersTest {
 		assertEquals(BigDecimal.valueOf(456), parameterMap.get(Parameters.DISTANCE));
 		assertTrue(parameterMap.containsKey(Parameters.STOP_COMID));
 		assertEquals(789, parameterMap.get(Parameters.STOP_COMID));
+	}
+
+	@Test
+	public void validateComidTest() {
+		assertNull(parameters.validateComid(null, true));
+		assertNull(parameters.validateComid("", true));
+		assertNull(parameters.validateComid(" ", false));
+		assertNull(parameters.validateComid("abc", false));
+		assertEquals(Integer.valueOf(123), parameters.validateComid("123", false));
+		assertEquals(Integer.valueOf(123), parameters.validateComid(" 123 ", false));
+		assertEquals(Integer.valueOf(123), parameters.validateComid("1 23", false));
+	}
+
+	@Test
+	public void isValidNavigationModeTest() {
+		assertFalse(parameters.isValidNavigationMode(null));
+		assertFalse(parameters.isValidNavigationMode(""));
+		assertFalse(parameters.isValidNavigationMode(" "));
+		assertFalse(parameters.isValidNavigationMode("1"));
+		assertFalse(parameters.isValidNavigationMode("dd"));
+		assertTrue(parameters.isValidNavigationMode(NavigationMode.DD.toString()));
+		assertTrue(parameters.isValidNavigationMode(NavigationMode.DM.toString()));
+		assertTrue(parameters.isValidNavigationMode(NavigationMode.UM.toString()));
+		assertTrue(parameters.isValidNavigationMode(NavigationMode.UT.toString()));
 	}
 
 }

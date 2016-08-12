@@ -5,7 +5,7 @@
 
     <select id="navigate" resultType="java.util.LinkedHashMap" >
         select nhdplus_navigation.navigate_cached(
-               pnavigationtype           := <choose><when test="navigationMode != null">#{navigationMode,jdbcType=VARCHAR}</when><otherwise>'UT'</otherwise></choose>
+               pnavigationtype           := <choose><when test="navigationMode != null">#{navigationMode,jdbcType=VARCHAR}</when><otherwise>null</otherwise></choose>
               ,pstartcomid               := <choose><when test="comid != null">#{comid,jdbcType=NUMERIC}</when><otherwise>null</otherwise></choose>
               ,pstartpermanentidentifier := null
               ,pstartreachcode           := null

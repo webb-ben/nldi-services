@@ -306,7 +306,7 @@
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<archive>
 						<manifestEntries>
-							<Implementation-Build>${build.scm.version}</Implementation-Build>
+							<Implementation-Build>${buildNumber}</Implementation-Build>
 							<!-- The following are non-standard manifest entries. Tag names have 
 								 been styled according to Manifest conventions -->
 							<BuildTime>${maven.build.timestamp}</BuildTime>

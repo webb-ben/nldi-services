@@ -23,6 +23,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import de.jkeylockmanager.manager.KeyLockManager;
 import de.jkeylockmanager.manager.KeyLockManagers;
+import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.CountDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
@@ -197,6 +198,6 @@ public abstract class BaseController {
 
 	protected boolean isLegacy(String legacy, String navigationMode) {
 		return (StringUtils.hasText(legacy) && "true".contentEquals(legacy.trim().toLowerCase()))
-				|| !Parameters.DM.equalsIgnoreCase(navigationMode);
+				|| !NavigationMode.DM.toString().equalsIgnoreCase(navigationMode);
 	}
 }

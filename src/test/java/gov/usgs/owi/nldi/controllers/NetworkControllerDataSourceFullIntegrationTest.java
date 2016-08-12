@@ -163,4 +163,16 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297198_PP_stop_13297246.json"))).allowingAnyArrayOrdering());
 	}
 
+	//Parameter Error Testing
+//	@Test
+	public void badNavigationModeTest() throws Exception {
+		MvcResult rtn = mockMvc.perform(get("/comid/13297198/navigate/XX/wqp"))
+//				.andExpect(status().isBadRequest())
+//				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "16"))
+//				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
+				.andReturn();
+
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297198_PP_stop_13297246.json"))).allowingAnyArrayOrdering());
+	}
 }

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import gov.usgs.owi.nldi.ApplicationVersion;
 import gov.usgs.owi.nldi.AtomReaderUtil;
+import gov.usgs.owi.nldi.services.ApplicationVersion;
 
 @Controller
 @RequestMapping(value="about")

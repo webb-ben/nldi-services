@@ -1,4 +1,4 @@
-package gov.usgs.owi.nldi;
+package gov.usgs.owi.nldi.services;
 
 import java.util.Properties;
 
@@ -19,7 +19,7 @@ public class ApplicationVersion implements ServletContextAware {
 	public static String getVersion() {
 		StringBuilder currentVersion = new StringBuilder("Application Version: ");
 		try {
-			String name = "/META-INF/MANIFEST.MF";
+			String name = "META-INF/MANIFEST.MF";
 			Properties props = new Properties();
 			props.load(servletContext.getResourceAsStream(name));
 			String projectVersion = (String) props.get("Project-Version");

@@ -17,6 +17,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import gov.usgs.owi.nldi.BaseSpringTest;
 import gov.usgs.owi.nldi.DBIntegrationTest;
+import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.services.Parameters;
 
 @Category(DBIntegrationTest.class)
@@ -69,14 +70,14 @@ public class NavigationDaoTest extends BaseSpringTest {
 		//This one is golden
 		parameterMap.clear();
 		parameterMap.put(Parameters.COMID, NumberUtils.parseNumber("1329374", Integer.class));
-		parameterMap.put(Parameters.NAVIGATION_MODE, Parameters.UT);
+		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.UT.toString());
 
 		assertEquals("6a6", navigationDao.getCache(parameterMap));
 
 		//This one is golden (note that "10a10" sorts before "8a8")
 		parameterMap.clear();
 		parameterMap.put(Parameters.COMID, NumberUtils.parseNumber("13297246", Integer.class));
-		parameterMap.put(Parameters.NAVIGATION_MODE, Parameters.UM);
+		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.UM.toString());
 
 		assertEquals("10a10", navigationDao.getCache(parameterMap));
 
@@ -91,7 +92,7 @@ public class NavigationDaoTest extends BaseSpringTest {
 		//This does exist, but has a bad return code
 		parameterMap.clear();
 		parameterMap.put(Parameters.COMID, NumberUtils.parseNumber("13297246", Integer.class));
-		parameterMap.put(Parameters.NAVIGATION_MODE, Parameters.DM);
+		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.DM.toString());
 
 		assertNull(navigationDao.getCache(parameterMap));
 

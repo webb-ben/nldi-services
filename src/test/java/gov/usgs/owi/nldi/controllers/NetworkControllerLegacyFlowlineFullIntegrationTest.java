@@ -173,4 +173,61 @@ public class NetworkControllerLegacyFlowlineFullIntegrationTest extends BaseSpri
 				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297198_PP_stop_13297246.json"))).allowingAnyArrayOrdering());
 	}
 
+	//Interesting diversion/tributary
+	@Test
+	public void interestingTest() throws Exception {
+		MvcResult rtn = mockMvc.perform(get("/comid/13293844/navigate/DM?distance=5&legacy=true"))
+				.andExpect(status().isOk())
+				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "7"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
+				.andReturn();
+
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293844_DM_distance_5.json"))).allowingAnyArrayOrdering());
+
+		rtn = mockMvc.perform(get("/comid/13293844/navigate/DD?distance=5&legacy=true"))
+				.andExpect(status().isOk())
+				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "14"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
+				.andReturn();
+
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293844_DD_distance_5.json"))).allowingAnyArrayOrdering());
+
+		rtn = mockMvc.perform(get("/comid/13294328/navigate/DM?distance=5&legacy=true"))
+				.andExpect(status().isOk())
+				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "6"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
+				.andReturn();
+
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294328_DM_distance_5.json"))).allowingAnyArrayOrdering());
+
+		rtn = mockMvc.perform(get("/comid/13294328/navigate/DD?distance=5&legacy=true"))
+				.andExpect(status().isOk())
+				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "10"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
+				.andReturn();
+
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294328_DD_distance_5.json"))).allowingAnyArrayOrdering());
+		rtn = mockMvc.perform(get("/comid/13294390/navigate/UM?distance=5&legacy=true"))
+				.andExpect(status().isOk())
+				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "6"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
+				.andReturn();
+
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294390_UM_distance_5.json"))).allowingAnyArrayOrdering());
+
+		rtn = mockMvc.perform(get("/comid/13294390/navigate/UT?distance=5&legacy=true"))
+				.andExpect(status().isOk())
+				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "22"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
+				.andReturn();
+
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294390_UT_distance_5.json"))).allowingAnyArrayOrdering());
+	}
+
 }
