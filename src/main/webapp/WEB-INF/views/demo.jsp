@@ -13,22 +13,22 @@
 		<header><h1 style="text-align:center">NLDI Services</h1></header>
 	<form name="QueryTypeForm">
 		<label>Source</label>
-		<select name="SourceType" property="source_type" size="1">
+		<select name="SourceType" size="1">
 			<option selected="selected"> </option>
 			<option value="comid">comid</option>
 			<option value="wqp">wqp</option>
 			<option value="huc12pp">huc12pp</option>
 		</select>
-		<label>identifier</label><input aria-label="ComID" property="comID" name="ComIDField"></input>
+		<label>identifier</label><input aria-label="ComID" name="ComIDField"></input>
 		<label>Query Type</label>
-		<select name="QueryType" property="query_type" size="1">
+		<select name="QueryType" size="1">
 			<option selected="selected"> </option>
 			<option value="UM">Upstream Main</option>
 			<option value="DM">Downstream Main</option>
 			<option value="DD">Downstream with Diversions</option>
 			<option value="UT">Upstream with Tributaries</option>
 		</select>
-		<label>distance</label><input property="distance" name="DistanceField">
+		<label>distance</label><input name="DistanceField">
 		<button type="button" onclick="on_submit_action();">submit!</button>
 	</form>
 	<div id="map" style="width: 100%; height: 600px;"></div>

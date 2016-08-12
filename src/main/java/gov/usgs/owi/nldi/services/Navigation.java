@@ -1,40 +1,22 @@
 package gov.usgs.owi.nldi.services;
 
 import java.io.OutputStream;
-import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.NumberUtils;
 
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvParser;
 
 import gov.usgs.owi.nldi.dao.NavigationDao;
-import gov.usgs.owi.nldi.transform.FeatureTransformer;
 
 @Service
 public class Navigation {
 	private static final Logger LOG = LoggerFactory.getLogger(Navigation.class);
-
-	public static final String COMID = FeatureTransformer.COMID;
-	public static final String DD = "DD";
-	public static final String DISTANCE = "distance";
-	public static final String DM = "DM";
-	public static final String DOWNSTREAM_DIVERSIONS = "downstreamDiversions";
-	public static final String DOWNSTREAM_MAIN = "downstreamMain";
-	public static final String NAVIGATION_MODE = "navigationMode";
-	public static final String UM = "UM";
-	public static final String UT = "UT";
-	public static final String UPSTREAM_MAIN = "upstreamMain";
-	public static final String UPSTREAM_TRIBUTARIES = "upstreamTributaries";
-	public static final String STOP_COMID = "stopComid";
 
 	protected final NavigationDao navigationDao;
 
@@ -43,12 +25,8 @@ public class Navigation {
 		navigationDao = inNavigationDao;
 	}
 
-	public String navigate(OutputStream responseStream, final String comid, final String navigationMode,
-			final String distance, final String stopComid) {
+	public String navigate(OutputStream responseStream, Map<String, Object> parameterMap) {
 		LOG.trace("entering navigation");
-
-		Map<String, Object> parameterMap = processParameters(comid, navigationMode, distance, stopComid);
-		LOG.trace("parameters processed");
 
 		String sessionId = navigationDao.getCache(parameterMap);
 
@@ -62,32 +40,6 @@ public class Navigation {
 		LOG.trace("leaving navigation");
 
 		return sessionId;
-	}
-
-	protected Map<String, Object> processParameters(final String comid, final String navigationMode,
-			final String distance, final String stopComid) {
-		Map<String, Object> parameterMap = new HashMap<> ();
-
-		if (StringUtils.isNotBlank(comid)) {
-			LOG.debug("comid:" + comid);
-			parameterMap.put(COMID, NumberUtils.parseNumber(comid, Integer.class));
-		}
-		if (StringUtils.isNotBlank(navigationMode)) {
-			LOG.debug("navigationMode:" + navigationMode);
-			parameterMap.put(NAVIGATION_MODE, navigationMode);
-		}
-		if (StringUtils.isNotBlank(distance)) {
-			LOG.debug("distance:" + distance);
-			parameterMap.put(DISTANCE, NumberUtils.parseNumber(distance, BigDecimal.class));
-		}
-		if (StringUtils.isNotBlank(stopComid)) {
-			LOG.debug("stopComid:" + stopComid);
-			parameterMap.put(STOP_COMID, NumberUtils.parseNumber(stopComid, Integer.class));
-		}
-
-		LOG.debug("Request Parameters:" + parameterMap.toString());
-
-		return parameterMap;
 	}
 
 	protected String interpretResult(OutputStream responseStream, Map<?,?> navigationResult) {

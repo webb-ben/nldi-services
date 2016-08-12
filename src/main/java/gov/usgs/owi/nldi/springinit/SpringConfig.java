@@ -2,14 +2,11 @@ package gov.usgs.owi.nldi.springinit;
 
 import javax.sql.DataSource;
 
-import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -17,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
+@Import(MybatisConfig.class)
 @ComponentScan(basePackages={"gov.usgs.owi.nldi.controllers", "gov.usgs.owi.nldi.dao", "gov.usgs.owi.nldi.services", "gov.usgs.owi.nldi.transform"})
 @EnableWebMvc
 public class SpringConfig extends WebMvcConfigurerAdapter {
@@ -37,20 +35,9 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 		return resolver;
 	}
 
-	@Bean
-	public SqlSessionFactoryBean sqlSessionFactory() throws Exception {
-		SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
-		Resource mybatisConfig = new ClassPathResource("mybatis/mybatisConfig.xml");
-		sqlSessionFactory.setConfigLocation(mybatisConfig);
-		sqlSessionFactory.setDataSource(dataSource);
-		Resource[] mappers = new PathMatchingResourcePatternResolver().getResources("mybatis/mappers/**/*.xml");
-		sqlSessionFactory.setMapperLocations(mappers);
-		return sqlSessionFactory;
-	}
-
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("swagger-ui.html")
+		registry.setOrder(0).addResourceHandler("swagger-ui.html")
 			.addResourceLocations("classpath:/META-INF/resources/");
 
 		registry.addResourceHandler("webjars/**")

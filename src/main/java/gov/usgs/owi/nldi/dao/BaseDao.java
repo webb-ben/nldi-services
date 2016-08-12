@@ -13,6 +13,10 @@ public abstract class BaseDao extends SqlSessionDaoSupport {
 	public static final String FEATURES = "features";
 	public static final String FLOW_LINES = "flowLines";
 
+	public static final String LEGACY = "Legacy";
+	public static final String FEATURES_LEGACY = FEATURES + LEGACY;
+	public static final String FLOW_LINES_LEGACY = FLOW_LINES + LEGACY;
+
 	public BaseDao(SqlSessionFactory sqlSessionFactory) {
 		LOG.trace(getClass().getName());
 		setSqlSessionFactory(sqlSessionFactory);

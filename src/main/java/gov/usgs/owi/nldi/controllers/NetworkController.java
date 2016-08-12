@@ -5,44 +5,47 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import gov.usgs.owi.nldi.dao.CountDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.Navigation;
+import gov.usgs.owi.nldi.services.Parameters;
 
-@Controller
+@RestController
 @RequestMapping(value="/comid/{comid}/navigate/{navigationMode}")
 public class NetworkController extends BaseController {
 
 	@Autowired
 	public NetworkController(CountDao inCountDao, LookupDao inLookupDao, StreamingDao inStreamingDao,
-			Navigation inNavigation, @Qualifier("rootUrl") String inRootUrl) {
-		super(inCountDao, inLookupDao, inStreamingDao, inNavigation, inRootUrl);
+			Navigation inNavigation, Parameters inParameters, @Qualifier("rootUrl") String inRootUrl) {
+		super(inCountDao, inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl);
 	}
 
-	@RequestMapping(method=RequestMethod.GET)
+	@GetMapping
 	public void getFlowlines(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable(Navigation.COMID) String comid,
-			@PathVariable(Navigation.NAVIGATION_MODE) String navigationMode,
-			@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
-			@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
-		streamFlowLines(response, comid, navigationMode, stopComid, distance);
+			@PathVariable(Parameters.COMID) String comid,
+			@PathVariable(Parameters.NAVIGATION_MODE) String navigationMode,
+			@RequestParam(value=Parameters.STOP_COMID, required=false) String stopComid,
+			@RequestParam(value=Parameters.DISTANCE, required=false) String distance,
+			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) {
+		streamFlowLines(response, comid, navigationMode, stopComid, distance, isLegacy(legacy, navigationMode));
 	}
 
-	@RequestMapping(value="{dataSource}", method=RequestMethod.GET)
+	@GetMapping(value="{dataSource}")
 	public void getFeatures(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable(Navigation.COMID) String comid,
-			@PathVariable(Navigation.NAVIGATION_MODE) String navigationMode,
+			@PathVariable(Parameters.COMID) String comid,
+			@PathVariable(Parameters.NAVIGATION_MODE) String navigationMode,
 			@PathVariable(value=DATA_SOURCE) String dataSource,
-			@RequestParam(value=Navigation.STOP_COMID, required=false) String stopComid,
-			@RequestParam(value=Navigation.DISTANCE, required=false) String distance) {
-		streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource);
+			@RequestParam(value=Parameters.STOP_COMID, required=false) String stopComid,
+			@RequestParam(value=Parameters.DISTANCE, required=false) String distance,
+			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) {
+		streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource, isLegacy(legacy, navigationMode));
 	}
 
 }

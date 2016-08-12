@@ -4,7 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.AccessDeniedException;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.util.NumberUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +23,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import de.jkeylockmanager.manager.KeyLockManager;
 import de.jkeylockmanager.manager.KeyLockManagers;
+import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.CountDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
@@ -29,6 +31,7 @@ import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.dao.StreamingResultHandler;
 import gov.usgs.owi.nldi.services.Navigation;
+import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import gov.usgs.owi.nldi.transform.FlowLineTransformer;
 import gov.usgs.owi.nldi.transform.ITransformer;
@@ -52,15 +55,17 @@ public abstract class BaseController {
 	protected final LookupDao lookupDao;
 	protected final StreamingDao streamingDao;
 	protected final Navigation navigation;
+	protected final Parameters parameters;
 	protected final String rootUrl;
 
 	private final KeyLockManager lockManager = KeyLockManagers.newLock();
 
-	public BaseController(CountDao inCountDao, LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, String inRootUrl) {
+	public BaseController(CountDao inCountDao, LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, String inRootUrl) {
 		countDao = inCountDao;
 		lookupDao = inLookupDao;
 		streamingDao = inStreamingDao;
 		navigation = inNavigation;
+		parameters = inParameters;
 		rootUrl = inRootUrl;
 	}
 
@@ -93,19 +98,24 @@ public abstract class BaseController {
 	}
 
 	protected void streamFlowLines(HttpServletResponse response,
-			String comid, String navigationMode, String stopComid, String distance) {
-
+			String comid, String navigationMode, String stopComid, String distance, boolean legacy) {
 		OutputStream responseStream = null;
+		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid);
 		try {
 			responseStream = new BufferedOutputStream(response.getOutputStream());
-			String sessionId = getSessionId(responseStream, comid, navigationMode, distance, stopComid);
-			if (null != sessionId) {
-				Map<String, Object> parameterMap = new HashMap<> ();
-				parameterMap.put(SESSION_ID, sessionId);
+			if (legacy) {
+				String sessionId = getSessionId(responseStream, parameterMap);
+				if (null != sessionId) {
+					parameterMap.put(SESSION_ID, sessionId);
+					addHeaders(response, BaseDao.FLOW_LINES_LEGACY, parameterMap);
+					streamResults(new FlowLineTransformer(responseStream, rootUrl), BaseDao.FLOW_LINES_LEGACY, parameterMap);
+				} else {
+					response.setStatus(HttpStatus.BAD_REQUEST.value());
+				}
+			} else {
+				parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
 				addHeaders(response, BaseDao.FLOW_LINES, parameterMap);
 				streamResults(new FlowLineTransformer(responseStream, rootUrl), BaseDao.FLOW_LINES, parameterMap);
-			} else {
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			}
 
 		} catch (Throwable e) {
@@ -123,20 +133,26 @@ public abstract class BaseController {
 	}
 
 	protected void streamFeatures(HttpServletResponse response,
-			String comid, String navigationMode, String stopComid, String distance, String dataSource) {
-
+			String comid, String navigationMode, String stopComid, String distance, String dataSource, boolean legacy) {
 		OutputStream responseStream = null;
+		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid);
 		try {
 			responseStream = new BufferedOutputStream(response.getOutputStream());
-			String sessionId = getSessionId(responseStream, comid, navigationMode, distance, stopComid);
-			if (null != sessionId) {
-				Map<String, Object> parameterMap = new HashMap<> ();
-				parameterMap.put(SESSION_ID, sessionId);
+			if (legacy) {
+				String sessionId = getSessionId(responseStream, parameterMap);
+				if (null != sessionId) {
+					parameterMap.put(SESSION_ID, sessionId);
+					parameterMap.put(DATA_SOURCE, dataSource.toLowerCase());
+					addHeaders(response, BaseDao.FEATURES_LEGACY, parameterMap);
+					streamResults(new FeatureTransformer(responseStream, rootUrl), BaseDao.FEATURES_LEGACY, parameterMap);
+				} else {
+					response.setStatus(HttpStatus.BAD_REQUEST.value());
+				}
+			} else {
+				parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
 				parameterMap.put(DATA_SOURCE, dataSource.toLowerCase());
 				addHeaders(response, BaseDao.FEATURES, parameterMap);
 				streamResults(new FeatureTransformer(responseStream, rootUrl), BaseDao.FEATURES, parameterMap);
-			} else {
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			}
 	
 		} catch (Exception e) {
@@ -167,17 +183,21 @@ public abstract class BaseController {
 
 	protected void addHeaders(HttpServletResponse response, String featureType, Map<String, Object> parameterMap) {
 		LOG.trace("entering addHeaders");
-
-		addContentHeader(response);
-		response.setHeader(featureType + COUNT_SUFFIX, countDao.count(featureType, parameterMap));
-
+		if (StringUtils.hasText(featureType)) {
+			addContentHeader(response);
+			response.setHeader(featureType.replaceAll(BaseDao.LEGACY, "") + COUNT_SUFFIX, countDao.count(featureType, parameterMap));
+		}
 		LOG.trace("leaving addHeaders");
 	}
 
-	protected String getSessionId(OutputStream responseStream, final String comid, final String navigationMode,
-			final String distance, final String stopComid) {
-		String key = String.join("|", comid, navigationMode, distance, stopComid);
-		return lockManager.executeLocked(key, () -> navigation.navigate(responseStream, comid, navigationMode, distance, stopComid));
+	protected String getSessionId(OutputStream responseStream, Map<String, Object> parameterMap) {
+		// No NPE testing - should never get here without parameters.
+		int key = parameterMap.hashCode();
+		return lockManager.executeLocked(key, () -> navigation.navigate(responseStream, parameterMap));
 	}
 
+	protected boolean isLegacy(String legacy, String navigationMode) {
+		return (StringUtils.hasText(legacy) && "true".contentEquals(legacy.trim().toLowerCase()))
+				|| !NavigationMode.DM.toString().equalsIgnoreCase(navigationMode);
+	}
 }

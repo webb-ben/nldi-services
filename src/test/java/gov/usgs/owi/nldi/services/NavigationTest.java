@@ -2,13 +2,11 @@ package gov.usgs.owi.nldi.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -33,27 +31,6 @@ public class NavigationTest {
 	}
 
 	@Test
-	public void processParametersTest() {
-		assertTrue(navigation.processParameters(null, null, null, null).isEmpty());
-		
-		assertTrue(navigation.processParameters("", "", "", "").isEmpty());
-		
-		assertTrue(navigation.processParameters(" ", " ", " ", " ").isEmpty());
-
-		Map<String, Object> parameterMap = navigation.processParameters("123", "DD", "456", "789");
-
-		assertEquals(4, parameterMap.size());
-		assertTrue(parameterMap.containsKey(Navigation.COMID));
-		assertEquals(123, parameterMap.get(Navigation.COMID));
-		assertTrue(parameterMap.containsKey(Navigation.NAVIGATION_MODE));
-		assertEquals("DD", parameterMap.get(Navigation.NAVIGATION_MODE));
-		assertTrue(parameterMap.containsKey(Navigation.DISTANCE));
-		assertEquals(BigDecimal.valueOf(456), parameterMap.get(Navigation.DISTANCE));
-		assertTrue(parameterMap.containsKey(Navigation.STOP_COMID));
-		assertEquals(789, parameterMap.get(Navigation.STOP_COMID));
-	}
-
-	@Test
 	public void interpretResultTest() {
 		OutputStream baos = new ByteArrayOutputStream();
 		assertEquals("{4d06cca2-001e-11e6-b9d0-0242ac110003}", navigation.interpretResult(null, goodResult()));
@@ -73,9 +50,9 @@ public class NavigationTest {
 	public void navigateTest() {
 		when(navigationDao.navigate(anyMap())).thenReturn(goodResult(), badResult1());
 		OutputStream baos = new ByteArrayOutputStream();
-		assertEquals("{4d06cca2-001e-11e6-b9d0-0242ac110003}", navigation.navigate(baos, null, null, null, null));
+		assertEquals("{4d06cca2-001e-11e6-b9d0-0242ac110003}", navigation.navigate(baos, null));
 
-		assertNull(navigation.navigate(baos, null, null, null, null));
+		assertNull(navigation.navigate(baos, null));
 		assertEquals("{\"errorCode\":-1, \"errorMessage\":\"Valid navigation type codes are UM, UT, DM, DD and PP.\"}", baos.toString());
 	}
 

@@ -1,0 +1,24 @@
+{
+	"type": "FeatureCollection",
+	"features": [{
+		"type": "Feature",
+		"geometry": {
+			"type": "LineString",
+			"coordinates": [
+				[-89.123151101172, 42.7925543934107],
+				[-89.1231001019478, 42.7924969941378],
+				[-89.1225950047374, 42.7922044992447],
+				[-89.1224509999156, 42.7917931973934]
+			]
+		},
+		"properties": {
+			"source": "comid",
+			"sourceName": "NHDPlus comid",
+			"identifier": "13297246",
+			"name": "",
+			"uri": "",
+			"comid": "13297246",
+			"navigation": "http://owi-test.usgs.gov:8080/test-url/comid/13297246/navigate"
+		}
+	}]
+}

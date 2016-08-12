@@ -18,6 +18,7 @@ import gov.usgs.owi.nldi.dao.CountDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.Navigation;
+import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.springinit.TestSpringConfig;
 
 public class LinkedDataControllerTest {
@@ -30,12 +31,14 @@ public class LinkedDataControllerTest {
 	private LookupDao lookupDao;
 	@Mock
 	private Navigation navigation;
+	@Mock
+	private Parameters parameters;
 	private LinkedDataController controller;
 
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		controller = new LinkedDataController(countDao, lookupDao, streamingDao, navigation, TestSpringConfig.TEST_ROOT_URL);
+		controller = new LinkedDataController(countDao, lookupDao, streamingDao, navigation, parameters, TestSpringConfig.TEST_ROOT_URL);
 	}
 
 	@Test
@@ -52,7 +55,7 @@ public class LinkedDataControllerTest {
 
 	public static Map<String, Object> goodFeature() {
 		Map<String, Object> rtn = new LinkedHashMap<>();
-		rtn.put(Navigation.COMID, "12345");
+		rtn.put(Parameters.COMID, "12345");
 		return rtn;
 	}
 
