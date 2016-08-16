@@ -1,6 +1,7 @@
 package gov.usgs.owi.nldi.controllers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
@@ -20,6 +21,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.dao.CountDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
@@ -129,14 +131,18 @@ public class BaseControllerTest {
 
 	@Test
 	public void isLegacyTest() {
+		assertTrue(controller.isLegacy("true", NavigationMode.DM.toString()));
 		assertTrue(controller.isLegacy("true", null));
 		assertTrue(controller.isLegacy(" true ", null));
 		assertTrue(controller.isLegacy("True ", null));
 		
-		assertTrue(controller.isLegacy(null, null));
-		assertTrue(controller.isLegacy("", null));
-		assertTrue(controller.isLegacy("  ", null));
-		assertTrue(controller.isLegacy("false", null));
-		assertTrue(controller.isLegacy("abc", null));
+		assertFalse(controller.isLegacy(null, null));
+		assertFalse(controller.isLegacy("", null));
+		assertFalse(controller.isLegacy("  ", null));
+		assertFalse(controller.isLegacy("false", null));
+		assertFalse(controller.isLegacy("abc", null));
+
+		assertTrue(controller.isLegacy(null, NavigationMode.DD.toString()));
+		assertTrue(controller.isLegacy(null, NavigationMode.PP.toString()));
 	}
 }

@@ -46,6 +46,23 @@
         </choose>
     </select>
 
+    <sql id="core">
+        <choose>
+            <when test="navigationMode == 'DM'">
+                <include refid="navigate.DM"/>
+            </when>
+            <when test="navigationMode == 'DD'">
+                <include refid="navigate.DD"/>
+            </when>
+            <when test="navigationMode == 'UM'">
+                <include refid="navigate.UM"/>
+            </when>
+            <when test="navigationMode == 'UT'">
+                <include refid="navigate.UT"/>
+            </when>
+        </choose>
+    </sql>
+
     <sql id="DM">
         with recursive nav(comid, hydroseq, terminalpathid, dnhydroseq, pathlength, lengthkm, startlength, navlength)
           as (select comid, hydroseq, terminalpathid, dnhydroseq, pathlength, lengthkm, pathlength + lengthkm startlength, lengthkm+0 navlength
@@ -60,9 +77,86 @@
              )
     </sql>
 
+    <sql id="DD">
+        with recursive nav(comid, hydroseq, terminalpathid, dnhydroseq, dnminorhyd, pathlength, lengthkm, startlength, navlength)
+          as (select comid, hydroseq, terminalpathid, dnhydroseq, dnminorhyd, pathlength, lengthkm, pathlength + lengthkm startlength, lengthkm+0 navlength
+                from nhdplus.plusflowlinevaa_np21
+               where comid = #{comid,jdbcType=NUMERIC}
+              union all
+              select x.comid, x.hydroseq, x.terminalpathid, x.dnhydroseq, x.dnminorhyd, x.pathlength, x.lengthkm, nav.startlength, nav.navlength + x.lengthkm
+                from nhdplus.plusflowlinevaa_np21 x,
+                     nav
+               where x.hydroseq = nav.dnhydroseq or
+                     x.hydroseq = nav.dnminorhyd
+             )
+    </sql>
+
+    <sql id="UM">
+        with recursive nav(comid, hydroseq, levelpathid, uphydroseq, pathlength, lengthkm, startlength, navlength)
+          as (select comid, hydroseq, levelpathid, uphydroseq, pathlength, lengthkm, pathlength+0 startlength, lengthkm+0 navlength
+                from nhdplus.plusflowlinevaa_np21
+               where comid = #{comid,jdbcType=NUMERIC}
+              union all
+              select x.comid, x.hydroseq, x.levelpathid, x.uphydroseq, x.pathlength, x.lengthkm, nav.startlength, nav.navlength + x.lengthkm
+                from nhdplus.plusflowlinevaa_np21 x,
+                     nav
+               where x.hydroseq = nav.uphydroseq and
+                     x.levelpathid = nav.levelpathid
+             )
+    </sql>
+
+    <sql id="UT">
+        with recursive nav(comid, hydroseq, levelpathid, uphydroseq, pathlength, lengthkm, startlength, navlength)
+          as (select comid, hydroseq, levelpathid, uphydroseq, pathlength, lengthkm, pathlength+0 startlength, lengthkm+0 navlength
+                from nhdplus.plusflowlinevaa_np21
+               where comid = #{comid,jdbcType=NUMERIC}
+              union all
+              select x.comid, x.hydroseq, x.levelpathid, x.uphydroseq, x.pathlength, x.lengthkm, nav.startlength, nav.navlength + x.lengthkm
+                from nhdplus.plusflowlinevaa_np21 x,
+                     nav
+               where x.dnhydroseq = nav.hydroseq and
+                     x.dnlevelpathid = nav.levelpathid
+             )
+    </sql>
+
+    <sql id="distance">
+        <choose>
+            <when test="navigationMode == 'DM'">
+                <include refid="navigate.distanceDM"/>
+            </when>
+            <when test="navigationMode == 'DD'">
+                <include refid="navigate.distanceDD"/>
+            </when>
+            <when test="navigationMode == 'UM'">
+                <include refid="navigate.distanceUM"/>
+            </when>
+            <when test="navigationMode == 'UT'">
+                <include refid="navigate.distanceUT"/>
+            </when>
+        </choose>
+    </sql>
+
     <sql id="distanceDM">
         <if test="null != distance">
             and nav.pathlength + nav.lengthkm >= nav.startlength - #{distance}
+        </if>
+    </sql>
+
+    <sql id="distanceDD">
+        <if test="null != distance">
+            and nav.pathlength + nav.lengthkm >= nav.startlength - #{distance}
+        </if>
+    </sql>
+
+    <sql id="distanceUM">
+        <if test="null != distance">
+            and nav.pathlength &lt;= nav.startlength + #{distance}
+        </if>
+    </sql>
+
+    <sql id="distanceUT">
+        <if test="null != distance">
+            and nav.pathlength &lt;= nav.startlength + #{distance}
         </if>
     </sql>
 </mapper>

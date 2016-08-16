@@ -21,16 +21,16 @@
     </select>
 
     <select id="flowLines" resultType="Integer">
-        <include refid="navigate.DM"/>
+        <include refid="navigate.core"/>
         select count(*)
           from nav
         <where>
-            <include refid="navigate.distanceDM"/>
+            <include refid="navigate.distance"/>
         </where>
     </select>
 
     <select id="features" resultType="Integer">
-        <include refid="navigate.DM"/>
+        <include refid="navigate.core"/>
         select count(*)
           from nav
                join nldi_data.feature
@@ -38,7 +38,7 @@
                join nldi_data.crawler_source
                  on feature.crawler_source_id = crawler_source.crawler_source_id
          where lower(source_suffix) = #{dataSource}
-               <include refid="navigate.distanceDM"/>
+               <include refid="navigate.distance"/>
     </select>
 
 </mapper>

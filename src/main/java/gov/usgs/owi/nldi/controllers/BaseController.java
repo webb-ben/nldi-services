@@ -198,6 +198,7 @@ public abstract class BaseController {
 
 	protected boolean isLegacy(String legacy, String navigationMode) {
 		return (StringUtils.hasText(legacy) && "true".contentEquals(legacy.trim().toLowerCase()))
-				|| !NavigationMode.DM.toString().equalsIgnoreCase(navigationMode);
+				|| NavigationMode.PP.toString().equalsIgnoreCase(navigationMode)
+				|| NavigationMode.DD.toString().equalsIgnoreCase(navigationMode);
 	}
 }
