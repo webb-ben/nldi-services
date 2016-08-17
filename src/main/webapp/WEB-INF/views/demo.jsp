@@ -32,6 +32,7 @@
 				</select>
 				<label>distance</label><input name="DistanceField">
 				<button type="button" onclick="on_submit_action();">submit!</button>
+				<button type="button" onclick="on_reset_action();">reset map</button>
 			</fieldset>
 		</form>
 		<fieldset>
@@ -116,8 +117,6 @@
 				var wqpURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value+"/wqp";
 				var huc12ppURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value+"/huc12pp";
 				var nhdURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value;
-				console.log(d.value);
-				console.log(wqpURL);
 				if ($("#displayWqp").prop("checked")) {
 					console.log("getting sites");
 					$.getJSON( wqpURL, {distance:d.value}, function(data) { addPointDataToMap(data, map, geojsonWqpMarkerOptions); });
@@ -130,6 +129,17 @@
 					console.log("getting huc12pp");
 					$.getJSON( huc12ppURL, {distance:d.value}, function(data) { addPointDataToMap(data, map, geojsonhuc12ppMarkerOptions); });
 				}
+			}
+
+			function on_reset_action() {
+				map.eachLayer(function (layer) {
+					map.removeLayer(layer);
+				});
+				L.esri.basemapLayer("Gray").addTo(map);
+				L.esri.tiledMapLayer({
+					url: "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
+				}).addTo(map);
+				map.setView([35.9908385, -78.9005222], 3);
 			}
 		</script>
 	</body>

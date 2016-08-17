@@ -64,12 +64,12 @@
     </sql>
 
     <sql id="DM">
-        with recursive nav(comid, hydroseq, terminalpathid, dnhydroseq, pathlength, lengthkm, startlength, navlength)
-          as (select comid, hydroseq, terminalpathid, dnhydroseq, pathlength, lengthkm, pathlength + lengthkm startlength, lengthkm+0 navlength
+        with recursive nav(comid, terminalpathid, dnhydroseq, pathlength, lengthkm, startlength)
+          as (select comid, terminalpathid, dnhydroseq, pathlength, lengthkm, pathlength + lengthkm startlength
                 from nhdplus.plusflowlinevaa_np21
                where comid = #{comid,jdbcType=NUMERIC}
               union all
-              select x.comid, x.hydroseq, x.terminalpathid, x.dnhydroseq, x.pathlength, x.lengthkm, nav.startlength, nav.navlength + x.lengthkm
+              select x.comid, x.terminalpathid, x.dnhydroseq, x.pathlength, x.lengthkm, nav.startlength
                 from nhdplus.plusflowlinevaa_np21 x,
                      nav
                where x.hydroseq = nav.dnhydroseq and
@@ -92,12 +92,12 @@
     </sql>
 
     <sql id="UM">
-        with recursive nav(comid, hydroseq, levelpathid, uphydroseq, pathlength, lengthkm, startlength, navlength)
-          as (select comid, hydroseq, levelpathid, uphydroseq, pathlength, lengthkm, pathlength+0 startlength, lengthkm+0 navlength
+        with recursive nav(comid, levelpathid, uphydroseq, pathlength, startlength)
+          as (select comid, levelpathid, uphydroseq, pathlength, pathlength+0 startlength
                 from nhdplus.plusflowlinevaa_np21
                where comid = #{comid,jdbcType=NUMERIC}
               union all
-              select x.comid, x.hydroseq, x.levelpathid, x.uphydroseq, x.pathlength, x.lengthkm, nav.startlength, nav.navlength + x.lengthkm
+              select x.comid, x.levelpathid, x.uphydroseq, x.pathlength, nav.startlength
                 from nhdplus.plusflowlinevaa_np21 x,
                      nav
                where x.hydroseq = nav.uphydroseq and
