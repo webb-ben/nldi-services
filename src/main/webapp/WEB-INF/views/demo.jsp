@@ -5,39 +5,52 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.css" />
 		<script src="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.js"></script>
 		<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-providers/1.1.7/leaflet-providers.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet-providers/1.1.7/leaflet-providers.min.js"></script>
 		<!-- Load Esri Leaflet from CDN -->
 		<script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.8/esri-leaflet.js"></script>
 	</head>
 	<body>
 		<header><h1 style="text-align:center">NLDI Services</h1></header>
-	<form name="QueryTypeForm">
-		<label>Source</label>
-		<select name="SourceType" size="1">
-			<option selected="selected"> </option>
-			<option value="comid">comid</option>
-			<option value="wqp">wqp</option>
-			<option value="huc12pp">huc12pp</option>
-		</select>
-		<label>identifier</label><input aria-label="ComID" name="ComIDField"></input>
-		<label>Query Type</label>
-		<select name="QueryType" size="1">
-			<option selected="selected"> </option>
-			<option value="UM">Upstream Main</option>
-			<option value="DM">Downstream Main</option>
-			<option value="DD">Downstream with Diversions</option>
-			<option value="UT">Upstream with Tributaries</option>
-		</select>
-		<label>distance</label><input name="DistanceField">
-		<button type="button" onclick="on_submit_action();">submit!</button>
-	</form>
-	<div id="map" style="width: 100%; height: 600px;"></div>
+		<form name="QueryTypeForm">
+			<fieldset>
+				<legend>Navigation Criteria</legend>
+				<label>Source</label>
+				<select name="SourceType" size="1">
+					<option selected="selected"> </option>
+					<option value="comid">comid</option>
+					<option value="wqp">wqp</option>
+					<option value="huc12pp">huc12pp</option>
+				</select>
+				<label>identifier</label><input aria-label="ComID" name="ComIDField"></input>
+				<label>Query Type</label>
+				<select name="QueryType" size="1">
+					<option selected="selected"> </option>
+					<option value="UM">Upstream Main</option>
+					<option value="DM">Downstream Main</option>
+					<option value="DD">Downstream with Diversions</option>
+					<option value="UT">Upstream with Tributaries</option>
+				</select>
+				<label>distance</label><input name="DistanceField">
+				<button type="button" onclick="on_submit_action();">submit!</button>
+				<button type="button" onclick="on_reset_action();">reset map</button>
+			</fieldset>
+		</form>
+		<fieldset>
+			<legend>Data to Display</legend>
+			<input type="checkbox" id="displayFlowlines" value="flowlines" checked="checked"/>Flow Lines
+			<input type="checkbox" id="displayWqp" value="wqp"/>WQP Sites
+			<input type="checkbox" id="displayHuc" value="huc12pp"/>HUC12 Pour Points
+		</fieldset>
+		<fieldset>
+			<legend>Results</legend>
+			<div id="map" style="width: 100%; height: 600px;"></div>
+		</fieldset>
 
 		<script type="text/javascript">
 			var map = L.map('map');
 			L.esri.basemapLayer("Gray").addTo(map);
 			L.esri.tiledMapLayer({
-				url: "https://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
+				url: "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
 			}).addTo(map);
 			map.setView([35.9908385, -78.9005222], 3);
 
@@ -104,14 +117,29 @@
 				var wqpURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value+"/wqp";
 				var huc12ppURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value+"/huc12pp";
 				var nhdURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value;
-				console.log(d.value);
-				console.log(wqpURL);
-				console.log("getting sites");
-				$.getJSON( wqpURL, {distance:d.value}, function(data) { addPointDataToMap(data, map, geojsonWqpMarkerOptions); });
-				console.log("sites added, getting streams");
-				$.getJSON( nhdURL, {distance:d.value}, function(data) { addLineDataToMap(data, map); });
-				console.log("sites and stream added, getting huc12pp");
-				$.getJSON( huc12ppURL, {distance:d.value}, function(data) { addPointDataToMap(data, map, geojsonhuc12ppMarkerOptions); });
+				if ($("#displayWqp").prop("checked")) {
+					console.log("getting sites");
+					$.getJSON( wqpURL, {distance:d.value}, function(data) { addPointDataToMap(data, map, geojsonWqpMarkerOptions); });
+				}
+				if ($("#displayFlowlines").prop("checked")) {
+					console.log("getting flow lines");
+					$.getJSON( nhdURL, {distance:d.value}, function(data) { addLineDataToMap(data, map); });
+				}
+				if ($("#displayHuc").prop("checked")) {
+					console.log("getting huc12pp");
+					$.getJSON( huc12ppURL, {distance:d.value}, function(data) { addPointDataToMap(data, map, geojsonhuc12ppMarkerOptions); });
+				}
+			}
+
+			function on_reset_action() {
+				map.eachLayer(function (layer) {
+					map.removeLayer(layer);
+				});
+				L.esri.basemapLayer("Gray").addTo(map);
+				L.esri.tiledMapLayer({
+					url: "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
+				}).addTo(map);
+				map.setView([35.9908385, -78.9005222], 3);
 			}
 		</script>
 	</body>
