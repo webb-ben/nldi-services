@@ -142,7 +142,10 @@ public class BaseControllerTest {
 		assertFalse(controller.isLegacy("false", null));
 		assertFalse(controller.isLegacy("abc", null));
 
-		assertTrue(controller.isLegacy(null, NavigationMode.DD.toString()));
+		assertFalse(controller.isLegacy(null, NavigationMode.DD.toString()));
+		assertFalse(controller.isLegacy(null, NavigationMode.DM.toString()));
+		assertFalse(controller.isLegacy(null, NavigationMode.UM.toString()));
+		assertTrue(controller.isLegacy(null, NavigationMode.UT.toString()));
 		assertTrue(controller.isLegacy(null, NavigationMode.PP.toString()));
 	}
 }

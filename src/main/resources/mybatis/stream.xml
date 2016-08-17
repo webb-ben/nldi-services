@@ -16,24 +16,20 @@
         <include refid="navigate.core"/>
         select nhdplus_comid,
                st_asgeojson(nhdflowline_np21.shape) shape
-          from nav
+          from navigation_results
                join nhdplus.nhdflowline_np21
-                 on nav.comid = nhdflowline_np21.nhdplus_comid
-        <where>
-            <include refid="navigate.distance"/>
-        </where>
+                 on navigation_results.comid = nhdflowline_np21.nhdplus_comid
     </select>
 
     <select id="features" resultType="java.util.LinkedHashMap" fetchSize="50">
         <include refid="navigate.core"/>
         select <include refid="lookup.featureProperties"/>
-          from nav
+          from navigation_results
                join nldi_data.feature
-                 on nav.comid = feature.comid
+                 on navigation_results.comid = feature.comid
                join nldi_data.crawler_source
                  on feature.crawler_source_id = crawler_source.crawler_source_id
          where lower(source_suffix) = #{dataSource}
-               <include refid="navigate.distance"/>
     </select>
 
     <select id="featuresLegacy" resultType="java.util.LinkedHashMap" fetchSize="50">
