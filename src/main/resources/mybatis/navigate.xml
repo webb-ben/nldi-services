@@ -89,28 +89,32 @@
 
     <sql id="DD">
         with
-            recursive initial_nav(comid, dnhydroseq, dnminorhyd, navlength, startNavLength)
-                as (select comid, dnhydroseq, dnminorhyd, lengthkm+0 navlength, 0.0 startNavLength
+            recursive initial_nav(comid, dnhydroseq, dnminorhyd, navlength, startNavLength, terminalflag, dd, levelpathid)
+                as (select comid, dnhydroseq, dnminorhyd, lengthkm+0 navlength, 0.0 startNavLength, terminalflag, false, levelpathid
                       from nhdplus.plusflowlinevaa_np21
                      where comid = #{comid,jdbcType=NUMERIC}
                     union all
-                    select x.comid, x.dnhydroseq, x.dnminorhyd, initial_nav.navlength + x.lengthkm, initial_nav.navlength startNavLength
+                    select x.comid, x.dnhydroseq, x.dnminorhyd, initial_nav.navlength + x.lengthkm, initial_nav.navlength startNavLength, x.terminalflag,
+                           case when x.hydroseq = initial_nav.dnminorhyd then true else initial_nav.dd end dd, initial_nav.levelpathid
                       from nhdplus.plusflowlinevaa_np21 x,
                            initial_nav
-                     where x.hydroseq = initial_nav.dnhydroseq or
-                           x.hydroseq = initial_nav.dnminorhyd
+                     where (x.hydroseq = initial_nav.dnhydroseq or
+                            (initial_nav.dnminorhyd != 0 and
+                             x.hydroseq = initial_nav.dnminorhyd)) and
+                            initial_nav.terminalflag != 1 and
+                            (not initial_nav.dd or
+                             (initial_nav.dd and
+                              (initial_nav.levelpathid != x.levelpathid)))
+                            <if test="null != distance">
+                                and initial_nav.navlength &lt;= #{distance}
+                            </if>
                    ),
             dup_nav
                 as (select initial_nav.*, row_number() over (partition by comid) rowNumber
                       from initial_nav
-                     <where>
-                        <if test="null != distance">
-                            initial_nav.startNavLength &lt;= #{distance}
-                        </if>
-                     </where>
                    ),
             navigation_results
-                as (select *
+                as (select dup_nav.*, count(*) over (partition by 1) total_rows
                       from dup_nav
                      where rowNumber = 1
                    )
