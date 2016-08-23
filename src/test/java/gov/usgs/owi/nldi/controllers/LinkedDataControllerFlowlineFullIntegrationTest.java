@@ -20,6 +20,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import gov.usgs.owi.nldi.BaseSpringTest;
 import gov.usgs.owi.nldi.FullIntegrationTest;
+import gov.usgs.owi.nldi.transform.FlowLineTransformer;
 
 @Category(FullIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
@@ -43,7 +44,7 @@ public class LinkedDataControllerFlowlineFullIntegrationTest extends BaseSpringT
 	public void getWqpUMTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/wqp/USGS-05427880/navigate/UM"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "10"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "10"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -56,7 +57,7 @@ public class LinkedDataControllerFlowlineFullIntegrationTest extends BaseSpringT
 	public void getHuc12ppDM10Test() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/huc12pp/070900020601/navigate/DM?distance=10"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "6"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "6"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 

@@ -1,8 +1,6 @@
 package gov.usgs.owi.nldi.controllers;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.dao.BaseDao;
-import gov.usgs.owi.nldi.dao.CountDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
@@ -46,9 +43,9 @@ public class LookupController extends BaseController {
 	public static final String UPSTREAM_TRIBUTARIES = "upstreamTributaries";
 
 	@Autowired
-	public LookupController(CountDao inCountDao, LookupDao inLookupDao, StreamingDao inStreamingDao,
+	public LookupController(LookupDao inLookupDao, StreamingDao inStreamingDao,
 			Navigation inNavigation, Parameters inParameters, @Qualifier("rootUrl") String inRootUrl) {
-		super(inCountDao, inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl);
+		super(inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl);
 	}
 
 	@GetMapping(value="", produces=MediaType.APPLICATION_JSON_VALUE)
@@ -79,27 +76,14 @@ public class LookupController extends BaseController {
 	public void getRegisteredFeature(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(Parameters.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID) {
-		OutputStream responseStream = null;
-
-		try {
-			responseStream = new BufferedOutputStream(response.getOutputStream());
+		try (FeatureTransformer transformer = new FeatureTransformer(response, rootUrl)) {
 			Map<String, Object> parameterMap = new HashMap<> ();
 			parameterMap.put(Parameters.FEATURE_SOURCE, featureSource);
 			parameterMap.put(Parameters.FEATURE_ID, featureID);
 			addContentHeader(response);
-			streamResults(new FeatureTransformer(responseStream, rootUrl), BaseDao.FEATURE, parameterMap);
-
+			streamResults(transformer, BaseDao.FEATURE, parameterMap);
 		} catch (Throwable e) {
 			LOG.error("Handle me better" + e.getLocalizedMessage(), e);
-		} finally {
-			if (null != responseStream) {
-				try {
-					responseStream.flush();
-				} catch (Throwable e) {
-					//Just log, cause we obviously can't tell the client
-					LOG.error("Error flushing response stream", e);
-				}
-			}
 		}
 	}
 

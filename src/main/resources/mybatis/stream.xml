@@ -4,7 +4,8 @@
 <mapper namespace="stream">
 
     <select id="flowLinesLegacy" resultType="java.util.LinkedHashMap" fetchSize="50">
-        select tmp_navigation_results.nhdplus_comid,
+        select count(*) over (partition by 1) total_rows,
+               tmp_navigation_results.nhdplus_comid,
                st_asgeojson(nhdflowline_np21.shape) shape
           from nhdplus_navigation.tmp_navigation_results
                join nhdplus.nhdflowline_np21
@@ -14,7 +15,8 @@
 
     <select id="flowLines" resultType="java.util.LinkedHashMap" fetchSize="50">
         <include refid="navigate.core"/>
-        select nhdplus_comid,
+        select count(*) over (partition by 1) total_rows,
+               nhdplus_comid,
                st_asgeojson(nhdflowline_np21.shape) shape
           from navigation_results
                join nhdplus.nhdflowline_np21
@@ -23,7 +25,8 @@
 
     <select id="features" resultType="java.util.LinkedHashMap" fetchSize="50">
         <include refid="navigate.core"/>
-        select <include refid="lookup.featureProperties"/>
+        select count(*) over (partition by 1) total_rows,
+               <include refid="lookup.featureProperties"/>
           from navigation_results
                join nldi_data.feature
                  on navigation_results.comid = feature.comid
@@ -33,7 +36,8 @@
     </select>
 
     <select id="featuresLegacy" resultType="java.util.LinkedHashMap" fetchSize="50">
-        select <include refid="lookup.featureProperties"/>
+        select count(*) over (partition by 1) total_rows,
+               <include refid="lookup.featureProperties"/>
           from nhdplus_navigation.tmp_navigation_results
                join nldi_data.feature
                  on tmp_navigation_results.nhdplus_comid = feature.comid

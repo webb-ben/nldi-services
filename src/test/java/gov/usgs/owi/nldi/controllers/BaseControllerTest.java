@@ -10,7 +10,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.OutputStream;
 import java.util.HashMap;
 
 import org.apache.ibatis.session.ResultHandler;
@@ -22,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.owi.nldi.NavigationMode;
-import gov.usgs.owi.nldi.dao.CountDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.Navigation;
@@ -32,8 +30,6 @@ import gov.usgs.owi.nldi.transform.ITransformer;
 
 public class BaseControllerTest {
 
-	@Mock
-	private CountDao countDao;
 	@Mock
 	private LookupDao lookupDao;
 	@Mock
@@ -47,8 +43,8 @@ public class BaseControllerTest {
 	private MockHttpServletResponse response;
 
 	private class TestBaseController extends BaseController {
-		public TestBaseController(CountDao inCountDao, LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters) {
-			super(inCountDao, inLookupDao, inStreamingDao, inNavigation, inParameters, TestSpringConfig.TEST_ROOT_URL);
+		public TestBaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters) {
+			super(inLookupDao, inStreamingDao, inNavigation, inParameters, TestSpringConfig.TEST_ROOT_URL);
 		}
 	}
 	
@@ -57,7 +53,7 @@ public class BaseControllerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		controller = new TestBaseController(countDao, lookupDao, streamingDao, navigation, parameters);
+		controller = new TestBaseController(lookupDao, streamingDao, navigation, parameters);
 		response = new MockHttpServletResponse();
 	}
 
@@ -71,53 +67,58 @@ public class BaseControllerTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void addHeadersTest() {
-		when(countDao.count(anyString(), anyMap())).thenReturn("912");
-		controller.addHeaders(response, null, null);
-		verify(countDao, never()).count(anyString(), anyMap());
-
-		controller.addHeaders(response, "null", null);
-		verify(countDao).count(anyString(), anyMap());
-		assertTrue(response.containsHeader(NetworkController.HEADER_CONTENT_TYPE));
-		assertEquals(NetworkController.MIME_TYPE_GEOJSON, response.getHeader(NetworkController.HEADER_CONTENT_TYPE));
-		assertTrue(response.containsHeader("null" + NetworkController.COUNT_SUFFIX));
-		assertEquals("912", response.getHeader("null" + NetworkController.COUNT_SUFFIX));
+	public void getSessionIdTest() throws Exception {
+		when(navigation.navigate(anyMap())).thenReturn(new HashMap<String, String>());
+		when(navigation.interpretResult(anyMap())).thenReturn("abc");
+		assertEquals("abc", controller.getSessionId(new HashMap<String, Object>()));
+		verify(navigation).navigate(anyMap());
+		verify(navigation).interpretResult(anyMap());
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void getSessionIdTest() {
-		when(navigation.navigate(any(OutputStream.class), anyMap())).thenReturn("abc");
-		assertEquals("abc", controller.getSessionId(null, new HashMap<String, Object>()));
+	public void streamFeaturesTest() throws Exception {
+		controller.streamFeatures(response, "123", "navigationMode", "456", "789", "dataSource", false);
+		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
+		verify(navigation, never()).navigate(anyMap());
+		verify(navigation, never()).interpretResult(anyMap());
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void streamFeaturesTest() {
-		when(countDao.count(anyString(), anyMap())).thenReturn("912");
-		when(navigation.navigate(any(OutputStream.class), anyMap())).thenReturn(null, "abc");
+	public void streamFeaturesLegacyTest() throws Exception {
+		when(navigation.navigate(anyMap())).thenReturn(new HashMap<String, String>());
+		when(navigation.interpretResult(anyMap())).thenReturn(null, "abc");
+
 		controller.streamFeatures(response, "123", "navigationMode", "456", "789", "dataSource", true);
-		verify(countDao, never()).count(anyString(), anyMap());
 		verify(streamingDao, never()).stream(anyString(), anyMap(), any(ResultHandler.class));
 		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
 
 		controller.streamFeatures(response, "123", "navigationMode", "456", "789", "dataSource", true);
-		verify(countDao).count(anyString(), anyMap());
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void streamFlowLinesTest() {
-		when(countDao.count(anyString(), anyMap())).thenReturn("912");
-		when(navigation.navigate(any(OutputStream.class), anyMap())).thenReturn(null, "abc");
+	public void streamFlowLinesTest() throws Exception {
+		controller.streamFlowLines(response, "123", "navigationMode", "456", "789", false);
+		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
+		verify(navigation, never()).navigate(anyMap());
+		verify(navigation, never()).interpretResult(anyMap());
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void streamFlowLinesLegacyTest() throws Exception {
+		when(navigation.navigate(anyMap())).thenReturn(new HashMap<String, String>());
+		when(navigation.interpretResult(anyMap())).thenReturn(null, "abc");
 		controller.streamFlowLines(response, "123", "navigationMode", "456", "789", true);
-		verify(countDao, never()).count(anyString(), anyMap());
 		verify(streamingDao, never()).stream(anyString(), anyMap(), any(ResultHandler.class));
 		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
 
 		controller.streamFlowLines(response, "123", "navigationMode", "456", "789", true);
-		verify(countDao).count(anyString(), anyMap());
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
 	}
 

@@ -3,7 +3,6 @@ package gov.usgs.owi.nldi.transform;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,23 +10,23 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.owi.nldi.springinit.TestSpringConfig;
 
 public class FeatureTransformerTest {
 
 	protected FeatureTransformer transformer;
-	protected ByteArrayOutputStream baos;
-	
+	protected MockHttpServletResponse response;
+
 	@Before
-	public void initTest() {
-		baos = new ByteArrayOutputStream();
-		transformer = new FeatureTransformer(baos, TestSpringConfig.TEST_ROOT_URL);
-		transformer.init();
+	public void beforeTest() throws IOException {
+		response = new MockHttpServletResponse();
+		transformer = new FeatureTransformer(response, TestSpringConfig.TEST_ROOT_URL);
 	}
 
 	@After
-	public void closeTest() throws IOException {
+	public void afterTest() throws IOException {
 		transformer.close();
 	}
 
@@ -44,17 +43,17 @@ public class FeatureTransformerTest {
 		map.put(FeatureTransformer.SOURCE_NAME_DB, "sourceNameValue");
 		map.put(FeatureTransformer.REACHCODE, "05020002004263");
 		map.put(FeatureTransformer.MEASURE, 1.3823300000);
+		transformer.init(response, TestSpringConfig.TEST_ROOT_URL, new HashMap<>());
 		try {
 			transformer.g.writeStartObject();
 			transformer.writeProperties(map);
 			transformer.g.writeEndObject();
 			//need to flush the JsonGenerator to get at output. 
 			transformer.g.flush();
-			assertEquals(321, baos.size());
 			assertEquals(MapToGeoJsonTransformerTest.HEADER_TEXT + "{\"source\":\"sourceValue\",\"sourceName\":\"sourceNameValue\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\","
 					+ "\"uri\":\"uriValue\",\"comid\":\"47439231\",\"reachcode\":\"05020002004263\",\"measure\":\"1.38233\","
 					+ "\"navigation\":\"" + TestSpringConfig.TEST_ROOT_URL + "/sourcevalue/identifierValue/navigate\"}",
-					new String(baos.toByteArray(), MapToGeoJsonTransformer.DEFAULT_ENCODING));
+					response.getContentAsString());
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
 		}
@@ -75,7 +74,6 @@ public class FeatureTransformerTest {
 			transformer.g.writeEndObject();
 			//need to flush the JsonGenerator to get at output. 
 			transformer.g.flush();
-			assertEquals(561, baos.size());
 			assertEquals(MapToGeoJsonTransformerTest.HEADER_TEXT
 					+ "{\"source\":\"sourceValue\",\"sourceName\":\"sourceNameValue\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\","
 						+ "\"uri\":\"uriValue\",\"comid\":\"47439231\",\"reachcode\":\"05020002004263\",\"measure\":\"1.38233\","
@@ -83,7 +81,7 @@ public class FeatureTransformerTest {
 					+ ",{\"source\":\"source2Value\",\"sourceName\":\"sourceName2Value\",\"identifier\":\"identifier2Value\",\"name\":\"name2Value\","
 						+ "\"uri\":\"uri2Value\",\"comid\":\"81149213\","
 						+ "\"navigation\":\"" + TestSpringConfig.TEST_ROOT_URL + "/source2value/identifier2Value/navigate\"}",
-					new String(baos.toByteArray(), MapToGeoJsonTransformer.DEFAULT_ENCODING));
+						response.getContentAsString());
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
 		}

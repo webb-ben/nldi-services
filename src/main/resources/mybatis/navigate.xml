@@ -114,7 +114,7 @@
                       from initial_nav
                    ),
             navigation_results
-                as (select dup_nav.*, count(*) over (partition by 1) total_rows
+                as (select *
                       from dup_nav
                      where rowNumber = 1
                    )

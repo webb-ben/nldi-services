@@ -1,8 +1,14 @@
 package gov.usgs.owi.nldi.transform;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -10,24 +16,38 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import gov.usgs.owi.nldi.dao.BaseDao;
 
 public abstract class MapToGeoJsonTransformer extends OutputStream implements ITransformer {
+	private static final Logger LOG = LoggerFactory.getLogger(MapToGeoJsonTransformer.class);
 
+	public static final String COUNT_SUFFIX = "_count";
 	public static final String DEFAULT_ENCODING = "UTF-8";
 	public static final String FEATURE_COLLECTION = "FeatureCollection";
 	public static final String FEATURE_INIT_CAP = "Feature";
 	public static final String GEOMETRY = "geometry";
 	public static final String PROPERTIES = "properties";
 	public static final String SHAPE = "shape";
+	public static final String TOTAL_ROWS = "total_rows";
 	public static final String TYPE = "type";
 
 	protected OutputStream target;
 	protected String rootUrl;
 	protected JsonFactory f;
 	protected JsonGenerator g;
+	protected boolean firstRow = true; //thread local??
+	protected String countHeaderName; //thread local??
+	protected HttpServletResponse response;
 
-	public MapToGeoJsonTransformer(OutputStream target, String rootUrl) {
-		this.target = target;
+	public MapToGeoJsonTransformer(HttpServletResponse response, String rootUrl, String countHeaderName) {
+		try {
+			this.target = new BufferedOutputStream(response.getOutputStream());
+		} catch (IOException e) {
+			String msgText = "Unable to get output stream";
+			LOG.error(msgText, e);
+			throw new RuntimeException(msgText, e);
+		}
 		this.rootUrl = rootUrl;
-		init();
+		this.firstRow = true;
+		this.response = response;
+		this.countHeaderName = countHeaderName;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -39,6 +59,10 @@ public abstract class MapToGeoJsonTransformer extends OutputStream implements IT
 
 		if (result instanceof Map) {
 			Map<String, Object> resultMap = (Map<String, Object>) result;
+			if (firstRow) {
+				init(response, countHeaderName, resultMap);
+				firstRow = false;
+			}
 			writeData(resultMap);
 		}
 		try {
@@ -48,7 +72,8 @@ public abstract class MapToGeoJsonTransformer extends OutputStream implements IT
 		}
 	}
 
-	protected void init() {
+	protected void init(HttpServletResponse response, String countHeaderName, Map<String, Object> resultMap) {
+		response.setHeader(countHeaderName, getValue(resultMap, TOTAL_ROWS));
 		f = new JsonFactory();
 		try {
 			g = f.createGenerator(target);
@@ -88,11 +113,14 @@ public abstract class MapToGeoJsonTransformer extends OutputStream implements IT
 		throw new RuntimeException("Writing a single byte is not supported");
 	}
 
-	/** output the closing tags. */
+	/** output the closing tags and flush the stream. */
 	@Override
 	public void end() {
 		try {
-			g.close();
+			if (null != g) {
+				g.close();
+			}
+			target.flush();
 		} catch (IOException e) {
 			throw new RuntimeException("Error ending json document", e);
 		}
@@ -106,6 +134,6 @@ public abstract class MapToGeoJsonTransformer extends OutputStream implements IT
 		}
 	}
 
-	abstract void writeProperties(Map<String, Object> resultMap) throws IOException;
+	abstract void writeProperties(Map<String, Object> resultMap);
 
 }

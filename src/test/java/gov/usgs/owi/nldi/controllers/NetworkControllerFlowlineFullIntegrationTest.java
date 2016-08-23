@@ -20,6 +20,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import gov.usgs.owi.nldi.BaseSpringTest;
 import gov.usgs.owi.nldi.FullIntegrationTest;
+import gov.usgs.owi.nldi.transform.FlowLineTransformer;
 
 @Category(FullIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
@@ -42,7 +43,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 	public void getComidUtTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/UT"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "7"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "7"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -54,7 +55,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 	public void getComidUtDistanceTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UT?distance=10"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "9"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "9"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -67,7 +68,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 	public void getComidUmTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/UM"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "4"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "4"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				 .andReturn();
 
@@ -79,7 +80,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 	public void getComidUmDistanceTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UM?distance=10"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "6"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "6"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -92,7 +93,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 	public void getComidDmTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13296790/navigate/DM"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "5"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "5"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -103,7 +104,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 	public void getComidDmDiversionsNotIncludedTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DM"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "5"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "5"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -115,7 +116,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 	public void getComidDmDistanceTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/DM?distance=10"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "8"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "8"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -128,7 +129,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 	public void getComidDdTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DD"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "49"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "49"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -140,7 +141,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 	public void getComidDdDistanceTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DD?distance=11"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "11"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "11"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -153,11 +154,11 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 	public void getComidPpStopComidInvalidTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/PP?stopComid=13297198"))
 				.andExpect(status().isBadRequest())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, (String)null))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, (String)null))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, (String)null))
 				.andReturn();
 
-		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+		assertThat(new JSONObject(rtn.getResponse().getErrorMessage()),
 				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297246_PP_stop_13297198.json"))).allowingAnyArrayOrdering());
 	}
 
@@ -165,7 +166,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 	public void getComidPpStopComidTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13297198/navigate/PP?stopComid=13297246"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "12"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "12"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -179,7 +180,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 	public void interestingTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13293844/navigate/DM?distance=5"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "7"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "7"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -188,7 +189,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 
 		rtn = mockMvc.perform(get("/comid/13293844/navigate/DD?distance=5"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "14"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "14"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -197,7 +198,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 
 		rtn = mockMvc.perform(get("/comid/13294328/navigate/DM?distance=5"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "6"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "6"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -206,7 +207,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 
 		rtn = mockMvc.perform(get("/comid/13294328/navigate/DD?distance=5"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "10"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "10"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -215,7 +216,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 
 		rtn = mockMvc.perform(get("/comid/13294390/navigate/UM?distance=5"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "6"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "6"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -224,7 +225,7 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 
 		rtn = mockMvc.perform(get("/comid/13294390/navigate/UT?distance=5"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FLOW_LINES_COUNT_HEADER, "22"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "22"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 

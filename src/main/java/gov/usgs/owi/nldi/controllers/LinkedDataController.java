@@ -1,5 +1,6 @@
 package gov.usgs.owi.nldi.controllers;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import gov.usgs.owi.nldi.dao.BaseDao;
-import gov.usgs.owi.nldi.dao.CountDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.Navigation;
@@ -28,9 +28,9 @@ import gov.usgs.owi.nldi.services.Parameters;
 public class LinkedDataController extends BaseController {
 
 	@Autowired
-	public LinkedDataController(CountDao inCountDao, LookupDao inLookupDao, StreamingDao inStreamingDao,
+	public LinkedDataController(LookupDao inLookupDao, StreamingDao inStreamingDao,
 			Navigation inNavigation, Parameters inParameters, @Qualifier("rootUrl") String inRootUrl) {
-		super(inCountDao, inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl);
+		super(inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl);
 	}
 
 	@GetMapping
@@ -40,7 +40,7 @@ public class LinkedDataController extends BaseController {
 			@PathVariable(Parameters.NAVIGATION_MODE) String navigationMode,
 			@RequestParam(value=Parameters.STOP_COMID, required=false) String stopComid,
 			@RequestParam(value=Parameters.DISTANCE, required=false) String distance,
-			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) {
+			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws IOException {
 
 		String comid = getComid(featureSource, featureID);
 		if (null == comid) {
@@ -58,7 +58,7 @@ public class LinkedDataController extends BaseController {
 			@PathVariable(value=DATA_SOURCE) String dataSource,
 			@RequestParam(value=Parameters.STOP_COMID, required=false) String stopComid,
 			@RequestParam(value=Parameters.DISTANCE, required=false) String distance,
-			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) {
+			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws IOException {
 
 		String comid = getComid(featureSource, featureID);
 		if (null == comid) {

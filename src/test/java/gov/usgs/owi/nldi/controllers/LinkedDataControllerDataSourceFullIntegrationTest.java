@@ -20,6 +20,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import gov.usgs.owi.nldi.BaseSpringTest;
 import gov.usgs.owi.nldi.FullIntegrationTest;
+import gov.usgs.owi.nldi.transform.FeatureTransformer;
 
 @Category(FullIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
@@ -41,7 +42,7 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 	public void getWqpUtTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/wqp/USGS-05427880/navigate/UT/wqp"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "13"))
+				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "13"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
@@ -56,7 +57,7 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 	public void getWqpDmTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/wqp/USGS-05427880/navigate/DM/huc12pp"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.FEATURE_COUNT_HEADER, "9"))
+				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "9"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
