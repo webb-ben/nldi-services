@@ -108,6 +108,7 @@ public abstract class BaseController {
 			}
 
 		} catch (Throwable e) {
+			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
 		}
 	}
@@ -133,7 +134,8 @@ public abstract class BaseController {
 				streamResults(transformer, BaseDao.FEATURES, parameterMap);
 			}
 	
-		} catch (Exception e) {
+		} catch (Throwable e) {
+			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
 		}
 	}

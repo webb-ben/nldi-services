@@ -75,7 +75,7 @@ public class LookupController extends BaseController {
 	@GetMapping(value="{featureSource}/{featureID}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public void getRegisteredFeature(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(Parameters.FEATURE_SOURCE) String featureSource,
-			@PathVariable(Parameters.FEATURE_ID) String featureID) {
+			@PathVariable(Parameters.FEATURE_ID) String featureID) throws IOException {
 		try (FeatureTransformer transformer = new FeatureTransformer(response, rootUrl)) {
 			Map<String, Object> parameterMap = new HashMap<> ();
 			parameterMap.put(Parameters.FEATURE_SOURCE, featureSource);
@@ -83,7 +83,8 @@ public class LookupController extends BaseController {
 			addContentHeader(response);
 			streamResults(transformer, BaseDao.FEATURE, parameterMap);
 		} catch (Throwable e) {
-			LOG.error("Handle me better" + e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage());
+			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
 		}
 	}
 

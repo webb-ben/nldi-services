@@ -139,9 +139,10 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 
 	@Test
 	public void getComidDdDistanceTest() throws Exception {
+		//We are going to sacrifice a little accuracy for performance, so this does not match the old way...
 		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DD?distance=11"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "11"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "13"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 

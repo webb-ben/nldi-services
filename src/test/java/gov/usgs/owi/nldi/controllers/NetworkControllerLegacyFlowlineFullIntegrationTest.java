@@ -139,6 +139,7 @@ public class NetworkControllerLegacyFlowlineFullIntegrationTest extends BaseSpri
 
 	@Test
 	public void getComidDdDistanceTest() throws Exception {
+		//We are going to sacrifice a little accuracy for performance, so this does not match the new way...
 		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DD?distance=11&legacy=true"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "11"))
@@ -146,7 +147,7 @@ public class NetworkControllerLegacyFlowlineFullIntegrationTest extends BaseSpri
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294310_DD_distance_11.json"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294310_DD_distance_11_legacy.json"))).allowingAnyArrayOrdering());
 	}
 
 	//PP Testing
