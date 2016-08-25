@@ -3,7 +3,6 @@ package gov.usgs.owi.nldi.transform;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,23 +10,23 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.owi.nldi.springinit.TestSpringConfig;
 
 public class FlowLineTransformerTest {
 
 	protected FlowLineTransformer transformer;
-	protected ByteArrayOutputStream baos;
+	protected MockHttpServletResponse response;
 
 	@Before
-	public void initTest() {
-		baos = new ByteArrayOutputStream();
-		transformer = new FlowLineTransformer(baos, TestSpringConfig.TEST_ROOT_URL);
-		transformer.init();
+	public void beforeTest() throws IOException {
+		response = new MockHttpServletResponse();
+		transformer = new FlowLineTransformer(response, TestSpringConfig.TEST_ROOT_URL);
 	}
 
 	@After
-	public void closeTest() throws IOException {
+	public void afterTest() throws IOException {
 		transformer.close();
 	}
 
@@ -40,15 +39,15 @@ public class FlowLineTransformerTest {
 		map.put(FeatureTransformer.IDENTIFIER, "identifierValue");
 		map.put(FeatureTransformer.NAME, "nameValue");
 		map.put(FeatureTransformer.URI, "uriValue");
+		transformer.init(response, TestSpringConfig.TEST_ROOT_URL, new HashMap<>());
 		try {
 			transformer.g.writeStartObject();
 			transformer.writeProperties(map);
 			transformer.g.writeEndObject();
 			//need to flush the JsonGenerator to get at output. 
 			transformer.g.flush();
-			assertEquals(68, baos.size());
 			assertEquals(MapToGeoJsonTransformerTest.HEADER_TEXT + "{\"nhdplus_comid\":\"13293474\"}",
-					new String(baos.toByteArray(), MapToGeoJsonTransformer.DEFAULT_ENCODING));
+					response.getContentAsString());
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
 		}
@@ -66,10 +65,9 @@ public class FlowLineTransformerTest {
 			transformer.g.writeEndObject();
 			//need to flush the JsonGenerator to get at output. 
 			transformer.g.flush();
-			assertEquals(97, baos.size());
 			assertEquals(MapToGeoJsonTransformerTest.HEADER_TEXT + "{\"nhdplus_comid\":\"13293474\"}"
 					+ ",{\"nhdplus_comid\":\"13294118\"}",
-					new String(baos.toByteArray(), MapToGeoJsonTransformer.DEFAULT_ENCODING));
+					response.getContentAsString());
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
 		}

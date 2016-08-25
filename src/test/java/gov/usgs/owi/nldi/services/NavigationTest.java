@@ -2,11 +2,13 @@ package gov.usgs.owi.nldi.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyMap;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -32,28 +34,44 @@ public class NavigationTest {
 
 	@Test
 	public void interpretResultTest() {
-		OutputStream baos = new ByteArrayOutputStream();
-		assertEquals("{4d06cca2-001e-11e6-b9d0-0242ac110003}", navigation.interpretResult(null, goodResult()));
+		try {
+			assertEquals("{4d06cca2-001e-11e6-b9d0-0242ac110003}", navigation.interpretResult(goodResult()));
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
 
-		assertNull(navigation.interpretResult(null, badResult1()));
+		try {
+			assertNull(navigation.interpretResult(badResult1()));
+			fail("Did not get expected exception.");
+		} catch (Exception e) {
+			assertEquals("{\"errorCode\":-1, \"errorMessage\":\"Valid navigation type codes are UM, UT, DM, DD and PP.\"}", e.getMessage());
+		}
 
-		assertNull(navigation.interpretResult(baos, badResult1()));
-		assertEquals("{\"errorCode\":-1, \"errorMessage\":\"Valid navigation type codes are UM, UT, DM, DD and PP.\"}", baos.toString());
-
-		baos = new ByteArrayOutputStream();
-		assertNull(navigation.interpretResult(baos, badResult2()));
-		assertEquals("{\"errorCode\":310, \"errorMessage\":\"Start ComID must have a hydroseq greater than the hydroseq for stop ComID.\"}", baos.toString());
+		try {
+			assertNull(navigation.interpretResult(badResult2()));
+			fail("Did not get expected exception.");
+		} catch (Exception e) {
+			assertEquals("{\"errorCode\":310, \"errorMessage\":\"Start ComID must have a hydroseq greater than the hydroseq for stop ComID.\"}", e.getMessage());
+		}
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void navigateTest() {
+		when(navigationDao.getCache(anyMap())).thenReturn("{4d06cca2-001e-11e6-b9d0-0242ac110099}", (String) null);
 		when(navigationDao.navigate(anyMap())).thenReturn(goodResult(), badResult1());
-		OutputStream baos = new ByteArrayOutputStream();
-		assertEquals("{4d06cca2-001e-11e6-b9d0-0242ac110003}", navigation.navigate(baos, null));
 
-		assertNull(navigation.navigate(baos, null));
-		assertEquals("{\"errorCode\":-1, \"errorMessage\":\"Valid navigation type codes are UM, UT, DM, DD and PP.\"}", baos.toString());
+		assertEquals("{navigate_cached=(,,,,0,,{4d06cca2-001e-11e6-b9d0-0242ac110099})}", navigation.navigate(null).toString());
+		verify(navigationDao).getCache(anyMap());
+		verify(navigationDao, never()).navigate(anyMap());
+
+		assertEquals("{navigate_cached=(13297246,0.0000000000,,,0,,{4d06cca2-001e-11e6-b9d0-0242ac110003})}", navigation.navigate(null).toString());
+		verify(navigationDao, times(2)).getCache(anyMap());
+		verify(navigationDao).navigate(anyMap());
+
+		assertEquals("{navigate_cached=(,,,,-1,\"Valid navigation type codes are UM, UT, DM, DD and PP.\",)}", navigation.navigate(null).toString());
+		verify(navigationDao, times(3)).getCache(anyMap());
+		verify(navigationDao, times(2)).navigate(anyMap());
 	}
 
 	protected Map<String, String> goodResult() {
