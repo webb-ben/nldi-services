@@ -2,6 +2,7 @@ package gov.usgs.owi.nldi.controllers;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
@@ -44,12 +46,14 @@ public class LookupController extends BaseController {
 
 	@Autowired
 	public LookupController(LookupDao inLookupDao, StreamingDao inStreamingDao,
-			Navigation inNavigation, Parameters inParameters, @Qualifier("rootUrl") String inRootUrl) {
-		super(inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl);
+			Navigation inNavigation, Parameters inParameters, @Qualifier("rootUrl") String inRootUrl,
+			LogService inLogService) {
+		super(inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl, inLogService);
 	}
 
 	@GetMapping(value="", produces=MediaType.APPLICATION_JSON_VALUE)
-	public List<Map<String, Object>> getDataSources() {
+	public List<Map<String, Object>> getDataSources(HttpServletRequest request, HttpServletResponse response) {
+		BigInteger logId = logService.logRequest(request);
 		List<Map<String, Object>> rtn = new ArrayList<>();
 		Map<String, Object> featureSource = new LinkedHashMap<>();
 
@@ -63,12 +67,15 @@ public class LookupController extends BaseController {
 		parameterMap.put(ROOT_URL, rootUrl);
 		rtn.addAll(lookupDao.getList(BaseDao.DATA_SOURCES, parameterMap));
 
+		logService.logRequestComplete(logId, response.getStatus());
 		return rtn;
 	}
 
 	@GetMapping(value="{featureSource}", produces=MediaType.APPLICATION_JSON_VALUE)
-	public Object getFeatures(HttpServletResponse response) throws IOException {
+	public Object getFeatures(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		BigInteger logId = logService.logRequest(request);
 		response.sendError(HttpStatus.BAD_REQUEST.value(), "This functionality is not implemented.");
+		logService.logRequestComplete(logId, response.getStatus());
 		return null;
 	}
 
@@ -76,6 +83,7 @@ public class LookupController extends BaseController {
 	public void getRegisteredFeature(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(Parameters.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID) throws IOException {
+		BigInteger logId = logService.logRequest(request);
 		try (FeatureTransformer transformer = new FeatureTransformer(response, rootUrl)) {
 			Map<String, Object> parameterMap = new HashMap<> ();
 			parameterMap.put(Parameters.FEATURE_SOURCE, featureSource);
@@ -86,12 +94,14 @@ public class LookupController extends BaseController {
 			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
 		}
+		logService.logRequestComplete(logId, response.getStatus());
 	}
 
 	@GetMapping(value="{featureSource}/{featureID}/navigate", produces=MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> getNavigationTypes(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(Parameters.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID) throws UnsupportedEncodingException {
+		BigInteger logId = logService.logRequest(request);
 		Map<String, Object> rtn = new LinkedHashMap<>();
 
 		//Verify that the feature source and identifier are valid
@@ -113,6 +123,7 @@ public class LookupController extends BaseController {
 					String.join("/", rootUrl, featureSource.toLowerCase(), URLEncoder.encode(featureID, MapToGeoJsonTransformer.DEFAULT_ENCODING), NavigationDao.NAVIGATE, NavigationMode.DD.toString()));
 		}
 
+		logService.logRequestComplete(logId, response.getStatus());
 		return rtn;
 	}
 

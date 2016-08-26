@@ -23,6 +23,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.springinit.TestSpringConfig;
@@ -40,11 +41,13 @@ public class BaseControllerTest {
 	private Parameters parameters;
 	@Mock
 	private ITransformer transformer;
+	@Mock
+	private LogService logService;
 	private MockHttpServletResponse response;
 
 	private class TestBaseController extends BaseController {
-		public TestBaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters) {
-			super(inLookupDao, inStreamingDao, inNavigation, inParameters, TestSpringConfig.TEST_ROOT_URL);
+		public TestBaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, LogService inLogService) {
+			super(inLookupDao, inStreamingDao, inNavigation, inParameters, TestSpringConfig.TEST_ROOT_URL, inLogService);
 		}
 	}
 	
@@ -53,7 +56,7 @@ public class BaseControllerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		controller = new TestBaseController(lookupDao, streamingDao, navigation, parameters);
+		controller = new TestBaseController(lookupDao, streamingDao, navigation, parameters, logService);
 		response = new MockHttpServletResponse();
 	}
 
