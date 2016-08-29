@@ -1,6 +1,7 @@
 package gov.usgs.owi.nldi.controllers;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
 
@@ -29,8 +31,9 @@ public class LinkedDataController extends BaseController {
 
 	@Autowired
 	public LinkedDataController(LookupDao inLookupDao, StreamingDao inStreamingDao,
-			Navigation inNavigation, Parameters inParameters, @Qualifier("rootUrl") String inRootUrl) {
-		super(inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl);
+			Navigation inNavigation, Parameters inParameters, @Qualifier("rootUrl") String inRootUrl,
+			LogService inLogService) {
+		super(inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl, inLogService);
 	}
 
 	@GetMapping
@@ -42,12 +45,14 @@ public class LinkedDataController extends BaseController {
 			@RequestParam(value=Parameters.DISTANCE, required=false) String distance,
 			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws IOException {
 
+		BigInteger logId = logService.logRequest(request);
 		String comid = getComid(featureSource, featureID);
 		if (null == comid) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		} else {
 			streamFlowLines(response, comid, navigationMode, stopComid, distance, isLegacy(legacy, navigationMode));
 		}
+		logService.logRequestComplete(logId, response.getStatus());
 	}
 
 	@GetMapping(value="{dataSource}")
@@ -60,12 +65,14 @@ public class LinkedDataController extends BaseController {
 			@RequestParam(value=Parameters.DISTANCE, required=false) String distance,
 			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws IOException {
 
+		BigInteger logId = logService.logRequest(request);
 		String comid = getComid(featureSource, featureID);
 		if (null == comid) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		} else {
 			streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource, isLegacy(legacy, navigationMode));
 		}
+		logService.logRequestComplete(logId, response.getStatus());
 	}
 
 	protected String getComid(String featureSource, String featureID) {

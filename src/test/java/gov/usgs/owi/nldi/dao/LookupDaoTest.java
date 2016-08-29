@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,5 +69,13 @@ public class LookupDaoTest extends BaseSpringTest {
 		assertEquals("WQP", results.get(3).get(FeatureTransformer.SOURCE));
 		assertEquals("Water Quality Portal", results.get(3).get(FeatureTransformer.SOURCE_NAME));
 		assertEquals(String.join("/", TestSpringConfig.TEST_ROOT_URL, "wqp"), results.get(3).get(BaseDao.FEATURES));
+	}
+
+	public static List<Map<String, Object>> getTestList() {
+		List<Map<String, Object>> rtn = new ArrayList<>();
+		Map<String, Object> entry = new HashMap<>();
+		entry.put("key", "value");
+		rtn.add(entry);
+		return rtn;
 	}
 }

@@ -27,6 +27,7 @@ import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.dao.StreamingResultHandler;
+import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
@@ -49,15 +50,17 @@ public abstract class BaseController {
 	protected final Navigation navigation;
 	protected final Parameters parameters;
 	protected final String rootUrl;
+	protected final LogService logService;
 
 	private final KeyLockManager lockManager = KeyLockManagers.newLock();
 
-	public BaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, String inRootUrl) {
+	public BaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, String inRootUrl, LogService inLogService) {
 		lookupDao = inLookupDao;
 		streamingDao = inStreamingDao;
 		navigation = inNavigation;
 		parameters = inParameters;
 		rootUrl = inRootUrl;
+		logService = inLogService;
 	}
 
 	@ExceptionHandler(Exception.class)
