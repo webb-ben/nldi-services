@@ -4,7 +4,7 @@
 
 	<groupId>gov.usgs.owi</groupId>
 	<artifactId>nldi-services</artifactId>
-	<version>0.4.0-SNAPSHOT</version>
+	<version>0.4.0</version>
 	<packaging>war</packaging>
 
 	<name>nldi-services</name>
@@ -47,7 +47,7 @@
 		<connection>scm:git:https://github.com/ACWI-SSWD/nldi-services.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/ACWI-SSWD/nldi-services.git</developerConnection>
 		<url>https://github.com/ACWI-SSWD/nldi-services</url>
-		<tag>HEAD</tag>
+		<tag>nldi-services-0.4.0</tag>
 	</scm>
 		
 	<dependencyManagement>
