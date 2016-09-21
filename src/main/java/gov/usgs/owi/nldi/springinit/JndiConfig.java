@@ -8,10 +8,7 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
 @Configuration
-@EnableSwagger2
 public class JndiConfig {
 
 	private final Context ctx;
@@ -26,13 +23,27 @@ public class JndiConfig {
 	}
 
 	@Bean
-	public String rootUrl() throws NamingException {
-		return (String) ctx.lookup("java:comp/env/nldi/displayUrl");
+	public String confluenceUrl() throws NamingException {
+		return (String) ctx.lookup("java:comp/env/nldi/confluenceUrl");
 	}
 
 	@Bean
-	public String confluenceUrl() throws NamingException {
-		return (String) ctx.lookup("java:comp/env/nldi/confluenceUrl");
+	public String displayProtocol() throws NamingException {
+		return (String) ctx.lookup("java:comp/env/nldi/displayProtocol");
+	}
+
+	@Bean
+	public String displayHost() throws NamingException {
+		return (String) ctx.lookup("java:comp/env/nldi/displayHost");
+	}
+
+	@Bean
+	public String displayPath() throws NamingException {
+		return (String) ctx.lookup("java:comp/env/nldi/displayPath");
+	}
+	@Bean
+	public String rootUrl() throws NamingException {
+		return displayProtocol() + "://" + displayHost() + displayPath();
 	}
 
 }
