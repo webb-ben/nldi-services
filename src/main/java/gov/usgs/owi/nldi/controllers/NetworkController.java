@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.LogService;
@@ -52,7 +53,11 @@ public class NetworkController extends BaseController {
 			@RequestParam(value=Parameters.DISTANCE, required=false) String distance,
 			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws IOException {
 		BigInteger logId = logService.logRequest(request);
-		streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource, isLegacy(legacy, navigationMode));
+		if (BaseDao.BASIN.equalsIgnoreCase(dataSource)) {
+			streamBasin(response, comid, navigationMode, stopComid, distance, dataSource);
+		} else {
+			streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource, isLegacy(legacy, navigationMode));
+		}
 		logService.logRequestComplete(logId, response.getStatus());
 	}
 

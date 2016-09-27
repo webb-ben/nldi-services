@@ -55,10 +55,28 @@
         <include refid="navigate.core"/>
         select 1 total_rows,
                null comid,
-               st_asgeojson(st_union(st_snaptogrid(catchmentsp.the_geom, 0.0001))) shape
+               st_asgeojson(st_union(st_snaptogrid(catchmentsp.the_geom, 0.00001))) shape
           from navigation_results
                join nhdplus.catchmentsp
                  on navigation_results.comid = catchmentsp.featureid
     </select>
+<!--         select 1 total_rows, -->
+<!--                null comid, -->
+<!--                st_asgeojson(st_memunion(st_snaptogrid(catchmentsp.the_geom, 0.0001))) shape -->
+<!--           from navigation_results -->
+<!--                join nhdplus.catchmentsp -->
+<!--                  on navigation_results.comid = catchmentsp.featureid -->
+
+<!--                st_asgeojson(st_union(st_snaptogrid(catchmentsp.the_geom, 0.0001))) shape -->
+<!--                st_asgeojson(st_unaryunion(st_snaptogrid(catchmentsp.the_geom, 0.0001))) shape -->
+<!--                st_asgeojson(st_memunion(st_snaptogrid(catchmentsp.the_geom, 0.0001))) shape -->
+
+
+<!--         select count(*) over (partition by 1) total_rows, -->
+<!--                catchmentsp.featureid comid, -->
+<!--                st_asgeojson(catchmentsp.the_geom) shape -->
+<!--           from navigation_results -->
+<!--                join nhdplus.catchmentsp -->
+<!--                  on navigation_results.comid = catchmentsp.featureid -->
 
 </mapper>

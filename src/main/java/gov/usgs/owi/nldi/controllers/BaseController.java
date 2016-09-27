@@ -23,6 +23,7 @@ import gov.usgs.owi.nldi.dao.StreamingResultHandler;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.transform.BasinTransformer;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import gov.usgs.owi.nldi.transform.FlowLineTransformer;
 import gov.usgs.owi.nldi.transform.ITransformer;
@@ -101,6 +102,21 @@ public abstract class BaseController {
 				addContentHeader(response);
 				streamResults(transformer, BaseDao.FEATURES, parameterMap);
 			}
+	
+		} catch (Throwable e) {
+			LOG.error(e.getLocalizedMessage());
+			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
+		}
+	}
+
+	protected void streamBasin(HttpServletResponse response,
+			String comid, String navigationMode, String stopComid, String distance, String dataSource) throws IOException {
+		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid);
+		try (BasinTransformer transformer = new BasinTransformer(response, rootUrl)) {
+			parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
+			parameterMap.put(DATA_SOURCE, dataSource.toLowerCase());
+			addContentHeader(response);
+			streamResults(transformer, BaseDao.BASIN, parameterMap);
 	
 		} catch (Throwable e) {
 			LOG.error(e.getLocalizedMessage());

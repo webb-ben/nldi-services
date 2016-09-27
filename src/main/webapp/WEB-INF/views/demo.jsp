@@ -40,6 +40,7 @@
 			<input type="checkbox" id="displayFlowlines" value="flowlines" checked="checked"/>Flow Lines
 			<input type="checkbox" id="displayWqp" value="wqp"/>WQP Sites
 			<input type="checkbox" id="displayHuc" value="huc12pp"/>HUC12 Pour Points
+			<input type="checkbox" id="displayBasin" value="basin"/>Drainage Basin
 		</fieldset>
 		<fieldset>
 			<legend>Results</legend>
@@ -117,6 +118,7 @@
 				var wqpURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value+"/wqp";
 				var huc12ppURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value+"/huc12pp";
 				var nhdURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value;
+				var basinURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value+"/basin";
 				if ($("#displayWqp").prop("checked")) {
 					console.log("getting sites");
 					$.getJSON( wqpURL, {distance:d.value}, function(data) { addPointDataToMap(data, map, geojsonWqpMarkerOptions); });
@@ -128,6 +130,10 @@
 				if ($("#displayHuc").prop("checked")) {
 					console.log("getting huc12pp");
 					$.getJSON( huc12ppURL, {distance:d.value}, function(data) { addPointDataToMap(data, map, geojsonhuc12ppMarkerOptions); });
+				}
+				if ($("#displayBasin").prop("checked")) {
+					console.log("getting basin");
+					$.getJSON( basinURL, {distance:d.value}, function(data) { addLineDataToMap(data, map); });
 				}
 			}
 
