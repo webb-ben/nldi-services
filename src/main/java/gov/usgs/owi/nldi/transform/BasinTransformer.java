@@ -8,7 +8,6 @@ import gov.usgs.owi.nldi.dao.BaseDao;
 
 public class BasinTransformer extends MapToGeoJsonTransformer {
 
-	public static final String NHDPLUS_COMID = "nhdplus_comid";
 	public static final String BASIN_COUNT_HEADER = BaseDao.BASIN;
 	public BasinTransformer(HttpServletResponse response, String rootUrl) {
 		super(response, rootUrl, BASIN_COUNT_HEADER);

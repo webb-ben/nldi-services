@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.LogService;
@@ -62,6 +63,15 @@ public class NetworkControllerTest {
 	@Test
 	public void getFeaturesTest() throws IOException {
 		controller.getFeatures(request, response, null, null, null, null, null, null);
+		verify(logService).logRequest(any(HttpServletRequest.class));
+		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
+		//this is a BAD_REQUEST because the BaseController.streamFeatures dependencies are not all mocked
+		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+	}
+
+	@Test
+	public void getBasinTest() throws IOException {
+		controller.getFeatures(request, response, null, null, BaseDao.BASIN, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
 		//this is a BAD_REQUEST because the BaseController.streamFeatures dependencies are not all mocked

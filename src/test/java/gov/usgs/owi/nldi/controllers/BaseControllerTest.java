@@ -12,6 +12,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.ibatis.session.ResultHandler;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.owi.nldi.NavigationMode;
+import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.LogService;
@@ -43,7 +46,7 @@ public class BaseControllerTest {
 	private ITransformer transformer;
 	@Mock
 	private LogService logService;
-	private MockHttpServletResponse response;
+	private HttpServletResponse response;
 
 	private class TestBaseController extends BaseController {
 		public TestBaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, LogService inLogService) {
@@ -106,6 +109,16 @@ public class BaseControllerTest {
 	@SuppressWarnings("unchecked")
 	public void streamFlowLinesTest() throws Exception {
 		controller.streamFlowLines(response, "123", "navigationMode", "456", "789", false);
+		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
+		verify(navigation, never()).navigate(anyMap());
+		verify(navigation, never()).interpretResult(anyMap());
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void streamBasinTest() throws Exception {
+		controller.streamBasin(response, "123", "navigationMode", "456", "789", BaseDao.BASIN);
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
 		verify(navigation, never()).navigate(anyMap());
 		verify(navigation, never()).interpretResult(anyMap());
