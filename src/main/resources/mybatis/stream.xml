@@ -51,4 +51,13 @@
         <include refid="lookup.selectFeatures"/>
     </select>
 
+    <select id="basin" resultType="java.util.LinkedHashMap" fetchSize="50">
+        <include refid="navigate.core"/>
+        select count(*) over (partition by 1) total_rows,
+               st_asgeojson(st_simplify(st_union(catchmentsp.the_geom), .001)) shape
+          from navigation_results
+               join nhdplus.catchmentsp
+                 on navigation_results.comid = catchmentsp.featureid
+    </select>
+
 </mapper>

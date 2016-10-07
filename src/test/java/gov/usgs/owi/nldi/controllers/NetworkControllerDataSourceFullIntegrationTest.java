@@ -20,6 +20,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import gov.usgs.owi.nldi.BaseSpringTest;
 import gov.usgs.owi.nldi.FullIntegrationTest;
+import gov.usgs.owi.nldi.transform.BasinTransformer;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
 
 @Category(FullIntegrationTest.class)
@@ -175,5 +176,17 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297198_PP_stop_13297246.json"))).allowingAnyArrayOrdering());
+	}
+
+	@Test
+	public void getBasinTest() throws Exception {
+		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UT/basin"))
+				.andExpect(status().isOk())
+				.andExpect(header().string(BasinTransformer.BASIN_COUNT_HEADER, "1"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
+				.andReturn();
+
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject(getCompareFile("network/basin/", "comid_13297246_UT_basin.json"))).allowingAnyArrayOrdering());
 	}
 }
