@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="stream">
+
+    <sql id="cols">
+        characteristic_id,
+        characteristic_description,
+        units,
+        dataset_label,
+        dataset_url,
+        theme_label,
+        theme_url,
+        characteristic_type
+    </sql>
+
+    <select id="characteristics" resultType="java.util.LinkedHashMap" fetchSize="50">
+        select
+        <include refid="cols" />
+        from characteristic_data.characteristic_metadata
+        where lower(characteristic_type) like #{characteristicType} || '%'
+    </select>
+</mapper>
