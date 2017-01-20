@@ -2,7 +2,6 @@ package gov.usgs.owi.nldi.transform;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -10,12 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-
 import gov.usgs.owi.nldi.dao.BaseDao;
 
-public class CharacteristicTransformer implements ITransformer {
+public class CharacteristicTransformer extends MapToJsonTransformer {
 	private static final Logger LOG = LoggerFactory.getLogger(CharacteristicTransformer.class);
 
 	public static final String CHARACTERISTIC = "characteristic";
@@ -29,12 +25,8 @@ public class CharacteristicTransformer implements ITransformer {
 	public static final String THEME_URL = "theme_url";
 	public static final String CHARACTERISTIC_TYPE = "characteristic_type";
 	
-	protected OutputStream target;
-	protected JsonFactory f;
-	protected JsonGenerator g;
-	protected HttpServletResponse response;
-	
-	public CharacteristicTransformer(HttpServletResponse response, String rootUrl) {
+	public CharacteristicTransformer(HttpServletResponse response) {
+		super(response);
 		try {
 			this.target = new BufferedOutputStream(response.getOutputStream());
 		} catch (IOException e) {
@@ -42,91 +34,40 @@ public class CharacteristicTransformer implements ITransformer {
 			LOG.error(msgText, e);
 			throw new RuntimeException(msgText, e);
 		}
-		init();
 	}
 
-	protected void init() {
-		f = new JsonFactory();
-		try {
-			g = f.createGenerator(target);
-			g.writeStartObject();
-			g.writeFieldName(BaseDao.CHARACTERISTICS);
-			g.writeStartArray();
-		} catch (IOException e) {
-			throw new RuntimeException("Error starting json document", e);
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
 	@Override
-	public void write(Object result) {
-		if (null == result) {
-			return;
-		}
-
-		if (result instanceof Map) {
-			Map<String, Object> resultMap = (Map<String, Object>) result;
-			writeData(resultMap);
-		}
+	void initJson(Map<String, Object> resultMap) {
 		try {
-			target.flush();
-		} catch (IOException e) {
-			throw new RuntimeException("Error flushing OutputStream", e);
-		}
-	}
-	
-	protected void writeData(Map<String, Object> resultMap) {
-		try {
-			g.writeStartObject();
-
-			g.writeObjectFieldStart(CHARACTERISTIC);
-			writeProperties(resultMap);
-			g.writeEndObject();
-
-			g.writeEndObject();
+			g.writeStartObject();																			// {
+			g.writeFieldName(BaseDao.CHARACTERISTICS);														// chars: 
+			g.writeStartArray();																			// [
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing json", e);
 		}
 	}
 
-	protected void writeProperties(Map<String, Object> resultMap) {
-		try {
-			g.writeStringField(CHARACTERISTIC_ID, getValue(resultMap, CHARACTERISTIC_ID));
-			g.writeStringField(CHARACTERISTIC_DESCRIPTION, getValue(resultMap, CHARACTERISTIC_DESCRIPTION));
-			g.writeStringField(UNIT, getValue(resultMap, UNIT));
-			g.writeStringField(DATASET_LABEL, getValue(resultMap, DATASET_LABEL));
-			g.writeStringField(DATASET_URL, getValue(resultMap, DATASET_URL));
-			g.writeStringField(THEME_LABEL, getValue(resultMap, THEME_LABEL));
-			g.writeStringField(THEME_URL, getValue(resultMap, THEME_URL));
-			g.writeStringField(CHARACTERISTIC_TYPE, getValue(resultMap, CHARACTERISTIC_TYPE));
-		} catch (IOException e) {
-			throw new RuntimeException("Error writing properties", e);
-		}
-	}
-
-	/** output the closing tags and flush the stream. */
 	@Override
-	public void end() {
-		try {
-			if (null != g) {
-				g.close();
-			}
-			target.flush();
-		} catch (IOException e) {
-			throw new RuntimeException("Error ending json document", e);
-		}
+	void addResponseHeaders(HttpServletResponse response, Map<String, Object> resultMap) {
 	}
 
 	@Override
-	public void close() throws Exception {
-		// TODO Auto-generated method stub
-	}
-	
-	protected String getValue(Map<String, Object> resultMap, String key) {
-		if (resultMap.containsKey(key) && null != resultMap.get(key)) {
-			return resultMap.get(key).toString();
-		} else {
-			return "";
+	void writeMap(Map<String, Object> resultMap) {
+		try {
+			g.writeStartObject();																			// {
+			g.writeObjectFieldStart(CHARACTERISTIC);														// char : {
+			g.writeStringField(CHARACTERISTIC_ID, getValue(resultMap, CHARACTERISTIC_ID));					// a : b
+			g.writeStringField(CHARACTERISTIC_DESCRIPTION, getValue(resultMap, CHARACTERISTIC_DESCRIPTION));// a : b
+			g.writeStringField(UNIT, getValue(resultMap, UNIT));											// a : b
+			g.writeStringField(DATASET_LABEL, getValue(resultMap, DATASET_LABEL));							// a : b
+			g.writeStringField(DATASET_URL, getValue(resultMap, DATASET_URL));								// a : b
+			g.writeStringField(THEME_LABEL, getValue(resultMap, THEME_LABEL));								// a : b
+			g.writeStringField(THEME_URL, getValue(resultMap, THEME_URL));									// a : b
+			g.writeStringField(CHARACTERISTIC_TYPE, getValue(resultMap, CHARACTERISTIC_TYPE));				// a : b
+			g.writeEndObject();																				// }
+			g.writeEndObject();																				// }
+		} catch (IOException e) {
+			throw new RuntimeException("Error writing json", e);
 		}
 	}
 }
