@@ -26,7 +26,7 @@ public class FlowLineTransformerTest {
 	}
 
 	@After
-	public void afterTest() throws IOException {
+	public void afterTest() throws Exception {
 		transformer.close();
 	}
 

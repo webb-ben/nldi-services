@@ -15,7 +15,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 
 import gov.usgs.owi.nldi.dao.BaseDao;
 
-public class CharacteristicTransformer extends OutputStream implements ITransformer {
+public class CharacteristicTransformer implements ITransformer {
 	private static final Logger LOG = LoggerFactory.getLogger(CharacteristicTransformer.class);
 
 	public static final String CHARACTERISTIC = "characteristic";
@@ -104,12 +104,6 @@ public class CharacteristicTransformer extends OutputStream implements ITransfor
 		}
 	}
 
-	@Override
-	public void write(int b) {
-		//Nothing to do here, but we need to override because we are extending OutpuStream.
-		throw new RuntimeException("Writing a single byte is not supported");
-	}
-
 	/** output the closing tags and flush the stream. */
 	@Override
 	public void end() {
@@ -123,6 +117,11 @@ public class CharacteristicTransformer extends OutputStream implements ITransfor
 		}
 	}
 
+	@Override
+	public void close() throws Exception {
+		// TODO Auto-generated method stub
+	}
+	
 	protected String getValue(Map<String, Object> resultMap, String key) {
 		if (resultMap.containsKey(key) && null != resultMap.get(key)) {
 			return resultMap.get(key).toString();

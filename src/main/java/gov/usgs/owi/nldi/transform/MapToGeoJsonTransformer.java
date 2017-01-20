@@ -15,7 +15,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 
 import gov.usgs.owi.nldi.dao.BaseDao;
 
-public abstract class MapToGeoJsonTransformer extends OutputStream implements ITransformer {
+public abstract class MapToGeoJsonTransformer implements ITransformer {
 	private static final Logger LOG = LoggerFactory.getLogger(MapToGeoJsonTransformer.class);
 
 	public static final String COUNT_SUFFIX = "_count";
@@ -107,12 +107,6 @@ public abstract class MapToGeoJsonTransformer extends OutputStream implements IT
 		}
 	}
 
-	@Override
-	public void write(int b) {
-		//Nothing to do here, but we need to override because we are extending OutpuStream.
-		throw new RuntimeException("Writing a single byte is not supported");
-	}
-
 	/** output the closing tags and flush the stream. */
 	@Override
 	public void end() {
@@ -124,6 +118,11 @@ public abstract class MapToGeoJsonTransformer extends OutputStream implements IT
 		} catch (IOException e) {
 			throw new RuntimeException("Error ending json document", e);
 		}
+	}
+
+	@Override
+	public void close() throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 	protected String getValue(Map<String, Object> resultMap, String key) {
