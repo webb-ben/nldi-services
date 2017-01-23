@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+
 import gov.usgs.owi.nldi.dao.BaseDao;
 
 public class CharacteristicTransformer extends MapToJsonTransformer {
@@ -35,9 +37,13 @@ public class CharacteristicTransformer extends MapToJsonTransformer {
 			throw new RuntimeException(msgText, e);
 		}
 	}
+	
+	@Override
+	void addResponseHeaders(HttpServletResponse response, Map<String, Object> resultMap) {
+	}
 
 	@Override
-	void initJson(Map<String, Object> resultMap) {
+	void initJson(JsonGenerator g, Map<String, Object> resultMap) {
 		try {
 			g.writeStartObject();																			// {
 			g.writeFieldName(BaseDao.CHARACTERISTICS);														// chars: 
@@ -48,11 +54,7 @@ public class CharacteristicTransformer extends MapToJsonTransformer {
 	}
 
 	@Override
-	void addResponseHeaders(HttpServletResponse response, Map<String, Object> resultMap) {
-	}
-
-	@Override
-	void writeMap(Map<String, Object> resultMap) {
+	void writeMap(JsonGenerator g, Map<String, Object> resultMap) {
 		try {
 			g.writeStartObject();																			// {
 			g.writeObjectFieldStart(CHARACTERISTIC);														// char : {

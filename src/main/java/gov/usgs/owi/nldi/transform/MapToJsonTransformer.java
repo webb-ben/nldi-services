@@ -26,10 +26,10 @@ public abstract class MapToJsonTransformer implements ITransformer {
 	abstract void addResponseHeaders(HttpServletResponse response, Map<String, Object> resultMap);
 	
 	/** gets called only once, on the first row */
-	abstract void initJson(Map<String, Object> resultMap);
+	abstract void initJson(JsonGenerator jsonGenerator, Map<String, Object> resultMap);
 
 	/** gets called multiple times, once per row */
-	abstract void writeMap(Map<String, Object> resultMap);
+	abstract void writeMap(JsonGenerator jsonGenerator, Map<String, Object> resultMap);
 
 	public MapToJsonTransformer(HttpServletResponse response) {
 		try {
@@ -59,10 +59,10 @@ public abstract class MapToJsonTransformer implements ITransformer {
 			Map<String, Object> resultMap = (Map<String, Object>) result;
 			if (firstRow) {
 				addResponseHeaders(response, resultMap);
-				initJson(resultMap);
+				initJson(g, resultMap);
 				firstRow = false;
 			}
-			writeMap(resultMap);
+			writeMap(g, resultMap);
 		}
 		
 		try {
