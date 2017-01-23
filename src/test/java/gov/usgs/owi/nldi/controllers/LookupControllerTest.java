@@ -71,7 +71,7 @@ public class LookupControllerTest {
 
 	@Test
 	public void getFeaturestest() throws IOException {
-		controller.getFeatures(request, response);
+		controller.getFeatures(request, response, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
 		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
