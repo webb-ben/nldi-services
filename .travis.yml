@@ -24,7 +24,7 @@ before_script:
   - ~/liquibase/liquibase --driver=org.postgresql.Driver --url=jdbc:postgresql://127.0.0.1:5432/nldi --username=postgres --password= --changeLogFile=/home/travis/nldi-db/nldi-liquibase/src/main/resources/liquibase/postgres/changeLog.xml update
   - ~/liquibase/liquibase --driver=org.postgresql.Driver --url=jdbc:postgresql://127.0.0.1:5432/nldi --username=nldi --password= --changeLogFile=/home/travis/nldi-db/nldi-liquibase/src/main/resources/liquibase/changeLog.xml update
   - gunzip -c ~/nhdplus_yahara.backup.gz | pg_restore --data-only | psql -h 127.0.0.1 -p 5432 -U postgres -w -a -d nldi
-  - cd /home/travis/build/ACWI-SSWD/nldi-services/
+  - cd $TRAVIS_BUILD_DIR
   - echo "<settings><profiles><profile><id>default</id><activation><activeByDefault>true</activeByDefault></activation>
               <properties>
               <nldi.url>jdbc:postgresql://127.0.0.1:5432/nldi</nldi.url>
