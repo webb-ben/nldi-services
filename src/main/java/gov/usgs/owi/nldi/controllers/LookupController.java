@@ -72,7 +72,7 @@ public class LookupController extends BaseController {
 	}
 
 	@GetMapping(value="{featureSource}", produces=MediaType.APPLICATION_JSON_VALUE)
-	public Object getFeatures(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public Object getFeatures(HttpServletRequest request, HttpServletResponse response, @PathVariable(Parameters.FEATURE_SOURCE) String featureSource) throws IOException {
 		BigInteger logId = logService.logRequest(request);
 		response.sendError(HttpStatus.BAD_REQUEST.value(), "This functionality is not implemented.");
 		logService.logRequestComplete(logId, response.getStatus());
