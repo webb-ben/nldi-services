@@ -9,7 +9,7 @@ services:
 before_install:
   - cd ~
   - git clone https://github.com/ACWI-SSWD/nldi-db.git
-  - wget https://cidasdpdasartip.cr.usgs.gov:8444/artifactory/nldi/datasets/nhdplus_yahara.backup.gz
+  - wget https://cida.usgs.gov/artifactory/nldi/datasets/nhdplus_yahara.backup.gz
   - mkdir ~/liquibase
   - cd ~/liquibase
   - wget https://github.com/liquibase/liquibase/releases/download/liquibase-parent-3.4.2/liquibase-3.4.2-bin.tar.gz
