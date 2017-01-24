@@ -24,6 +24,7 @@ public class Parameters {
 	public static final String STOP_COMID = "stopComid";
 	public static final String LEGACY = "legacy";
 	public static final String CHARACTERISTIC_TYPE = "characteristicType";
+	public static final String CHARACTERISTIC_ID = "characteristicId";
 
 	public Map<String, Object> processParameters(final String comid, final String navigationMode,
 			final String distance, final String stopComid) {

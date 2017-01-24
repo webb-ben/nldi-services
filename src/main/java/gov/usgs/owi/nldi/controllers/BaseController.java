@@ -1,6 +1,7 @@
 package gov.usgs.owi.nldi.controllers;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -146,5 +147,18 @@ public abstract class BaseController {
 	protected boolean isLegacy(String legacy, String navigationMode) {
 		return (StringUtils.hasText(legacy) && "true".contentEquals(legacy.trim().toLowerCase()))
 				|| NavigationMode.PP.toString().equalsIgnoreCase(navigationMode);
+	}
+
+	protected String getComid(String featureSource, String featureID) {
+		Map<String, Object> parameterMap = new HashMap<> ();
+		parameterMap.put(Parameters.FEATURE_SOURCE, featureSource);
+		parameterMap.put(Parameters.FEATURE_ID, featureID);
+	
+		Map<String, Object> feature = lookupDao.getComid(BaseDao.FEATURE, parameterMap);
+		if (null == feature || !feature.containsKey(Parameters.COMID)) {
+			return null;
+		} else {
+			return feature.get(Parameters.COMID).toString();
+		}
 	}
 }

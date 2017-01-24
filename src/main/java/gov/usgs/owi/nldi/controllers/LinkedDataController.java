@@ -2,8 +2,6 @@ package gov.usgs.owi.nldi.controllers;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.LogService;
@@ -74,18 +71,4 @@ public class LinkedDataController extends BaseController {
 		}
 		logService.logRequestComplete(logId, response.getStatus());
 	}
-
-	protected String getComid(String featureSource, String featureID) {
-		Map<String, Object> parameterMap = new HashMap<> ();
-		parameterMap.put(Parameters.FEATURE_SOURCE, featureSource);
-		parameterMap.put(Parameters.FEATURE_ID, featureID);
-
-		Map<String, Object> feature = lookupDao.getComid(BaseDao.FEATURE, parameterMap);
-		if (null == feature || !feature.containsKey(Parameters.COMID)) {
-			return null;
-		} else {
-			return feature.get(Parameters.COMID).toString();
-		}
-	}
-
 }

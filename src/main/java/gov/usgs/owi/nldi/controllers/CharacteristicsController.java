@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
@@ -24,6 +25,7 @@ import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.transform.CharacteristicDataTransformer;
 import gov.usgs.owi.nldi.transform.CharacteristicTransformer;
 
 @Controller
@@ -39,11 +41,33 @@ public class CharacteristicsController extends BaseController {
 	@GetMapping(value="{characteristicType}/characteristics")
 	public void getCharacteristics(HttpServletRequest request, HttpServletResponse response, @PathVariable(Parameters.CHARACTERISTIC_TYPE) String characteristicType) throws IOException {
 		BigInteger logId = logService.logRequest(request);
-		try (CharacteristicTransformer transformer = new CharacteristicTransformer(response, rootUrl)) {
+		try (CharacteristicTransformer transformer = new CharacteristicTransformer(response, null)) {
 			Map<String, Object> parameterMap = new HashMap<> ();
 			parameterMap.put(Parameters.CHARACTERISTIC_TYPE, characteristicType.toLowerCase());
 			addContentHeader(response);
 			streamResults(transformer, BaseDao.CHARACTERISTICS, parameterMap);
+		} catch (Throwable e) {
+			LOG.error(e.getLocalizedMessage());
+			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
+		}
+		logService.logRequestComplete(logId, response.getStatus());
+	}
+	
+	@GetMapping(value="/{featureSource}/{featureID}/{characteristicType})")
+	public void getCharacteristicData(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable(Parameters.FEATURE_SOURCE) String featureSource,
+			@PathVariable(Parameters.FEATURE_ID) String featureID,
+			@PathVariable(Parameters.CHARACTERISTIC_TYPE) String characteristicType,
+			@RequestParam(value=Parameters.CHARACTERISTIC_ID, required=false) String[] characteristicIds) throws IOException {
+		BigInteger logId = logService.logRequest(request);
+		String comid = getComid(featureSource, featureID);
+		try (CharacteristicDataTransformer transformer = new CharacteristicDataTransformer(response)) {
+			Map<String, Object> parameterMap = new HashMap<> ();
+			parameterMap.put(Parameters.CHARACTERISTIC_TYPE, characteristicType.toLowerCase());
+			parameterMap.put(Parameters.COMID, comid);
+			parameterMap.put(Parameters.CHARACTERISTIC_ID, characteristicIds);
+			addContentHeader(response);
+			streamResults(transformer, BaseDao.CHARACTERISTIC_DATA, parameterMap);
 		} catch (Throwable e) {
 			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
