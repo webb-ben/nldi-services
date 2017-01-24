@@ -6,9 +6,6 @@ jdk:
 services:
   - postgres
 
-addons:
-  postgresql: "9.6"
-
 before_install:
   - cd ~
   - git clone https://github.com/ACWI-SSWD/nldi-db.git
