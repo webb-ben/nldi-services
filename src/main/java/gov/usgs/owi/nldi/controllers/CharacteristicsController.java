@@ -37,7 +37,7 @@ public class CharacteristicsController extends BaseController {
 	}
 
 	@GetMapping(value="{characteristicType}/characteristics")
-	public void getCharateristics(HttpServletRequest request, HttpServletResponse response, @PathVariable(Parameters.CHARACTERISTIC_TYPE) String characteristicType) throws IOException {
+	public void getCharacteristics(HttpServletRequest request, HttpServletResponse response, @PathVariable(Parameters.CHARACTERISTIC_TYPE) String characteristicType) throws IOException {
 		BigInteger logId = logService.logRequest(request);
 		try (CharacteristicTransformer transformer = new CharacteristicTransformer(response)) {
 			Map<String, Object> parameterMap = new HashMap<> ();
