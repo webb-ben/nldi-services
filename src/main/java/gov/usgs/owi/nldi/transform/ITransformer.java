@@ -1,6 +1,6 @@
 package gov.usgs.owi.nldi.transform;
 
-public interface ITransformer {
+public interface ITransformer extends AutoCloseable {
 
 	void write(Object object);
 
