@@ -32,7 +32,7 @@ public class CharacteristicMetadataTransformer extends MapToJsonTransformer {
 	void initJson(JsonGenerator g, Map<String, Object> resultMap) {
 		try {
 			g.writeStartObject();																			// {
-			g.writeFieldName(BaseDao.CHARACTERISTICS);														// chars: 
+			g.writeFieldName(BaseDao.CHARACTERISTICS_METADATA);														// chars: 
 			g.writeStartArray();																			// [
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing json", e);

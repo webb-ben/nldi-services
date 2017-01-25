@@ -46,7 +46,7 @@ public class CharacteristicsController extends BaseController {
 			Map<String, Object> parameterMap = new HashMap<> ();
 			parameterMap.put(Parameters.CHARACTERISTIC_TYPE, characteristicType.toLowerCase());
 			addContentHeader(response);
-			streamResults(transformer, BaseDao.CHARACTERISTICS, parameterMap);
+			streamResults(transformer, BaseDao.CHARACTERISTICS_METADATA, parameterMap);
 		} catch (Throwable e) {
 			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
