@@ -1,41 +1,27 @@
 package gov.usgs.owi.nldi.transform;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 
 import gov.usgs.owi.nldi.dao.BaseDao;
 
-public class CharacteristicTransformer extends MapToJsonTransformer {
-	private static final Logger LOG = LoggerFactory.getLogger(CharacteristicTransformer.class);
-
-	public static final String CHARACTERISTIC = "characteristic";
-
-	public static final String CHARACTERISTIC_ID = "characteristic_id";
-	public static final String CHARACTERISTIC_DESCRIPTION = "characteristic_description";
-	public static final String UNIT = "units";
-	public static final String DATASET_LABEL = "dataset_label";
-	public static final String DATASET_URL = "dataset_url";
-	public static final String THEME_LABEL = "theme_label";
-	public static final String THEME_URL = "theme_url";
-	public static final String CHARACTERISTIC_TYPE = "characteristic_type";
+public class CharacteristicMetadataTransformer extends MapToJsonTransformer {
+	private static final String CHARACTERISTIC = "characteristic";
+	private static final String CHARACTERISTIC_ID = "characteristic_id";
+	private static final String CHARACTERISTIC_DESCRIPTION = "characteristic_description";
+	private static final String UNIT = "units";
+	private static final String DATASET_LABEL = "dataset_label";
+	private static final String DATASET_URL = "dataset_url";
+	private static final String THEME_LABEL = "theme_label";
+	private static final String THEME_URL = "theme_url";
+	private static final String CHARACTERISTIC_TYPE = "characteristic_type";
 	
-	public CharacteristicTransformer(HttpServletResponse response) {
+	public CharacteristicMetadataTransformer(HttpServletResponse response) {
 		super(response);
-		try {
-			this.target = new BufferedOutputStream(response.getOutputStream());
-		} catch (IOException e) {
-			String msgText = "Unable to get output stream";
-			LOG.error(msgText, e);
-			throw new RuntimeException(msgText, e);
-		}
 	}
 	
 	@Override
@@ -46,7 +32,7 @@ public class CharacteristicTransformer extends MapToJsonTransformer {
 	void initJson(JsonGenerator g, Map<String, Object> resultMap) {
 		try {
 			g.writeStartObject();																			// {
-			g.writeFieldName(BaseDao.CHARACTERISTICS);														// chars: 
+			g.writeFieldName(BaseDao.CHARACTERISTICS_METADATA);														// chars: 
 			g.writeStartArray();																			// [
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing json", e);

@@ -1,6 +1,7 @@
 package gov.usgs.owi.nldi.transform;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -14,28 +15,32 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import gov.usgs.owi.nldi.springinit.TestSpringConfig;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 public class MapToGeoJsonTransformerTest {
 
-	public static final String HEADER_TEXT = "{\"type\":\"FeatureCollection\",\"features\":[";
-	protected static final String TEST_COUNT_HEADER = "abc";
+	private static final String TEST_COUNT_HEADER = "abc";
+	private static final String TOTAL_ROW_COUNT = "123456";
+	private static final String INITIAL_JSON = "{\"type\":\"FeatureCollection\",\"features\":[";
+	private static final String ITERATIVE_JSON = "{\"type\":\"Feature\",\"geometry\":{"
+			+ "\"type\":\"LineString\",\"coordinates\":[[-89.2572407051921, 43.2039759978652],[-89.2587703019381, 43.204960398376]]"
+			+ "},\"properties\":";
 
-	protected TestTransformer transformer;
-	protected MockHttpServletResponse response;
+	private TestTransformer transformer;
+	private MockHttpServletResponse response;
 
 	private class TestTransformer extends MapToGeoJsonTransformer {
 		public int writePropertiesCalled = 0;
 		
 		public TestTransformer(HttpServletResponse response) throws IOException {
-			super(response, TestSpringConfig.TEST_ROOT_URL, TEST_COUNT_HEADER);
+			super(response, TEST_COUNT_HEADER);
 		}
 		
 		@Override
-		protected void writeProperties(Map<String, Object> resultMap) {
+		protected void writeProperties(JsonGenerator jsonGenerator, Map<String, Object> resultMap) {
 			writePropertiesCalled = writePropertiesCalled + 1;
 			try {
-				g.writeStringField("prop", "propValue");
+				jsonGenerator.writeStringField("prop" + writePropertiesCalled, "propValue" + writePropertiesCalled);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -54,24 +59,50 @@ public class MapToGeoJsonTransformerTest {
 	}
 
 	@Test
-	public void writeMapTest() {
+	public void writeTest() {
+		//Don't process null results
+		transformer.write((Object) null);
+
+		//Don't process results that aren't a map
+		transformer.write((Object) "ABCDEFG");
+
 		Map<String, Object> map = new HashMap<>();
+		map.put(MapToGeoJsonTransformer.TOTAL_ROWS, TOTAL_ROW_COUNT);
+		map.put(MapToGeoJsonTransformer.SHAPE, "{\"type\":\"LineString\",\"coordinates\":[[-89.2572407051921, 43.2039759978652],[-89.2587703019381, 43.204960398376]]}");
 		map.put("A", "1");
 		map.put("B", "2");
-		map.put(MapToGeoJsonTransformer.TOTAL_ROWS, 569);
-		map.put(MapToGeoJsonTransformer.SHAPE, "{\"type\":\"LineString\",\"coordinates\":[[-89.2572407051921, 43.2039759978652],[-89.2587703019381, 43.204960398376]]}");
 
-		transformer.writeMap(transformer.g, map);
+		transformer.write((Object) map);
 		assertEquals(1, transformer.writePropertiesCalled);
 
+		// headers should be added after first call
+		assertTrue(response.containsHeader(TEST_COUNT_HEADER));
+		assertEquals(TOTAL_ROW_COUNT, response.getHeaderValue(TEST_COUNT_HEADER));
+
+		// initial json should be set after first call, along with first property
+		String firstWrite = INITIAL_JSON + ITERATIVE_JSON + "{\"prop1\":\"propValue1\"}}";
 		try {
-			//need to flush the JsonGenerator to get at output. 
 			transformer.g.flush();
-			assertEquals("{\"type\":\"Feature\""
-					+ ",\"geometry\":{"
-					+ "\"type\":\"LineString\",\"coordinates\":[[-89.2572407051921, 43.2039759978652],[-89.2587703019381, 43.204960398376]]}"
-					+ ",\"properties\":{\"prop\":\"propValue\"}}",
-					response.getContentAsString());
+			assertEquals(firstWrite, response.getContentAsString());
+		} catch (IOException e) {
+			fail(e.getLocalizedMessage());
+		}
+
+		transformer.write((Object) map);
+		assertEquals(2, transformer.writePropertiesCalled);
+		
+		String secondWrite = firstWrite + "," + ITERATIVE_JSON + "{\"prop2\":\"propValue2\"}}";
+		try {
+			transformer.g.flush();
+			assertEquals(secondWrite, response.getContentAsString());
+		} catch (IOException e) {
+			fail(e.getLocalizedMessage());
+		}
+		
+		transformer.end();
+		
+		try {
+			assertEquals(secondWrite + "]}", response.getContentAsString());
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
 		}

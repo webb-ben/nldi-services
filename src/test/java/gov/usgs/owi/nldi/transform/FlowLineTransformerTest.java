@@ -12,8 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import gov.usgs.owi.nldi.springinit.TestSpringConfig;
-
 public class FlowLineTransformerTest {
 
 	protected FlowLineTransformer transformer;
@@ -22,7 +20,7 @@ public class FlowLineTransformerTest {
 	@Before
 	public void beforeTest() throws IOException {
 		response = new MockHttpServletResponse();
-		transformer = new FlowLineTransformer(response, TestSpringConfig.TEST_ROOT_URL);
+		transformer = new FlowLineTransformer(response);
 	}
 
 	@After
@@ -40,7 +38,7 @@ public class FlowLineTransformerTest {
 		map.put(FeatureTransformer.URI, "uriValue");
 		try {
 			transformer.g.writeStartObject();
-			transformer.writeProperties(map);
+			transformer.writeProperties(transformer.g, map);
 			transformer.g.writeEndObject();
 			//need to flush the JsonGenerator to get at output. 
 			transformer.g.flush();

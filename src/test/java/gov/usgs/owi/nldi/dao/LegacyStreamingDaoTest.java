@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import gov.usgs.owi.nldi.BaseSpringTest;
-import gov.usgs.owi.nldi.controllers.NetworkController;
 
 public class LegacyStreamingDaoTest extends BaseSpringTest {
 
@@ -73,7 +72,7 @@ public class LegacyStreamingDaoTest extends BaseSpringTest {
 
 		streamingDao.stream(BaseDao.FLOW_LINES_LEGACY, parameterMap, handler);
 
-		parameterMap.put(NetworkController.SESSION_ID, "abc");
+		parameterMap.put(StreamingDao.SESSION_ID, "abc");
 		streamingDao.stream(BaseDao.FLOW_LINES_LEGACY, parameterMap, handler);
 
 	}
@@ -110,7 +109,7 @@ public class LegacyStreamingDaoTest extends BaseSpringTest {
 
 		streamingDao.stream(BaseDao.FEATURES_LEGACY, parameterMap, handler);
 
-		parameterMap.put(NetworkController.SESSION_ID, "abc");
+		parameterMap.put(StreamingDao.SESSION_ID, "abc");
 		streamingDao.stream(BaseDao.FEATURES_LEGACY, parameterMap, handler);
 	}
 

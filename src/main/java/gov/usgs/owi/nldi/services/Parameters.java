@@ -16,14 +16,14 @@ import gov.usgs.owi.nldi.NavigationMode;
 public class Parameters {
 	private static final Logger LOG = LoggerFactory.getLogger(Navigation.class);
 
-	public static final String FEATURE_SOURCE = "featureSource";
-	public static final String FEATURE_ID = "featureID";
 	public static final String COMID = "comid";
+	public static final String FEATURE_ID = "featureID";
 	public static final String DISTANCE = "distance";
 	public static final String NAVIGATION_MODE = "navigationMode";
 	public static final String STOP_COMID = "stopComid";
 	public static final String LEGACY = "legacy";
 	public static final String CHARACTERISTIC_TYPE = "characteristicType";
+	public static final String CHARACTERISTIC_ID = "characteristicId";
 
 	public Map<String, Object> processParameters(final String comid, final String navigationMode,
 			final String distance, final String stopComid) {

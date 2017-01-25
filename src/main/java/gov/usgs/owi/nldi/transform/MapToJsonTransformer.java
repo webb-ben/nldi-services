@@ -16,11 +16,13 @@ import com.fasterxml.jackson.core.JsonGenerator;
 public abstract class MapToJsonTransformer implements ITransformer {
 	private static final Logger LOG = LoggerFactory.getLogger(MapToJsonTransformer.class);
 
-	protected OutputStream target;
-	protected JsonFactory f;
-	protected JsonGenerator g;
-	protected HttpServletResponse response;
-	protected boolean firstRow = true; //thread local??
+	private OutputStream target;
+	private JsonFactory f;
+	private HttpServletResponse response;
+	private boolean firstRow = true; //thread local??
+
+	// package instead of private for testing
+	JsonGenerator g;
 
 	/** gets called only once, on the first row */
 	abstract void addResponseHeaders(HttpServletResponse response, Map<String, Object> resultMap);

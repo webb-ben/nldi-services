@@ -9,6 +9,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LookupDao extends BaseDao {
+	
+	public static final String ROOT_URL = "rootUrl";
+
+	public static final String FEATURE_SOURCE = "featureSource";
+	public static final String SOURCE = "source";
+	public static final String SOURCE_NAME = "sourceName";
+	
 	private static final String NS = "lookup.";
 
 	@Autowired
