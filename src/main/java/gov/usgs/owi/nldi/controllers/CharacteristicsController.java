@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.NumberUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +54,7 @@ public class CharacteristicsController extends BaseController {
 		logService.logRequestComplete(logId, response.getStatus());
 	}
 	
-	@GetMapping(value="/{featureSource}/{featureID}/{characteristicType})")
+	@GetMapping(value="{featureSource}/{featureID}/{characteristicType}")
 	public void getCharacteristicData(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID,
@@ -64,7 +65,7 @@ public class CharacteristicsController extends BaseController {
 		try (CharacteristicDataTransformer transformer = new CharacteristicDataTransformer(response)) {
 			Map<String, Object> parameterMap = new HashMap<> ();
 			parameterMap.put(Parameters.CHARACTERISTIC_TYPE, characteristicType.toLowerCase());
-			parameterMap.put(Parameters.COMID, comid);
+			parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
 			parameterMap.put(Parameters.CHARACTERISTIC_ID, characteristicIds);
 			addContentHeader(response);
 			streamResults(transformer, BaseDao.CHARACTERISTIC_DATA, parameterMap);
