@@ -26,7 +26,7 @@ import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.transform.CharacteristicDataTransformer;
-import gov.usgs.owi.nldi.transform.CharacteristicTransformer;
+import gov.usgs.owi.nldi.transform.CharacteristicMetadataTransformer;
 
 @Controller
 @RequestMapping
@@ -41,7 +41,7 @@ public class CharacteristicsController extends BaseController {
 	@GetMapping(value="{characteristicType}/characteristics")
 	public void getCharacteristics(HttpServletRequest request, HttpServletResponse response, @PathVariable(Parameters.CHARACTERISTIC_TYPE) String characteristicType) throws IOException {
 		BigInteger logId = logService.logRequest(request);
-		try (CharacteristicTransformer transformer = new CharacteristicTransformer(response)) {
+		try (CharacteristicMetadataTransformer transformer = new CharacteristicMetadataTransformer(response)) {
 			Map<String, Object> parameterMap = new HashMap<> ();
 			parameterMap.put(Parameters.CHARACTERISTIC_TYPE, characteristicType.toLowerCase());
 			addContentHeader(response);
@@ -55,7 +55,7 @@ public class CharacteristicsController extends BaseController {
 	
 	@GetMapping(value="/{featureSource}/{featureID}/{characteristicType})")
 	public void getCharacteristicData(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable(Parameters.FEATURE_SOURCE) String featureSource,
+			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID,
 			@PathVariable(Parameters.CHARACTERISTIC_TYPE) String characteristicType,
 			@RequestParam(value=Parameters.CHARACTERISTIC_ID, required=false) String[] characteristicIds) throws IOException {

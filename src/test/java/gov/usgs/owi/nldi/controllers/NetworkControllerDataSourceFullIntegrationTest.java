@@ -20,7 +20,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import gov.usgs.owi.nldi.BaseSpringTest;
 import gov.usgs.owi.nldi.FullIntegrationTest;
-import gov.usgs.owi.nldi.transform.BasinTransformer;
+import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
 
 @Category(FullIntegrationTest.class)
@@ -182,7 +182,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 	public void getBasinTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UT/basin"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(BasinTransformer.BASIN_COUNT_HEADER, "1"))
+				.andExpect(header().string(BaseDao.BASIN, "1"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 

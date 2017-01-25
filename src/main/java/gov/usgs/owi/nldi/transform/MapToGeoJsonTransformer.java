@@ -11,24 +11,22 @@ import gov.usgs.owi.nldi.dao.BaseDao;
 
 public abstract class MapToGeoJsonTransformer extends MapToJsonTransformer {
 
-	public static final String COUNT_SUFFIX = "_count";
-	public static final String DEFAULT_ENCODING = "UTF-8";
-	public static final String FEATURE_COLLECTION = "FeatureCollection";
-	public static final String FEATURE_INIT_CAP = "Feature";
-	public static final String GEOMETRY = "geometry";
-	public static final String PROPERTIES = "properties";
-	public static final String SHAPE = "shape";
-	public static final String TOTAL_ROWS = "total_rows";
-	public static final String TYPE = "type";
+	static final String COUNT_SUFFIX = "_count";
+	static final String SHAPE = "shape";
+	static final String TOTAL_ROWS = "total_rows";
+	
+	private static final String FEATURE_COLLECTION = "FeatureCollection";
+	private static final String FEATURE_INIT_CAP = "Feature";
+	private static final String GEOMETRY = "geometry";
+	private static final String PROPERTIES = "properties";
+	private static final String TYPE = "type";
 
-	protected String rootUrl;
-	protected String countHeaderName; //thread local??
+	private String countHeaderName; //thread local??
 
-	abstract void writeProperties(Map<String, Object> resultMap);
+	abstract void writeProperties(JsonGenerator jsonGenerator, Map<String, Object> resultMap);
 
-	public MapToGeoJsonTransformer(HttpServletResponse response, String rootUrl, String countHeaderName) {
+	public MapToGeoJsonTransformer(HttpServletResponse response, String countHeaderName) {
 		super(response);
-		this.rootUrl = rootUrl;
 		this.countHeaderName = countHeaderName;
 	}
 
@@ -62,7 +60,7 @@ public abstract class MapToGeoJsonTransformer extends MapToJsonTransformer {
 			jsonGenerator.writeEndObject();
 
 			jsonGenerator.writeObjectFieldStart(PROPERTIES);
-			writeProperties(resultMap);
+			writeProperties(jsonGenerator, resultMap);
 			jsonGenerator.writeEndObject();
 
 			jsonGenerator.writeEndObject();

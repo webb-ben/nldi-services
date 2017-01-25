@@ -35,7 +35,7 @@ public class LinkedDataController extends BaseController {
 
 	@GetMapping
 	public void getFlowlines(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable(Parameters.FEATURE_SOURCE) String featureSource,
+			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID,
 			@PathVariable(Parameters.NAVIGATION_MODE) String navigationMode,
 			@RequestParam(value=Parameters.STOP_COMID, required=false) String stopComid,
@@ -54,7 +54,7 @@ public class LinkedDataController extends BaseController {
 
 	@GetMapping(value="{dataSource}")
 	public void getFeatures(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable(Parameters.FEATURE_SOURCE) String featureSource,
+			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID,
 			@PathVariable(Parameters.NAVIGATION_MODE) String navigationMode,
 			@PathVariable(value=DATA_SOURCE) String dataSource,

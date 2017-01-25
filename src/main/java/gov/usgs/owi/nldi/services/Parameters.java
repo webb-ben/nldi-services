@@ -16,9 +16,8 @@ import gov.usgs.owi.nldi.NavigationMode;
 public class Parameters {
 	private static final Logger LOG = LoggerFactory.getLogger(Navigation.class);
 
-	public static final String FEATURE_SOURCE = "featureSource";
-	public static final String FEATURE_ID = "featureID";
 	public static final String COMID = "comid";
+	public static final String FEATURE_ID = "featureID";
 	public static final String DISTANCE = "distance";
 	public static final String NAVIGATION_MODE = "navigationMode";
 	public static final String STOP_COMID = "stopComid";

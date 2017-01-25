@@ -18,7 +18,6 @@ import de.jkeylockmanager.manager.KeyLockManagers;
 import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
-import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.dao.StreamingResultHandler;
 import gov.usgs.owi.nldi.services.LogService;
@@ -32,13 +31,10 @@ import gov.usgs.owi.nldi.transform.ITransformer;
 public abstract class BaseController {
 	private static final Logger LOG = LoggerFactory.getLogger(BaseController.class);
 
-	public static final String DATA_SOURCE = "dataSource";
-
-	public static final String NAVIGATE = NavigationDao.NAVIGATE;
-	public static final String SESSION_ID = "sessionId";
-
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	public static final String MIME_TYPE_GEOJSON = "application/vnd.geo+json";
+
+	static final String DATA_SOURCE = "dataSource";
 
 	protected final LookupDao lookupDao;
 	protected final StreamingDao streamingDao;
@@ -61,11 +57,11 @@ public abstract class BaseController {
 	protected void streamFlowLines(HttpServletResponse response,
 			String comid, String navigationMode, String stopComid, String distance, boolean legacy) throws IOException {
 		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid);
-		try (FlowLineTransformer transformer = new FlowLineTransformer(response, rootUrl)) {
+		try (FlowLineTransformer transformer = new FlowLineTransformer(response)) {
 			if (legacy) {
 				String sessionId = getSessionId(parameterMap);
 				if (null != sessionId) {
-					parameterMap.put(SESSION_ID, sessionId);
+					parameterMap.put(StreamingDao.SESSION_ID, sessionId);
 					addContentHeader(response);
 					streamResults(transformer, BaseDao.FLOW_LINES_LEGACY, parameterMap);
 				} else {
@@ -90,7 +86,7 @@ public abstract class BaseController {
 			if (legacy) {
 				String sessionId = getSessionId(parameterMap);
 				if (null != sessionId) {
-					parameterMap.put(SESSION_ID, sessionId);
+					parameterMap.put(StreamingDao.SESSION_ID, sessionId);
 					parameterMap.put(DATA_SOURCE, dataSource.toLowerCase());
 					addContentHeader(response);
 					streamResults(transformer, BaseDao.FEATURES_LEGACY, parameterMap);
@@ -113,7 +109,7 @@ public abstract class BaseController {
 	protected void streamBasin(HttpServletResponse response,
 			String comid, String navigationMode, String stopComid, String distance, String dataSource) throws IOException {
 		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid);
-		try (BasinTransformer transformer = new BasinTransformer(response, rootUrl)) {
+		try (BasinTransformer transformer = new BasinTransformer(response)) {
 			parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
 			parameterMap.put(DATA_SOURCE, dataSource.toLowerCase());
 			addContentHeader(response);
@@ -151,7 +147,7 @@ public abstract class BaseController {
 
 	protected String getComid(String featureSource, String featureID) {
 		Map<String, Object> parameterMap = new HashMap<> ();
-		parameterMap.put(Parameters.FEATURE_SOURCE, featureSource);
+		parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
 		parameterMap.put(Parameters.FEATURE_ID, featureID);
 	
 		Map<String, Object> feature = lookupDao.getComid(BaseDao.FEATURE, parameterMap);

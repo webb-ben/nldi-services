@@ -8,46 +8,53 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+
 import gov.usgs.owi.nldi.dao.BaseDao;
+import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.NavigationDao;
-import gov.usgs.owi.nldi.services.Parameters;
 
 public class FeatureTransformer extends MapToGeoJsonTransformer {
 
-	public static final String COMID = Parameters.COMID;
-	public static final String IDENTIFIER = "identifier";
-	public static final String MEASURE = "measure";
-	public static final String NAME = "name";
-	public static final String NAVIGATION = "navigation";
-	public static final String REACHCODE = "reachcode";
-	public static final String SOURCE = "source";
-	public static final String SOURCE_NAME = "sourceName";
-	public static final String SOURCE_NAME_DB = "source_name";
-	public static final String URI = "uri";
 	public static final String FEATURE_COUNT_HEADER = BaseDao.FEATURES + COUNT_SUFFIX;
+	public static final String DEFAULT_ENCODING = "UTF-8";
+
+	static final String COMID = "comid";
+	static final String IDENTIFIER = "identifier";
+	static final String MEASURE = "measure";
+	static final String NAME = "name";
+	static final String REACHCODE = "reachcode";
+	static final String SOURCE_NAME_DB = "source_name";
+	static final String URI = "uri";
 	
+	private static final String SOURCE_NAME = "sourceName";
+	private static final String NAVIGATION = "navigation";
+
+	private String rootUrl;
+
 	public FeatureTransformer(HttpServletResponse response, String rootUrl) {
-		super(response, rootUrl, FEATURE_COUNT_HEADER);
+		super(response, FEATURE_COUNT_HEADER);
+		this.rootUrl = rootUrl;
 	}
 
 	@Override
-	protected void writeProperties(Map<String, Object> resultMap) {
+	protected void writeProperties(JsonGenerator jsonGenerator, Map<String, Object> resultMap) {
 		try {
-			String source = getValue(resultMap, SOURCE);
+			String source = getValue(resultMap, LookupDao.SOURCE);
 			String identifier = getValue(resultMap, IDENTIFIER);
-			g.writeStringField(SOURCE, source);
-			g.writeStringField(SOURCE_NAME, getValue(resultMap, SOURCE_NAME_DB));
-			g.writeStringField(IDENTIFIER, identifier);
-			g.writeStringField(NAME, getValue(resultMap, NAME));
-			g.writeStringField(URI, getValue(resultMap, URI));
-			g.writeStringField(COMID, getValue(resultMap, COMID));
+			jsonGenerator.writeStringField(LookupDao.SOURCE, source);
+			jsonGenerator.writeStringField(SOURCE_NAME, getValue(resultMap, SOURCE_NAME_DB));
+			jsonGenerator.writeStringField(IDENTIFIER, identifier);
+			jsonGenerator.writeStringField(NAME, getValue(resultMap, NAME));
+			jsonGenerator.writeStringField(URI, getValue(resultMap, URI));
+			jsonGenerator.writeStringField(COMID, getValue(resultMap, COMID));
 			if (StringUtils.hasText(getValue(resultMap, REACHCODE))) {
-				g.writeStringField(REACHCODE, getValue(resultMap, REACHCODE));
+				jsonGenerator.writeStringField(REACHCODE, getValue(resultMap, REACHCODE));
 			}
 			if (StringUtils.hasText(getValue(resultMap, MEASURE))) {
-				g.writeStringField(MEASURE, getValue(resultMap, MEASURE));
+				jsonGenerator.writeStringField(MEASURE, getValue(resultMap, MEASURE));
 			}
-			g.writeStringField(NAVIGATION, String.join("/", rootUrl, source.toLowerCase(), URLEncoder.encode(identifier, DEFAULT_ENCODING), NavigationDao.NAVIGATE));
+			jsonGenerator.writeStringField(NAVIGATION, String.join("/", rootUrl, source.toLowerCase(), URLEncoder.encode(identifier, DEFAULT_ENCODING), NavigationDao.NAVIGATE));
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing properties", e);
 		}
