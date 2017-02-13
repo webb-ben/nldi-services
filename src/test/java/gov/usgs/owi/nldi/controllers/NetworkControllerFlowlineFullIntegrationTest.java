@@ -63,6 +63,18 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_10.json"))).allowingAnyArrayOrdering());
 	}
 
+	@Test
+	public void getComidUtDiversionTest() throws Exception {
+		MvcResult rtn = mockMvc.perform(get("/comid/13294158/navigate/UT"))
+				.andExpect(status().isOk())
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "15"))
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
+				.andReturn();
+
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294158_UT.json"))).allowingAnyArrayOrdering());
+	}
+
 	//UM Testing
 	@Test
 	public void getComidUmTest() throws Exception {
