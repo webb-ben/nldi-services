@@ -142,12 +142,14 @@
                            pathlength + 0 <if test="null != distance">+ #{distance}</if> stoplength
                       from nhdplus.plusflowlinevaa_np21
                      where comid = #{comid,jdbcType=NUMERIC}
-                    union all
+                    union
                     select x.comid, x.hydroseq, x.startflag, navigation_results.stoplength
                       from nhdplus.plusflowlinevaa_np21 x,
                            navigation_results
                      where navigation_results.startflag != 1 and
-                           x.dnhydroseq = navigation_results.hydroseq
+                           (x.dnhydroseq = navigation_results.hydroseq or
+                            (x.dnminorhyd != 0 and
+                             x.dnminorhyd = navigation_results.hydroseq))
                            <if test="null != distance">
                                and x.pathlength &lt;= navigation_results.stoplength
                            </if>

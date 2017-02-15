@@ -68,7 +68,7 @@
                source_name "sourceName",
                #{rootUrl,jdbcType=VARCHAR} || '/' || lower(source_suffix) features
           from nldi_data.crawler_source
-             order by source_suffix
+             order by lower(source_suffix)
     </select>
 
 </mapper>
