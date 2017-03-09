@@ -26,7 +26,7 @@ public abstract class MapToJsonTransformer implements ITransformer {
 
 	/** gets called only once, on the first row */
 	abstract void addResponseHeaders(HttpServletResponse response, Map<String, Object> resultMap);
-	
+
 	/** gets called only once, on the first row */
 	abstract void initJson(JsonGenerator jsonGenerator, Map<String, Object> resultMap);
 
@@ -66,7 +66,7 @@ public abstract class MapToJsonTransformer implements ITransformer {
 			}
 			writeMap(g, resultMap);
 		}
-		
+
 		try {
 			target.flush();
 		} catch (IOException e) {
@@ -91,7 +91,7 @@ public abstract class MapToJsonTransformer implements ITransformer {
 	public void close() throws Exception {
 		// do nothing, just like OutputStream
 	}
-	
+
 	/** Returns the toString of the object for the given key, or empty string if the object is not in the map, or is null */
 	protected String getValue(Map<String, Object> resultMap, String key) {
 		if (resultMap.containsKey(key) && null != resultMap.get(key)) {

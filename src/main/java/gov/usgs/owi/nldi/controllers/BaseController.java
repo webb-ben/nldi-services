@@ -106,12 +106,10 @@ public abstract class BaseController {
 		}
 	}
 
-	protected void streamBasin(HttpServletResponse response,
-			String comid, String navigationMode, String stopComid, String distance, String dataSource) throws IOException {
-		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid);
+	protected void streamBasin(HttpServletResponse response, String comid) throws IOException {
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
 		try (BasinTransformer transformer = new BasinTransformer(response)) {
-			parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
-			parameterMap.put(DATA_SOURCE, dataSource.toLowerCase());
 			addContentHeader(response);
 			streamResults(transformer, BaseDao.BASIN, parameterMap);
 	

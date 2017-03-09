@@ -113,10 +113,11 @@ public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest
 				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13296790_DM.json"))).allowingAnyArrayOrdering());
 	}
 
+	@Test
 	public void getComidDmDiversionsNotIncludedTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DM"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "5"))
+				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "42"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 

@@ -33,7 +33,7 @@ import gov.usgs.owi.nldi.transform.CharacteristicMetadataTransformer;
 @RequestMapping
 public class CharacteristicsController extends BaseController {
 	private static final Logger LOG = LoggerFactory.getLogger(CharacteristicsController.class);
-	
+
 	@Autowired
 	public CharacteristicsController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, @Qualifier("rootUrl") String inRootUrl, LogService inLogService) {
 		super(inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl, inLogService);
@@ -53,7 +53,7 @@ public class CharacteristicsController extends BaseController {
 		}
 		logService.logRequestComplete(logId, response.getStatus());
 	}
-	
+
 	@GetMapping(value="{featureSource}/{featureID}/{characteristicType}")
 	public void getCharacteristicData(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
@@ -69,6 +69,20 @@ public class CharacteristicsController extends BaseController {
 			parameterMap.put(Parameters.CHARACTERISTIC_ID, characteristicIds);
 			addContentHeader(response);
 			streamResults(transformer, BaseDao.CHARACTERISTIC_DATA, parameterMap);
+		} catch (Throwable e) {
+			LOG.error(e.getLocalizedMessage());
+			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
+		}
+		logService.logRequestComplete(logId, response.getStatus());
+	}
+
+	@GetMapping(value="{featureSource}/{featureID}/basin")
+	public void getBasin(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
+			@PathVariable(Parameters.FEATURE_ID) String featureID) throws IOException {
+		BigInteger logId = logService.logRequest(request);
+		try {
+			streamBasin(response, getComid(featureSource, featureID));
 		} catch (Throwable e) {
 			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());

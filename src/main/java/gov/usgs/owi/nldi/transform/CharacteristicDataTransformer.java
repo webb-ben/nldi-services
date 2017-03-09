@@ -10,10 +10,10 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import gov.usgs.owi.nldi.dao.BaseDao;
 
 public class CharacteristicDataTransformer extends MapToJsonTransformer {
-	private static final String CHARACTERISTICS = "characteristics";
-	private static final String CHARACTERISTIC_ID = "characteristic_id";
-	private static final String CHARACTERISTIC_VALUE = "characteristic_value";
-	private static final String PERCENT_NO_DATA = "percent_nodata";
+	protected static final String CHARACTERISTICS = "characteristics";
+	protected static final String CHARACTERISTIC_ID = "characteristic_id";
+	protected static final String CHARACTERISTIC_VALUE = "characteristic_value";
+	protected static final String PERCENT_NO_DATA = "percent_nodata";
 	
 	public CharacteristicDataTransformer(HttpServletResponse response) {
 		super(response);

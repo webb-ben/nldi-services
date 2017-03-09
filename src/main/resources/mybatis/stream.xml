@@ -52,12 +52,24 @@
     </select>
 
     <select id="basin" resultType="java.util.LinkedHashMap" fetchSize="50">
-        <include refid="navigate.core"/>
-        select count(*) over (partition by 1) total_rows,
+        with
+            recursive navigation_results(comid, hydroseq, startflag)
+                as (select comid, hydroseq, startflag
+                      from characteristic_data.plusflowlinevaa_np21
+                     where comid = #{comid,jdbcType=NUMERIC}
+                    union
+                    select x.comid, x.hydroseq, x.startflag
+                      from characteristic_data.plusflowlinevaa_np21 x,
+                           navigation_results
+                     where navigation_results.startflag != 1 and
+                           (x.dnhydroseq = navigation_results.hydroseq or
+                            (x.dnminorhyd != 0 and
+                             x.dnminorhyd = navigation_results.hydroseq))
+                   )
+        select 1 total_rows,
                st_asgeojson(st_simplify(st_union(catchmentsp.the_geom), .001)) shape
           from navigation_results
-               join nhdplus.catchmentsp
+               join characteristic_data.catchmentsp
                  on navigation_results.comid = catchmentsp.featureid
     </select>
-
 </mapper>
