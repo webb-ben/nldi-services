@@ -10,8 +10,10 @@ import gov.usgs.owi.nldi.dao.BaseDao;
 
 public class BasinTransformer extends MapToGeoJsonTransformer {
 
+	public static final String BASIN_COUNT_HEADER = BaseDao.BASIN + COUNT_SUFFIX;
+
 	public BasinTransformer(HttpServletResponse response) {
-		super(response, BaseDao.BASIN);
+		super(response, BASIN_COUNT_HEADER);
 	}
 
 	@Override

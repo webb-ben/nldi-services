@@ -67,7 +67,6 @@ public class Parameters {
 	}
 
 	public boolean isValidNavigationMode(final String navigationMode) {
-		
 		try {
 			LOG.debug("navigationMode:" + navigationMode);
 			return StringUtils.hasText(navigationMode) && null != NavigationMode.valueOf(navigationMode);

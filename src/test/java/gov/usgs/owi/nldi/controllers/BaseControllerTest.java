@@ -23,7 +23,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.owi.nldi.NavigationMode;
-import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.LogService;
@@ -53,7 +52,7 @@ public class BaseControllerTest {
 			super(inLookupDao, inStreamingDao, inNavigation, inParameters, TestSpringConfig.TEST_ROOT_URL, inLogService);
 		}
 	}
-	
+
 	private TestBaseController controller;
 
 	@Before
@@ -118,7 +117,7 @@ public class BaseControllerTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void streamBasinTest() throws Exception {
-		controller.streamBasin(response, "123", "navigationMode", "456", "789", BaseDao.BASIN);
+		controller.streamBasin(response, "123");
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
 		verify(navigation, never()).navigate(anyMap());
 		verify(navigation, never()).interpretResult(anyMap());
@@ -152,7 +151,7 @@ public class BaseControllerTest {
 		assertTrue(controller.isLegacy("true", null));
 		assertTrue(controller.isLegacy(" true ", null));
 		assertTrue(controller.isLegacy("True ", null));
-		
+
 		assertFalse(controller.isLegacy(null, null));
 		assertFalse(controller.isLegacy("", null));
 		assertFalse(controller.isLegacy("  ", null));

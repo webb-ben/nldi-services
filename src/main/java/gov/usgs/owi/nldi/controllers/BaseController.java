@@ -73,7 +73,7 @@ public abstract class BaseController {
 				streamResults(transformer, BaseDao.FLOW_LINES, parameterMap);
 			}
 
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
 		}
@@ -100,22 +100,20 @@ public abstract class BaseController {
 				streamResults(transformer, BaseDao.FEATURES, parameterMap);
 			}
 	
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
 		}
 	}
 
-	protected void streamBasin(HttpServletResponse response,
-			String comid, String navigationMode, String stopComid, String distance, String dataSource) throws IOException {
-		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid);
+	protected void streamBasin(HttpServletResponse response, String comid) throws IOException {
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
 		try (BasinTransformer transformer = new BasinTransformer(response)) {
-			parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
-			parameterMap.put(DATA_SOURCE, dataSource.toLowerCase());
 			addContentHeader(response);
 			streamResults(transformer, BaseDao.BASIN, parameterMap);
 	
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
 		}

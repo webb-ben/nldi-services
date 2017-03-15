@@ -1,6 +1,7 @@
 package gov.usgs.owi.nldi.controllers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,7 +21,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import gov.usgs.owi.nldi.BaseSpringTest;
 import gov.usgs.owi.nldi.FullIntegrationTest;
-import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
 
 @Category(FullIntegrationTest.class)
@@ -115,29 +115,29 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293474_DM_distance_10.json"))).allowingAnyArrayOrdering());
 	}
 
-	//DD Testing - Except we really don't have any diversions in the test data...
+	//DD Testing
 	@Test
 	public void getComidDdTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297242/navigate/DD/wqp"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DD/wqp"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "5"))
+				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "17"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297242_DD.json"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294310_DD.json"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
 	public void getComidDdDistanceTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13293506/navigate/DD/wqp?distance=10"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DD/wqp?distance=11"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "22"))
+				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "1"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293506_DD_distance_10.json"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294310_DD_distance_11.json"))).allowingAnyArrayOrdering());
 	}
 
 	//PP Testing
@@ -166,27 +166,23 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTe
 	}
 
 	//Parameter Error Testing
-//	@Test
+	@Test
 	public void badNavigationModeTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13297198/navigate/XX/wqp"))
-//				.andExpect(status().isBadRequest())
-//				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "16"))
-//				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
-		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297198_PP_stop_13297246.json"))).allowingAnyArrayOrdering());
+		assertEquals("", rtn.getResponse().getContentAsString());
 	}
 
 	@Test
 	public void getBasinTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UT/basin"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(BaseDao.BASIN, "1"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
-		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile("network/basin/", "comid_13297246_UT_basin.json"))).allowingAnyArrayOrdering());
+		assertEquals("", rtn.getResponse().getContentAsString());
 	}
 }

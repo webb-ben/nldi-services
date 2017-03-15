@@ -114,29 +114,29 @@ public class NetworkControllerLegacyDataSourceFullIntegrationTest extends BaseSp
 				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293474_DM_distance_10.json"))).allowingAnyArrayOrdering());
 	}
 
-	//DD Testing - Except we really don't have any diversions in the test data...
+	//DD Testing
 	@Test
 	public void getComidDdTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297242/navigate/DD/wqp?legacy=true"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DD/wqp?legacy=true"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "5"))
+				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "17"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297242_DD.json"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294310_DD.json"))).allowingAnyArrayOrdering());
 	}
 
 	@Test
 	public void getComidDdDistanceTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13293506/navigate/DD/wqp?distance=10&legacy=true"))
+		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DD/wqp?distance=11&legacy=true"))
 				.andExpect(status().isOk())
-				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "22"))
+				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "1"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
 
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13293506_DD_distance_10.json"))).allowingAnyArrayOrdering());
+				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13294310_DD_distance_11.json"))).allowingAnyArrayOrdering());
 	}
 
 	//PP Testing

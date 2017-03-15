@@ -10,20 +10,20 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import gov.usgs.owi.nldi.dao.BaseDao;
 
 public class CharacteristicMetadataTransformer extends MapToJsonTransformer {
-	private static final String CHARACTERISTIC = "characteristic";
-	private static final String CHARACTERISTIC_ID = "characteristic_id";
-	private static final String CHARACTERISTIC_DESCRIPTION = "characteristic_description";
-	private static final String UNIT = "units";
-	private static final String DATASET_LABEL = "dataset_label";
-	private static final String DATASET_URL = "dataset_url";
-	private static final String THEME_LABEL = "theme_label";
-	private static final String THEME_URL = "theme_url";
-	private static final String CHARACTERISTIC_TYPE = "characteristic_type";
-	
+	protected static final String CHARACTERISTIC = "characteristic";
+	protected static final String CHARACTERISTIC_ID = "characteristic_id";
+	protected static final String CHARACTERISTIC_DESCRIPTION = "characteristic_description";
+	protected static final String UNIT = "units";
+	protected static final String DATASET_LABEL = "dataset_label";
+	protected static final String DATASET_URL = "dataset_url";
+	protected static final String THEME_LABEL = "theme_label";
+	protected static final String THEME_URL = "theme_url";
+	protected static final String CHARACTERISTIC_TYPE = "characteristic_type";
+
 	public CharacteristicMetadataTransformer(HttpServletResponse response) {
 		super(response);
 	}
-	
+
 	@Override
 	void addResponseHeaders(HttpServletResponse response, Map<String, Object> resultMap) {
 	}

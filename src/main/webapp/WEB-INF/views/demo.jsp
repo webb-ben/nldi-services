@@ -118,7 +118,7 @@
 				var wqpURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value+"/wqp";
 				var huc12ppURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value+"/huc12pp";
 				var nhdURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value;
-				var basinURL = nldiURL+f.value+"/"+c.value+"/navigate/"+e.value+"/basin";
+				var basinURL = nldiURL+f.value+"/"+c.value+"/basin";
 				if ($("#displayWqp").prop("checked")) {
 					console.log("getting sites");
 					$.getJSON( wqpURL, {distance:d.value}, function(data) { addPointDataToMap(data, map, geojsonWqpMarkerOptions); });
