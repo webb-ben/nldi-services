@@ -88,7 +88,7 @@ public class LookupController extends BaseController {
 			parameterMap.put(Parameters.FEATURE_ID, featureID);
 			addContentHeader(response);
 			streamResults(transformer, BaseDao.FEATURE, parameterMap);
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
 		}

@@ -47,7 +47,7 @@ public class CharacteristicsController extends BaseController {
 			parameterMap.put(Parameters.CHARACTERISTIC_TYPE, characteristicType.toLowerCase());
 			addContentHeader(response);
 			streamResults(transformer, BaseDao.CHARACTERISTICS_METADATA, parameterMap);
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
 		}
@@ -69,7 +69,7 @@ public class CharacteristicsController extends BaseController {
 			parameterMap.put(Parameters.CHARACTERISTIC_ID, characteristicIds);
 			addContentHeader(response);
 			streamResults(transformer, BaseDao.CHARACTERISTIC_DATA, parameterMap);
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
 		}
@@ -83,7 +83,7 @@ public class CharacteristicsController extends BaseController {
 		BigInteger logId = logService.logRequest(request);
 		try {
 			streamBasin(response, getComid(featureSource, featureID));
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
 		}
