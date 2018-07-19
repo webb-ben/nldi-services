@@ -3,3 +3,5 @@
 /.classpath
 /.project
 /bin/
+/application.yml
+/src/main/webapp/META-INF/context.xml
