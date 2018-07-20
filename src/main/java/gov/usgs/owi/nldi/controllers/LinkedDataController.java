@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.services.ConfigurationService;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
@@ -25,12 +26,14 @@ import gov.usgs.owi.nldi.services.Parameters;
 @RestController
 @RequestMapping(value="/{featureSource}/{featureID}/navigate/{navigationMode}", produces=MediaType.APPLICATION_JSON_VALUE)
 public class LinkedDataController extends BaseController {
+	
+	protected ConfigurationService configurationService;
 
 	@Autowired
 	public LinkedDataController(LookupDao inLookupDao, StreamingDao inStreamingDao,
-			Navigation inNavigation, Parameters inParameters, @Qualifier("rootUrl") String inRootUrl,
+			Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
 			LogService inLogService) {
-		super(inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl, inLogService);
+		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService.getRootUrl(), inLogService);
 	}
 
 	@GetMapping

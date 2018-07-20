@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +27,7 @@ import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.services.ConfigurationService;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
@@ -41,12 +41,14 @@ public class LookupController extends BaseController {
 	private static final String DOWNSTREAM_MAIN = "downstreamMain";
 	private static final String UPSTREAM_MAIN = "upstreamMain";
 	private static final String UPSTREAM_TRIBUTARIES = "upstreamTributaries";
+	
+	protected ConfigurationService configurationService;
 
 	@Autowired
 	public LookupController(LookupDao inLookupDao, StreamingDao inStreamingDao,
-			Navigation inNavigation, Parameters inParameters, @Qualifier("rootUrl") String inRootUrl,
+			Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
 			LogService inLogService) {
-		super(inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl, inLogService);
+		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService.getRootUrl(), inLogService);
 	}
 
 	@GetMapping(value="", produces=MediaType.APPLICATION_JSON_VALUE)

@@ -3,7 +3,29 @@ spring:
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
-server:
-  port: 8443
- 
-    
+      
+  datasource:
+    url: "jdbc:postgresql://${nldiDbHost}:${nldiDbPort}/nldi"
+    username: ${nldiDbUsername}
+    password: ${nldiDbPassword}
+    driver-class-name: org.postgresql.Driver
+      
+  profiles: 
+    active: default,swagger
+  
+mybatis:
+  type-aliases-package: gov.usgs.owi.nldi-services
+  type-handlers-package: gov.usgs.owi.nldi-services
+  configuration:
+    callSettersOnNulls: true
+    cacheEnabled: false
+    lazyLoadingEnabled: false
+    aggressiveLazyLoading: false
+  mapper-locations: "classpath:mybatis/*.xml"
+   
+nldi:
+  displayProtocol: ${nldiProtocol}
+  displayHost: ${nldiHost}
+  displayPath: "/nldi-services"
+  confluenceUrl: "https://my.usgs.gov/confluence/createrssfeed.action?types=page&amp;spaces=qwdp&amp;title=myUSGS+4.0+RSS+Feed&amp;labelString=nldi_description_page&amp;excludedSpaceKeys%3D&amp;sort=modified&amp;maxResults=1&amp;timeSpan=3650&amp;showContent=true&amp;confirm=Create+RSS+Feed"
+  
