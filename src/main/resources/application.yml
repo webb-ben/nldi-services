@@ -13,16 +13,6 @@ spring:
   profiles: 
     active: default,swagger
   
-mybatis:
-  type-aliases-package: gov.usgs.owi.nldi-services
-  type-handlers-package: gov.usgs.owi.nldi-services
-  configuration:
-    callSettersOnNulls: true
-    cacheEnabled: false
-    lazyLoadingEnabled: false
-    aggressiveLazyLoading: false
-  mapper-locations: "classpath:mybatis/*.xml"
-   
 nldi:
   displayProtocol: ${nldiProtocol}
   displayHost: ${nldiHost}
