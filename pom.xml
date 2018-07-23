@@ -140,6 +140,12 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${springfox.version}</version>
 		</dependency>
+        
+        <dependency>
+          <groupId>javax.servlet</groupId>
+          <artifactId>javax.servlet-api</artifactId>
+          <version>4.0.1</version>
+        </dependency>
 
 		<!-- Test dependencies -->
 
@@ -182,6 +188,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <goals>
+                      <goal>build-info</goal>
+                    </goals>
+                  </execution>
+                </executions>
             </plugin>
 				
 			<plugin>

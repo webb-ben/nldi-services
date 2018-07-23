@@ -27,13 +27,19 @@ public class SwaggerConfig {
 	
 	@Bean
 	public Docket nldiServicesApi() {
+		/*
+		return new Docket(DocumentationType.SWAGGER_2)
+				.select()
+				.apis(RequestHandlerSelectors.any())
+				.paths(PathSelectors.any())
+				.build();
+		*/
 		Set<String> protocols = new HashSet<>();
 		protocols.add(configurationService.getDisplayProtocol());
 		return new Docket(DocumentationType.SWAGGER_2)
 				.protocols(protocols)
 				.host(configurationService.getDisplayHost())
-				.pathProvider(pathProvider())
-				;
+				.pathProvider(pathProvider());
 	}
 
 	@Bean

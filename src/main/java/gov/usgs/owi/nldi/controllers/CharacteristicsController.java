@@ -31,7 +31,7 @@ import gov.usgs.owi.nldi.transform.CharacteristicDataTransformer;
 import gov.usgs.owi.nldi.transform.CharacteristicMetadataTransformer;
 
 @Controller
-@RequestMapping
+@RequestMapping("test")
 public class CharacteristicsController extends BaseController {
 	private static final Logger LOG = LoggerFactory.getLogger(CharacteristicsController.class);
 	

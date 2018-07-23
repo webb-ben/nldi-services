@@ -24,7 +24,7 @@ import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
 
 @RestController
-@RequestMapping(value="/{featureSource}/{featureID}/navigate/{navigationMode}", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value="{featureSource}/{featureID}/navigate/{navigationMode}", produces=MediaType.APPLICATION_JSON_VALUE)
 public class LinkedDataController extends BaseController {
 	
 	protected ConfigurationService configurationService;

@@ -1,9 +1,5 @@
 spring:
-  mvc:
-    view:
-      prefix: /WEB-INF/views/
-      suffix: .jsp
-      
+  
   datasource:
     url: "jdbc:postgresql://${nldiDbHost}:${nldiDbPort}/nldi"
     username: ${nldiDbUsername}
@@ -19,3 +15,5 @@ nldi:
   displayPath: "/nldi-services"
   confluenceUrl: "https://my.usgs.gov/confluence/createrssfeed.action?types=page&amp;spaces=qwdp&amp;title=myUSGS+4.0+RSS+Feed&amp;labelString=nldi_description_page&amp;excludedSpaceKeys%3D&amp;sort=modified&amp;maxResults=1&amp;timeSpan=3650&amp;showContent=true&amp;confirm=Create+RSS+Feed"
   
+server:
+  contextPath: nldi-services

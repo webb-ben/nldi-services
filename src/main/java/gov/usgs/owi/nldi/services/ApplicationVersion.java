@@ -22,7 +22,7 @@ public class ApplicationVersion implements ServletContextAware {
 			String name = "META-INF/MANIFEST.MF";
 			Properties props = new Properties();
 			props.load(servletContext.getResourceAsStream(name));
-			String projectVersion = (String) props.get("Project-Version");
+			String projectVersion = "0.7.0"; /*(String) props.get("Project-Version");*/
 			currentVersion.append(projectVersion);
 			if (projectVersion.endsWith("-SNAPSHOT")) {
 				currentVersion.append(" Built at: " + (String) props.get("BuildTime"));
