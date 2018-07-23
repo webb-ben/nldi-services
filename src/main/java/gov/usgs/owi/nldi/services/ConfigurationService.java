@@ -6,9 +6,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ConfigurationService {
-
-	@Value("${nldi.confluenceUrl}")
-	private String confluenceUrl;
 	
 	@Value("${nldi.displayProtocol}")
 	private String displayProtocol;
@@ -18,10 +15,6 @@ public class ConfigurationService {
 	
 	@Value("${nldi.displayPath}")
 	private String displayPath;
-	
-	public String getConfluenceUrl() {
-		return confluenceUrl;
-	}
 
 	public String getDisplayProtocol() {
 		return displayProtocol;

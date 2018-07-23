@@ -1,8 +1,8 @@
 package gov.usgs.owi.nldi.controllers;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,12 +26,13 @@ import java.util.List;
 import java.util.Map;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
-import gov.usgs.owi.nldi.dao.LookupDaoTest;
 import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.services.TestConfigurationService;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
-import gov.usgs.owi.nldi.springinit.TestSpringConfig;
+import java.util.HashMap;
+import org.powermock.reflect.Whitebox;
 
 public class LookupControllerTest {
 
@@ -44,6 +45,8 @@ public class LookupControllerTest {
 	private Parameters parameters;
 	@Mock
 	private LogService logService;
+	
+	private TestConfigurationService configurationService;
 	private LookupController controller;
 	private MockHttpServletResponse response;
 	private MockHttpServletRequest request;
@@ -52,12 +55,14 @@ public class LookupControllerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		controller = new LookupController(lookupDao, streamingDao, navigation, parameters, TestSpringConfig.TEST_ROOT_URL, logService);
+		configurationService = new TestConfigurationService();
+		
+		controller = new LookupController(lookupDao, streamingDao, navigation, parameters, configurationService, logService);
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 
 		when(logService.logRequest(any(HttpServletRequest.class))).thenReturn(BigInteger.ONE);
-		when(lookupDao.getList(any(String.class), anyMap())).thenReturn(new ArrayList<Map<String, Object>>(), null, LookupDaoTest.getTestList());
+		when(lookupDao.getList(any(String.class), anyMap())).thenReturn(new ArrayList<Map<String, Object>>(), null, getTestList());
 	}
 
 	@Test
@@ -107,6 +112,14 @@ public class LookupControllerTest {
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		assertEquals("{upstreamMain=http://owi-test.usgs.gov:8080/test-url/test/test123/navigate/UM, upstreamTributaries=http://owi-test.usgs.gov:8080/test-url/test/test123/navigate/UT, downstreamMain=http://owi-test.usgs.gov:8080/test-url/test/test123/navigate/DM, downstreamDiversions=http://owi-test.usgs.gov:8080/test-url/test/test123/navigate/DD}",
 				out.toString());
+	}
+	
+	public static List<Map<String, Object>> getTestList() {
+		List<Map<String, Object>> rtn = new ArrayList<>();
+		Map<String, Object> entry = new HashMap<>();
+		entry.put("key", "value");
+		rtn.add(entry);
+		return rtn;
 	}
 
 }

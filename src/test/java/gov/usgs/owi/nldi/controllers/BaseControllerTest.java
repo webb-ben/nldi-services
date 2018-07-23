@@ -3,9 +3,9 @@ package gov.usgs.owi.nldi.controllers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,7 +28,6 @@ import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
-import gov.usgs.owi.nldi.springinit.TestSpringConfig;
 import gov.usgs.owi.nldi.transform.ITransformer;
 
 public class BaseControllerTest {
@@ -46,10 +45,12 @@ public class BaseControllerTest {
 	@Mock
 	private LogService logService;
 	private HttpServletResponse response;
+	
+	private String TEST_ROOT_URL = "http://owi-test.usgs.gov:8080/test-url";
 
 	private class TestBaseController extends BaseController {
-		public TestBaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, LogService inLogService) {
-			super(inLookupDao, inStreamingDao, inNavigation, inParameters, TestSpringConfig.TEST_ROOT_URL, inLogService);
+		public TestBaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, String inRootUrl, LogService inLogService) {
+			super(inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl, inLogService);
 		}
 	}
 
@@ -58,7 +59,7 @@ public class BaseControllerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		controller = new TestBaseController(lookupDao, streamingDao, navigation, parameters, logService);
+		controller = new TestBaseController(lookupDao, streamingDao, navigation, parameters, TEST_ROOT_URL, logService);
 		response = new MockHttpServletResponse();
 	}
 
@@ -140,7 +141,7 @@ public class BaseControllerTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void streamResultsTest() {
-		controller.streamResults(transformer, null, null);
+		controller.streamResults(transformer, "navigationMode", new HashMap<String, Object>());
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
 		verify(transformer).end();
 	}

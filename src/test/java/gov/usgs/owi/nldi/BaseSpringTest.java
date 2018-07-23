@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatter;
 import org.dbunit.dataset.ReplacementDataSet;
 import org.junit.runner.RunWith;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -20,11 +19,9 @@ import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.dataset.ReplacementDataSetModifier;
 
-import gov.usgs.owi.nldi.springinit.SpringConfig;
-import gov.usgs.owi.nldi.springinit.TestSpringConfig;
+import org.springframework.test.context.TestPropertySource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={SpringConfig.class, TestSpringConfig.class})
 @WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, 
 	TransactionDbUnitTestExecutionListener.class

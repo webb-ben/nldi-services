@@ -19,7 +19,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import gov.usgs.owi.nldi.BaseSpringTest;
 import gov.usgs.owi.nldi.DBIntegrationTest;
 import gov.usgs.owi.nldi.services.Parameters;
-import gov.usgs.owi.nldi.springinit.TestSpringConfig;
 
 @Category(DBIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
@@ -67,13 +66,5 @@ public class LookupDaoTest extends BaseSpringTest {
 		assertEquals("WQP", results.get(3).get(LookupDao.SOURCE));
 		assertEquals("Water Quality Portal", results.get(3).get(LookupDao.SOURCE_NAME));
 		assertEquals(String.join("/", TestSpringConfig.TEST_ROOT_URL, "wqp"), results.get(3).get(BaseDao.FEATURES));
-	}
-
-	public static List<Map<String, Object>> getTestList() {
-		List<Map<String, Object>> rtn = new ArrayList<>();
-		Map<String, Object> entry = new HashMap<>();
-		entry.put("key", "value");
-		rtn.add(entry);
-		return rtn;
 	}
 }

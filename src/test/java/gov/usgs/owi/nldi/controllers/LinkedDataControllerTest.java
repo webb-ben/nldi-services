@@ -26,10 +26,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.services.TestConfigurationService;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
-import gov.usgs.owi.nldi.springinit.TestSpringConfig;
 
 public class LinkedDataControllerTest {
 
@@ -42,6 +42,8 @@ public class LinkedDataControllerTest {
 	private Parameters parameters;
 	@Mock
 	private LogService logService;
+	
+	private TestConfigurationService configurationService;
 	private LinkedDataController controller;
 	private MockHttpServletResponse response;
 	private MockHttpServletRequest request;
@@ -49,7 +51,8 @@ public class LinkedDataControllerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		controller = new LinkedDataController(lookupDao, streamingDao, navigation, parameters, TestSpringConfig.TEST_ROOT_URL, logService);
+		configurationService = new TestConfigurationService();
+		controller = new LinkedDataController(lookupDao, streamingDao, navigation, parameters, configurationService, logService);
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 
