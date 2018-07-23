@@ -18,7 +18,3 @@ nldi:
 server:
   contextPath: nldi-services
   
-logging:
-  level:
-    org:
-      springframework: DEBUG
