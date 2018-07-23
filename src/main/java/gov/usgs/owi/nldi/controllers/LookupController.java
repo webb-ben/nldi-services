@@ -51,7 +51,7 @@ public class LookupController extends BaseController {
 		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService.getRootUrl(), inLogService);
 	}
 
-	@GetMapping(value="test", produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value="", produces=MediaType.APPLICATION_JSON_VALUE)
 	public List<Map<String, Object>> getDataSources(HttpServletRequest request, HttpServletResponse response) {
 		BigInteger logId = logService.logRequest(request);
 		List<Map<String, Object>> rtn = new ArrayList<>();
@@ -71,7 +71,7 @@ public class LookupController extends BaseController {
 		return rtn;
 	}
 
-	@GetMapping(value="test/{featureSource}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value="{featureSource}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public Object getFeatures(HttpServletRequest request, HttpServletResponse response, @PathVariable(LookupDao.FEATURE_SOURCE) String featureSource) throws IOException {
 		BigInteger logId = logService.logRequest(request);
 		response.sendError(HttpStatus.BAD_REQUEST.value(), "This functionality is not implemented.");
@@ -79,7 +79,7 @@ public class LookupController extends BaseController {
 		return null;
 	}
 
-	@GetMapping(value="test/{featureSource}/{featureID}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value="{featureSource}/{featureID}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public void getRegisteredFeature(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID) throws IOException {
@@ -97,7 +97,7 @@ public class LookupController extends BaseController {
 		logService.logRequestComplete(logId, response.getStatus());
 	}
 
-	@GetMapping(value="test/{featureSource}/{featureID}/navigate", produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value="{featureSource}/{featureID}/navigate", produces=MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> getNavigationTypes(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID) throws UnsupportedEncodingException {

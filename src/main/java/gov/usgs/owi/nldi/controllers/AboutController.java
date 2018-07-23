@@ -8,14 +8,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import gov.usgs.owi.nldi.AtomReaderUtil;
-import gov.usgs.owi.nldi.services.ApplicationVersion;
 import gov.usgs.owi.nldi.services.ConfigurationService;
+import org.springframework.beans.factory.annotation.Value;
 
 @Controller
 @RequestMapping(value="about")
 public class AboutController {
 
 	protected ConfigurationService configurationService;
+	
+	@Value("#{buildProperties.get('version')}")
+	private String applicationVersion;
 
 	@Autowired
 	public AboutController(ConfigurationService configurationService) {
@@ -25,7 +28,7 @@ public class AboutController {
 	@GetMapping
 	public ModelAndView getIndex() {
 		ModelAndView mv = new ModelAndView("about");
-		mv.addObject("version", ApplicationVersion.getVersion());
+		mv.addObject("version", applicationVersion); /*ApplicationVersion.getVersion());*/
 		mv.addObject(
 				"userGuide", 
 				AtomReaderUtil.getAtomFeedContentOnlyAsString(configurationService.getConfluenceUrl()));
@@ -35,7 +38,7 @@ public class AboutController {
 	@GetMapping(value="{requestedPage}")
 	public ModelAndView getpage(@PathVariable("requestedPage") String requestedPage) {
 		ModelAndView mv = new ModelAndView(requestedPage);
-		mv.addObject("version", ApplicationVersion.getVersion());
+		mv.addObject("version", applicationVersion);
 		mv.addObject(
 				"userGuide", 
 				AtomReaderUtil.getAtomFeedContentOnlyAsString(configurationService.getConfluenceUrl()));
