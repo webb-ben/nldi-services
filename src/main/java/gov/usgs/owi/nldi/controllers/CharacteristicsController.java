@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.NumberUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import gov.usgs.owi.nldi.dao.BaseDao;
@@ -30,7 +29,6 @@ import gov.usgs.owi.nldi.transform.CharacteristicDataTransformer;
 import gov.usgs.owi.nldi.transform.CharacteristicMetadataTransformer;
 
 @Controller
-@RequestMapping
 public class CharacteristicsController extends BaseController {
 	private static final Logger LOG = LoggerFactory.getLogger(CharacteristicsController.class);
 	

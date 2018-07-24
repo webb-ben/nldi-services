@@ -18,13 +18,13 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
+import gov.usgs.owi.nldi.BaseIT;
 import gov.usgs.owi.nldi.FullIntegrationTest;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
 
 @Category(FullIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
-public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSpringTest {
+public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseIT {
 
 	@Autowired
 	private WebApplicationContext wac;

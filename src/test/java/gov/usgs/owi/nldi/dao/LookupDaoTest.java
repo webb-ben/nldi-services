@@ -16,13 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
+import gov.usgs.owi.nldi.BaseIT;
 import gov.usgs.owi.nldi.DBIntegrationTest;
 import gov.usgs.owi.nldi.services.Parameters;
 
 @Category(DBIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
-public class LookupDaoTest extends BaseSpringTest {
+public class LookupDaoTest extends BaseIT {
 
 	@Autowired
 	LookupDao lookupDao;

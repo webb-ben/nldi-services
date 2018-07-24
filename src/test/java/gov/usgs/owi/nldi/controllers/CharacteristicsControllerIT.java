@@ -9,7 +9,6 @@ import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -18,13 +17,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
-import gov.usgs.owi.nldi.FullIntegrationTest;
+import gov.usgs.owi.nldi.BaseIT;
 import gov.usgs.owi.nldi.transform.BasinTransformer;
 
-@Category(FullIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
-public class CharacteristicsControllerFullIntegrationTest extends BaseSpringTest {
+public class CharacteristicsControllerIT extends BaseIT {
 
 	@Autowired
 	private WebApplicationContext wac;

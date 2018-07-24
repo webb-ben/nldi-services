@@ -10,24 +10,29 @@ import org.dbunit.dataset.ReplacementDataSet;
 import org.junit.runner.RunWith;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.util.FileCopyUtils;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.dataset.ReplacementDataSetModifier;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.test.context.ActiveProfiles;
 
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
+@RunWith(SpringRunner.class)
+@ActiveProfiles("it")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, 
 	TransactionDbUnitTestExecutionListener.class
 	})
-@DbUnitConfiguration(dataSetLoader = ColumnSensingFlatXMLDataSetLoader.class)
-public abstract class BaseSpringTest {
+@DbUnitConfiguration(dataSetLoader=ColumnSensingFlatXMLDataSetLoader.class)
+@AutoConfigureTestDatabase(replace=Replace.NONE)
+@Transactional(propagation=Propagation.NOT_SUPPORTED)
+public abstract class BaseIT {
 
 	public static final String RESULT_FOLDER_WQP  = "feature/feature/wqp/";
 	public static final String RESULT_FOLDER_HUC  = "feature/feature/huc12pp/";

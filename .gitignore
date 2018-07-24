@@ -4,4 +4,5 @@
 /.project
 /bin/
 /application.yml
+/application-it.yml
 /src/main/webapp/META-INF/context.xml

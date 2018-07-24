@@ -22,7 +22,7 @@ import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
 
 @RestController
-@RequestMapping(value="/comid/{comid}/navigate/{navigationMode}")
+@RequestMapping(value="api/comid/{comid}/navigate/{navigationMode}")
 public class NetworkController extends BaseController {
 	
 	protected ConfigurationService configurationService;

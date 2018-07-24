@@ -18,13 +18,13 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
+import gov.usgs.owi.nldi.BaseIT;
 import gov.usgs.owi.nldi.FullIntegrationTest;
 import gov.usgs.owi.nldi.transform.FlowLineTransformer;
 
 @Category(FullIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
-public class NetworkControllerFlowlineFullIntegrationTest extends BaseSpringTest {
+public class NetworkControllerFlowlineFullIntegrationTest extends BaseIT {
 
 	@Autowired
 	private WebApplicationContext wac;

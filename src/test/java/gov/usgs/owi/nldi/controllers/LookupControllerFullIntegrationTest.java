@@ -22,12 +22,12 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
+import gov.usgs.owi.nldi.BaseIT;
 import gov.usgs.owi.nldi.FullIntegrationTest;
 
 @Category(FullIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
-public class LookupControllerFullIntegrationTest extends BaseSpringTest {
+public class LookupControllerFullIntegrationTest extends BaseIT {
 
 	@Autowired
 	private WebApplicationContext wac;

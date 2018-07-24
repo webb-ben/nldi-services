@@ -15,13 +15,13 @@ import org.springframework.util.NumberUtils;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
+import gov.usgs.owi.nldi.BaseIT;
 import gov.usgs.owi.nldi.DBIntegrationTest;
 import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.services.Parameters;
 
 @Category(DBIntegrationTest.class)
-public class NavigationDaoTest extends BaseSpringTest {
+public class NavigationDaoTest extends BaseIT {
 
 	@Autowired
 	NavigationDao navigationDao;

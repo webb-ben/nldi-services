@@ -14,12 +14,12 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
+import gov.usgs.owi.nldi.BaseIT;
 import gov.usgs.owi.nldi.DBIntegrationTest;
 
 @Category(DBIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/webServiceLog.xml")
-public class LogDaoTest extends BaseSpringTest {
+public class LogDaoTest extends BaseIT {
 
 	public static final String TEST_QUERY = "select web_service_log_id, to_char(request_timestamp_utc, 'YYYY-MM-DD HH24:MI') request_timestamp_utc,"
 			+ " to_char(request_completed_utc, 'YYYY-MM-DD HH24:MI') request_completed_utc, referer, user_agent, request_uri, query_string"

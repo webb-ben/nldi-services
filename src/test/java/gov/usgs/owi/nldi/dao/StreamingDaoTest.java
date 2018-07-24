@@ -13,13 +13,13 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
+import gov.usgs.owi.nldi.BaseIT;
 import gov.usgs.owi.nldi.DBIntegrationTest;
 import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.services.Parameters;
 
 @Category(DBIntegrationTest.class)
-public class StreamingDaoTest extends BaseSpringTest {
+public class StreamingDaoTest extends BaseIT {
 
 	@Autowired
 	StreamingDao streamingDao;

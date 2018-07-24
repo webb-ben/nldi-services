@@ -12,9 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
+import gov.usgs.owi.nldi.BaseIT;
 
-public class LegacyStreamingDaoTest extends BaseSpringTest {
+public class LegacyStreamingDaoTest extends BaseIT {
 
 	@Autowired
 	StreamingDao streamingDao;

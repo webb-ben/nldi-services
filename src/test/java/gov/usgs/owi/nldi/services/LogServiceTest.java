@@ -9,14 +9,14 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
+import gov.usgs.owi.nldi.BaseIT;
 import gov.usgs.owi.nldi.DBIntegrationTest;
 import gov.usgs.owi.nldi.dao.LogDao;
 import gov.usgs.owi.nldi.dao.LogDaoTest;
 
 @Category(DBIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/webServiceLog.xml")
-public class LogServiceTest extends BaseSpringTest {
+public class LogServiceTest extends BaseIT {
 
 	@Autowired
 	private LogService logService;

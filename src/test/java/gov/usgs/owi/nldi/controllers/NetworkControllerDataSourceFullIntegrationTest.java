@@ -19,14 +19,14 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
+import gov.usgs.owi.nldi.BaseIT;
 import gov.usgs.owi.nldi.FullIntegrationTest;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
 
 @Category(FullIntegrationTest.class)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
 @DatabaseSetup("classpath:/testData/featureWqp.xml")
-public class NetworkControllerDataSourceFullIntegrationTest extends BaseSpringTest {
+public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
 
 	@Autowired
 	private WebApplicationContext wac;
