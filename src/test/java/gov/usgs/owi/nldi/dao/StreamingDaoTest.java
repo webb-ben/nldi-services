@@ -10,15 +10,16 @@ import org.apache.ibatis.session.ResultHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import gov.usgs.owi.nldi.BaseIT;
-import gov.usgs.owi.nldi.DBIntegrationTest;
 import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.springinit.DbTestConfig;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@Category(DBIntegrationTest.class)
+@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.NONE,
+		classes={DbTestConfig.class, StreamingDao.class})
 public class StreamingDaoTest extends BaseIT {
 
 	@Autowired

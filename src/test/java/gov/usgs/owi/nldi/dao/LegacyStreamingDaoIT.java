@@ -1,5 +1,7 @@
 package gov.usgs.owi.nldi.dao;
 
+import gov.usgs.owi.nldi.BaseIT;
+import gov.usgs.owi.nldi.springinit.DbTestConfig;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
@@ -11,10 +13,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
-import gov.usgs.owi.nldi.BaseIT;
-
-public class LegacyStreamingDaoTest extends BaseIT {
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+		classes={DbTestConfig.class, StreamingDao.class})
+public class LegacyStreamingDaoIT extends BaseIT{
 
 	@Autowired
 	StreamingDao streamingDao;

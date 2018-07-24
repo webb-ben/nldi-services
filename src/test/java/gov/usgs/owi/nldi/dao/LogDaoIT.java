@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -15,11 +14,14 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import gov.usgs.owi.nldi.BaseIT;
-import gov.usgs.owi.nldi.DBIntegrationTest;
+import gov.usgs.owi.nldi.springinit.DbTestConfig;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
-@Category(DBIntegrationTest.class)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+		classes={DbTestConfig.class, LogDao.class})
 @DatabaseSetup("classpath:/testData/webServiceLog.xml")
-public class LogDaoTest extends BaseIT {
+public class LogDaoIT extends BaseIT {
 
 	public static final String TEST_QUERY = "select web_service_log_id, to_char(request_timestamp_utc, 'YYYY-MM-DD HH24:MI') request_timestamp_utc,"
 			+ " to_char(request_completed_utc, 'YYYY-MM-DD HH24:MI') request_completed_utc, referer, user_agent, request_uri, query_string"

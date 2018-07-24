@@ -46,7 +46,7 @@ public class BaseControllerTest {
 	private LogService logService;
 	private HttpServletResponse response;
 	
-	private String TEST_ROOT_URL = "http://owi-test.usgs.gov:8080/test-url";
+	private static final String TEST_ROOT_URL = "http://owi-test.usgs.gov:8080/test-url";
 
 	private class TestBaseController extends BaseController {
 		public TestBaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, String inRootUrl, LogService inLogService) {

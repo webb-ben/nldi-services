@@ -10,7 +10,6 @@ import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -20,13 +19,31 @@ import org.springframework.web.context.WebApplicationContext;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import gov.usgs.owi.nldi.BaseIT;
-import gov.usgs.owi.nldi.FullIntegrationTest;
+import gov.usgs.owi.nldi.dao.LogDao;
+import gov.usgs.owi.nldi.dao.LookupDao;
+import gov.usgs.owi.nldi.dao.NavigationDao;
+import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.services.ConfigurationService;
+import gov.usgs.owi.nldi.services.LogService;
+import gov.usgs.owi.nldi.services.Navigation;
+import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.springinit.DbTestConfig;
+import gov.usgs.owi.nldi.springinit.SpringConfig;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-@Category(FullIntegrationTest.class)
+@EnableWebMvc
+@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.MOCK,
+		classes={DbTestConfig.class, SpringConfig.class, 
+		NetworkController.class, LookupDao.class, StreamingDao.class,
+		Navigation.class, NavigationDao.class, Parameters.class, 
+		ConfigurationService.class, LogService.class, LogDao.class})
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
 @DatabaseSetup("classpath:/testData/featureWqp.xml")
-public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
+public class NetworkControllerDataSourceIT extends BaseIT {
 
 	@Autowired
 	private WebApplicationContext wac;
@@ -43,7 +60,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
 	//UT Testing
 	@Test
 	public void getComidUtTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/UT/wqp"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13293474/navigate/UT/wqp"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "22"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -55,7 +72,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
 
 	@Test
 	public void getComidUtDistanceTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UT/wqp?distance=10"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13297246/navigate/UT/wqp?distance=10"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "6"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -68,7 +85,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
 	//UM Testing
 	@Test
 	public void getComidUmTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/UM/wqp"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13293474/navigate/UM/wqp"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "17"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -80,7 +97,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
 
 	@Test
 	public void getComidUmDistanceTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UM/wqp?distance=10"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13297246/navigate/UM/wqp?distance=10"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "6"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -93,7 +110,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
 	//DM Testing
 	@Test
 	public void getComidDmTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13296790/navigate/DM/wqp"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13296790/navigate/DM/wqp"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "6"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -105,7 +122,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
 
 	@Test
 	public void getComidDmDistanceTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13293474/navigate/DM/wqp?distance=10"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13293474/navigate/DM/wqp?distance=10"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "31"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -118,7 +135,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
 	//DD Testing
 	@Test
 	public void getComidDdTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DD/wqp"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13294310/navigate/DD/wqp"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "17"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -130,7 +147,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
 
 	@Test
 	public void getComidDdDistanceTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13294310/navigate/DD/wqp?distance=11"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13294310/navigate/DD/wqp?distance=11"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "1"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -143,7 +160,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
 	//PP Testing
 	@Test
 	public void getComidPpStopComidInvalidTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/PP/wqp?stopComid=13297198"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13297246/navigate/PP/wqp?stopComid=13297198"))
 				.andExpect(status().isBadRequest())
 				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, (String)null))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, (String)null))
@@ -155,7 +172,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
 
 	@Test
 	public void getComidPpStopComidTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297198/navigate/PP/wqp?stopComid=13297246"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13297198/navigate/PP/wqp?stopComid=13297246"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "16"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -168,7 +185,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
 	//Parameter Error Testing
 	@Test
 	public void badNavigationModeTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297198/navigate/XX/wqp"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13297198/navigate/XX/wqp"))
 				.andExpect(status().isBadRequest())
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
@@ -178,7 +195,7 @@ public class NetworkControllerDataSourceFullIntegrationTest extends BaseIT {
 
 	@Test
 	public void getBasinTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13297246/navigate/UT/basin"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13297246/navigate/UT/basin"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();

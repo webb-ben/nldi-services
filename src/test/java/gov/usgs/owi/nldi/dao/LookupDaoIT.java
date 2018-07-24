@@ -10,26 +10,28 @@ import java.util.Map;
 
 import org.json.JSONException;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import gov.usgs.owi.nldi.BaseIT;
-import gov.usgs.owi.nldi.DBIntegrationTest;
 import gov.usgs.owi.nldi.services.ConfigurationService;
 import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.springinit.DbTestConfig;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@Category(DBIntegrationTest.class)
+@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.NONE,
+		classes={DbTestConfig.class, LookupDao.class, ConfigurationService.class})
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
-public class LookupDaoTest extends BaseIT {
+public class LookupDaoIT extends BaseIT {
 
-	@Autowired
-	LookupDao lookupDao;
 	
 	@Autowired
-	ConfigurationService configurationService
-
+	private LookupDao lookupDao;
+	
+	@Autowired
+	private ConfigurationService configurationService;
+	
 	@Test
 	public void getFeatureTest() throws IOException, JSONException {
 		Map<String, Object> parameterMap = new HashMap<>();
