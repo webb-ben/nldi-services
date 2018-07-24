@@ -201,8 +201,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<configuration>
-					<groups>gov.usgs.owi.nldi.DBIntegrationTest</groups>
-					<groups>gov.usgs.owi.nldi.FullIntegrationTest</groups>
+                  <environmentVariables>
+                    <
+                  </environmentVariables>
 				</configuration>
 				<executions>
 					<execution>

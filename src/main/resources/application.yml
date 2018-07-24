@@ -12,5 +12,5 @@ spring:
 nldi:
   displayProtocol: ${nldiProtocol}
   displayHost: ${nldiHost}
-  displayPath: ""
+  displayPath: ${nldiPath}
   

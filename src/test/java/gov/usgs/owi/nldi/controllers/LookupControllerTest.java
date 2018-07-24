@@ -32,7 +32,6 @@ import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
 import java.util.HashMap;
-import org.powermock.reflect.Whitebox;
 
 public class LookupControllerTest {
 
