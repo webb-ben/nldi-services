@@ -28,24 +28,25 @@
 		<jtidy-version>r938</jtidy-version>
 		<additionalparam>-Xdoclint:none</additionalparam>
 		<cida.maven.url>http://internal.cida.usgs.gov/maven</cida.maven.url>
+		<wma.artifactory.url>https://cida.usgs.gov/artifactory</wma.artifactory.url>
 	</properties>
 
 	<distributionManagement>
 		<repository>
-			<id>cida-public-releases</id>
-			<name>CIDA Public Releases</name>
-			<url>${cida.maven.url}/content/repositories/cida-public-releases</url>
+			<id>release</id>
+			<name>Public Releases</name>
+			<url>${wma.artifactory.url}/content/repositories/cida-public-releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>cida-public-snapshots</id>
-			<name>CIDA Public Snapshots</name>
-			<url>${cida.maven.url}/content/repositories/cida-public-snapshots</url>
+			<id>snapshots</id>
+			<name>Public Snapshots</name>
+			<url>${wma.artifactory.url}/content/repositories/cida-public-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
 	<scm>
 		<connection>scm:git:https://github.com/ACWI-SSWD/nldi-services.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/ACWI-SSWD/nldi-services.git</developerConnection>
+		<developerConnection>scm:git:https://${env.GITHUB_USER}:${env.GITHUB_PASS}@github.com/ACWI-SSWD/nldi-services.git</developerConnection>
 		<url>https://github.com/ACWI-SSWD/nldi-services</url>
 		<tag>HEAD</tag>
 	</scm>
