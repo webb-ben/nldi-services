@@ -20,7 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.NONE,
 		classes={DbTestConfig.class, StreamingDao.class})
-public class StreamingDaoTest extends BaseIT {
+public class StreamingDaoIT extends BaseIT {
 
 	@Autowired
 	StreamingDao streamingDao;
