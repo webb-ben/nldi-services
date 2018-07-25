@@ -1,5 +1,4 @@
 spring:
-  
   datasource:
     url: "jdbc:postgresql://${nldiDbHost}:${nldiDbPort}/nldi"
     username: ${nldiDbUsername}
@@ -12,5 +11,5 @@ spring:
 nldi:
   displayProtocol: ${nldiProtocol}
   displayHost: ${nldiHost}
-  displayPath: ${nldiPath}
+  displayPath: ${nldiPath:}
   

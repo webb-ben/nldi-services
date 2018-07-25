@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import springfox.documentation.PathProvider;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.paths.AbstractPathProvider;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -27,7 +25,6 @@ public class SwaggerConfig {
 	
 	@Bean
 	public Docket nldiServicesApi() {
-				
 		Set<String> protocols = new HashSet<>();
 		protocols.add(configurationService.getDisplayProtocol());
 		return new Docket(DocumentationType.SWAGGER_2)
