@@ -3,9 +3,12 @@ language: java
 jdk:
   - oraclejdk8
 
-services:
-  - postgres
-
+addons:
+  postgresql: 9.6
+  apt:
+    packages:
+    - postgresql-9.6-postgis-2.3
+    
 before_install:
   - cd ~
   - git clone https://github.com/ACWI-SSWD/nldi-db.git
