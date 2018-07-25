@@ -21,6 +21,7 @@ public class SpringConfig implements WebMvcConfigurer {
 		configurer.enable();
 	}
 	
+	
 	@Bean
 	public InternalResourceViewResolver setupViewResolver() {
 		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
