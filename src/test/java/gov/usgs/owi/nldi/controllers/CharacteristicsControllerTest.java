@@ -20,10 +20,11 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
-import gov.usgs.owi.nldi.services.TestConfigurationService;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.services.TestConfigurationService;
+
 
 public class CharacteristicsControllerTest {
 	
