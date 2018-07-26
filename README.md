@@ -55,7 +55,6 @@ To run:
 ```
 % mvn spring-boot:run
 ```
-If you want to run without running the tests add ```-Dmaven.test.skip=true``` to the command.
 
 This project has some integration testing against the database. The "package" goal of the maven command will stop the build before running them.
 To set up the project for running the integration tests, add the following to your maven settings.xml file (the values below will work with the
@@ -78,3 +77,7 @@ nldi-db docker container running on the same machine as the tests):
   </profile>
 </profiles>
 ```
+
+If running integration tests without maven, you may specify the properties in the file, 
+application-it.yml. See the maven-failsafe-plugin configuration in the pom.xml 
+for the mapping of properties to varables.
