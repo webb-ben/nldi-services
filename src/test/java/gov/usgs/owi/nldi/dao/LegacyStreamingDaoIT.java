@@ -1,5 +1,7 @@
 package gov.usgs.owi.nldi.dao;
 
+import gov.usgs.owi.nldi.BaseIT;
+import gov.usgs.owi.nldi.springinit.DbTestConfig;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
@@ -10,16 +12,13 @@ import org.apache.ibatis.session.ResultHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
-import gov.usgs.owi.nldi.DBIntegrationTest;
-import gov.usgs.owi.nldi.NavigationMode;
-import gov.usgs.owi.nldi.services.Parameters;
-
-@Category(DBIntegrationTest.class)
-public class StreamingDaoTest extends BaseSpringTest {
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+		classes={DbTestConfig.class, StreamingDao.class})
+public class LegacyStreamingDaoIT extends BaseIT{
 
 	@Autowired
 	StreamingDao streamingDao;
@@ -61,41 +60,25 @@ public class StreamingDaoTest extends BaseSpringTest {
 			}
 		}
 		try {
-		streamingDao.stream(BaseDao.FLOW_LINES, null, null);
+			streamingDao.stream(BaseDao.FLOW_LINES_LEGACY, null, null);
 		} catch (RuntimeException e) {
 			if (!"A ResultHandler is required for the StreamingDao.stream".equalsIgnoreCase(e.getMessage())) {
-				fail("Expected a RuntimeException, but got " + e.getLocalizedMessage());
+					fail("Expected a RuntimeException, but got " + e.getLocalizedMessage());
 			}
 		}
 		try {
-		streamingDao.stream(BaseDao.FLOW_LINES, parameterMap, null);
+			streamingDao.stream(BaseDao.FLOW_LINES_LEGACY, parameterMap, null);
 		} catch (RuntimeException e) {
 			if (!"A ResultHandler is required for the StreamingDao.stream".equalsIgnoreCase(e.getMessage())) {
 				fail("Expected a RuntimeException, but got " + e.getLocalizedMessage());
 			}
 		}
 
-		//No limits
-		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.DM.toString());
-		streamingDao.stream(BaseDao.FLOW_LINES, parameterMap, handler);
+		streamingDao.stream(BaseDao.FLOW_LINES_LEGACY, parameterMap, handler);
 
-		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.UM.toString());
-		streamingDao.stream(BaseDao.FLOW_LINES, parameterMap, handler);
+		parameterMap.put(StreamingDao.SESSION_ID, "abc");
+		streamingDao.stream(BaseDao.FLOW_LINES_LEGACY, parameterMap, handler);
 
-		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.UT.toString());
-		streamingDao.stream(BaseDao.FLOW_LINES, parameterMap, handler);
-
-		//With distance
-		parameterMap.put(Parameters.DISTANCE, 5);
-
-		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.DM.toString());
-		streamingDao.stream(BaseDao.FLOW_LINES, parameterMap, handler);
-
-		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.UM.toString());
-		streamingDao.stream(BaseDao.FLOW_LINES, parameterMap, handler);
-
-		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.UT.toString());
-		streamingDao.stream(BaseDao.FLOW_LINES, parameterMap, handler);
 	}
 
 	@Test
@@ -114,41 +97,24 @@ public class StreamingDaoTest extends BaseSpringTest {
 			}
 		}
 		try {
-		streamingDao.stream(BaseDao.FEATURES, null, null);
+			streamingDao.stream(BaseDao.FEATURES_LEGACY, null, null);
 		} catch (RuntimeException e) {
 			if (!"A ResultHandler is required for the StreamingDao.stream".equalsIgnoreCase(e.getMessage())) {
 				fail("Expected a RuntimeException, but got " + e.getLocalizedMessage());
 			}
 		}
 		try {
-		streamingDao.stream(BaseDao.FEATURES, parameterMap, null);
+			streamingDao.stream(BaseDao.FEATURES_LEGACY, parameterMap, null);
 		} catch (RuntimeException e) {
 			if (!"A ResultHandler is required for the StreamingDao.stream".equalsIgnoreCase(e.getMessage())) {
 				fail("Expected a RuntimeException, but got " + e.getLocalizedMessage());
 			}
 		}
 
-		//No limits
-		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.DM.toString());
-		streamingDao.stream(BaseDao.FEATURES, parameterMap, handler);
+		streamingDao.stream(BaseDao.FEATURES_LEGACY, parameterMap, handler);
 
-		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.UM.toString());
-		streamingDao.stream(BaseDao.FEATURES, parameterMap, handler);
-
-		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.UT.toString());
-		streamingDao.stream(BaseDao.FEATURES, parameterMap, handler);
-
-		//With distance
-		parameterMap.put(Parameters.DISTANCE, 5);
-
-		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.DM.toString());
-		streamingDao.stream(BaseDao.FEATURES, parameterMap, handler);
-
-		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.UM.toString());
-		streamingDao.stream(BaseDao.FEATURES, parameterMap, handler);
-
-		parameterMap.put(Parameters.NAVIGATION_MODE, NavigationMode.UT.toString());
-		streamingDao.stream(BaseDao.FEATURES, parameterMap, handler);
+		parameterMap.put(StreamingDao.SESSION_ID, "abc");
+		streamingDao.stream(BaseDao.FEATURES_LEGACY, parameterMap, handler);
 	}
 
 }

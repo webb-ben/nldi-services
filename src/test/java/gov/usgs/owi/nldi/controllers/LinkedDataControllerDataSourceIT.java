@@ -9,7 +9,6 @@ import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -18,13 +17,32 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
-import gov.usgs.owi.nldi.FullIntegrationTest;
+import gov.usgs.owi.nldi.BaseIT;
+import gov.usgs.owi.nldi.dao.LogDao;
+import gov.usgs.owi.nldi.dao.LookupDao;
+import gov.usgs.owi.nldi.dao.NavigationDao;
+import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.services.ConfigurationService;
+import gov.usgs.owi.nldi.services.LogService;
+import gov.usgs.owi.nldi.services.Navigation;
+import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.springinit.DbTestConfig;
+import gov.usgs.owi.nldi.springinit.SpringConfig;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-@Category(FullIntegrationTest.class)
+@EnableWebMvc
+@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment=WebEnvironment.MOCK,
+		classes={DbTestConfig.class, SpringConfig.class, 
+		LinkedDataController.class, LookupDao.class, StreamingDao.class,
+		Navigation.class, NavigationDao.class,Parameters.class, 
+		ConfigurationService.class, LogService.class, LogDao.class})
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
-public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSpringTest {
+public class LinkedDataControllerDataSourceIT extends BaseIT {
 
 	@Autowired
 	private WebApplicationContext wac;
@@ -40,7 +58,7 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 	@Test
 	@DatabaseSetup("classpath:/testData/featureWqp.xml")
 	public void getWqpUtTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/wqp/USGS-05427880/navigate/UT/wqp"))
+		MvcResult rtn = mockMvc.perform(get("/api/wqp/USGS-05427880/navigate/UT/wqp"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "13"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -55,7 +73,7 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 	@DatabaseSetup("classpath:/testData/featureHuc12pp.xml")
 	@DatabaseSetup("classpath:/testData/featureWqp.xml")
 	public void getWqpDmTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/wqp/USGS-05427880/navigate/DM/huc12pp"))
+		MvcResult rtn = mockMvc.perform(get("/api/wqp/USGS-05427880/navigate/DM/huc12pp"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(FeatureTransformer.FEATURE_COUNT_HEADER, "9"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
@@ -67,7 +85,7 @@ public class LinkedDataControllerDataSourceFullIntegrationTest extends BaseSprin
 
 	@Test
 	public void badInputTest() throws Exception {
-		mockMvc.perform(get("/wqx/USGS-05427880/navigate/DM/huc12pp"))
+		mockMvc.perform(get("/api/wqx/USGS-05427880/navigate/DM/huc12pp"))
 				.andExpect(status().isNotFound());
 	}
 

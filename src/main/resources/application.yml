@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: "jdbc:postgresql://${nldiDbHost}:${nldiDbPort}/nldi"
+    username: ${nldiDbUsername}
+    password: ${nldiDbPassword}
+    driver-class-name: org.postgresql.Driver
+      
+  profiles: 
+    active: default,swagger
+  
+nldi:
+  displayProtocol: ${nldiProtocol}
+  displayHost: ${nldiHost}
+  displayPath: ${nldiPath:}
+  

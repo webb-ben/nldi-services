@@ -3,7 +3,7 @@ package gov.usgs.owi.nldi.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import gov.usgs.owi.nldi.dao.NavigationDao;
+import java.util.HashMap;
 
 public class NavigationTest {
 
@@ -61,15 +62,15 @@ public class NavigationTest {
 		when(navigationDao.getCache(anyMap())).thenReturn("{4d06cca2-001e-11e6-b9d0-0242ac110099}", (String) null);
 		when(navigationDao.navigate(anyMap())).thenReturn(goodResult(), badResult1());
 
-		assertEquals("{navigate_cached=(,,,,0,,{4d06cca2-001e-11e6-b9d0-0242ac110099})}", navigation.navigate(null).toString());
+		assertEquals("{navigate_cached=(,,,,0,,{4d06cca2-001e-11e6-b9d0-0242ac110099})}", navigation.navigate(new HashMap<String, Object>()).toString());
 		verify(navigationDao).getCache(anyMap());
 		verify(navigationDao, never()).navigate(anyMap());
 
-		assertEquals("{navigate_cached=(13297246,0.0000000000,,,0,,{4d06cca2-001e-11e6-b9d0-0242ac110003})}", navigation.navigate(null).toString());
+		assertEquals("{navigate_cached=(13297246,0.0000000000,,,0,,{4d06cca2-001e-11e6-b9d0-0242ac110003})}", navigation.navigate(new HashMap<String, Object>()).toString());
 		verify(navigationDao, times(2)).getCache(anyMap());
 		verify(navigationDao).navigate(anyMap());
 
-		assertEquals("{navigate_cached=(,,,,-1,\"Valid navigation type codes are UM, UT, DM, DD and PP.\",)}", navigation.navigate(null).toString());
+		assertEquals("{navigate_cached=(,,,,-1,\"Valid navigation type codes are UM, UT, DM, DD and PP.\",)}", navigation.navigate(new HashMap<String, Object>()).toString());
 		verify(navigationDao, times(3)).getCache(anyMap());
 		verify(navigationDao, times(2)).navigate(anyMap());
 	}

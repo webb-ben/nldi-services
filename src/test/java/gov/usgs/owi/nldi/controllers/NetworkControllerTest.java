@@ -24,7 +24,7 @@ import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
-import gov.usgs.owi.nldi.springinit.TestSpringConfig;
+import gov.usgs.owi.nldi.services.TestConfigurationService;
 
 public class NetworkControllerTest {
 
@@ -37,6 +37,8 @@ public class NetworkControllerTest {
 	private Parameters parameters;
 	@Mock
 	private LogService logService;
+	
+	private TestConfigurationService configurationService;
 	private NetworkController controller;
 	private MockHttpServletResponse response;
 	private MockHttpServletRequest request;
@@ -44,7 +46,8 @@ public class NetworkControllerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		controller = new NetworkController(lookupDao, streamingDao, navigation, parameters, TestSpringConfig.TEST_ROOT_URL, logService);
+		configurationService = new TestConfigurationService();
+		controller = new NetworkController(lookupDao, streamingDao, navigation, parameters, configurationService, logService);
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 

@@ -9,19 +9,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.NumberUtils;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
-import gov.usgs.owi.nldi.DBIntegrationTest;
+import gov.usgs.owi.nldi.BaseIT;
 import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.springinit.DbTestConfig;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@Category(DBIntegrationTest.class)
-public class NavigationDaoTest extends BaseSpringTest {
+@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.NONE,
+		classes={DbTestConfig.class, NavigationDao.class})
+public class NavigationDaoIT extends BaseIT {
 
 	@Autowired
 	NavigationDao navigationDao;

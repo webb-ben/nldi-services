@@ -7,40 +7,48 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import gov.usgs.owi.nldi.BaseSpringTest;
-import gov.usgs.owi.nldi.FullIntegrationTest;
+import gov.usgs.owi.nldi.BaseIT;
+import gov.usgs.owi.nldi.dao.LogDao;
+import gov.usgs.owi.nldi.dao.LookupDao;
+import gov.usgs.owi.nldi.dao.NavigationDao;
+import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.services.ConfigurationService;
+import gov.usgs.owi.nldi.services.LogService;
+import gov.usgs.owi.nldi.services.Navigation;
+import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.springinit.DbTestConfig;
+import gov.usgs.owi.nldi.springinit.SpringConfig;
 import gov.usgs.owi.nldi.transform.BasinTransformer;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-@Category(FullIntegrationTest.class)
+@EnableWebMvc
+@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment=WebEnvironment.MOCK,
+		classes={DbTestConfig.class, SpringConfig.class, 
+		CharacteristicsController.class, LookupDao.class, StreamingDao.class,
+		Navigation.class, NavigationDao.class, Parameters.class, 
+		ConfigurationService.class, LogService.class, LogDao.class})
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
-public class CharacteristicsControllerFullIntegrationTest extends BaseSpringTest {
+public class CharacteristicsControllerIT extends BaseIT {
 
 	@Autowired
-	private WebApplicationContext wac;
-
 	private MockMvc mockMvc;
 
 	private static final String RESULT_FOLDER  = "characteristic/";
 
-	@Before
-	public void setup() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-	}
-
 	@Test
 	public void getCharacteristicsTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/tot/characteristics"))
+		MvcResult rtn = mockMvc.perform(get("/api/tot/characteristics"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
@@ -51,7 +59,7 @@ public class CharacteristicsControllerFullIntegrationTest extends BaseSpringTest
 
 	@Test
 	public void getCharacteristicDataTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13302592/tot"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13302592/tot"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
@@ -62,7 +70,7 @@ public class CharacteristicsControllerFullIntegrationTest extends BaseSpringTest
 
 	@Test
 	public void getCharacteristicDataFilteredTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13302592/tot?characteristicId=TOT_N97&characteristicId=TOT_ET"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13302592/tot?characteristicId=TOT_N97&characteristicId=TOT_ET"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
 				.andReturn();
@@ -73,7 +81,7 @@ public class CharacteristicsControllerFullIntegrationTest extends BaseSpringTest
 
 	@Test
 	public void getBasinTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/comid/13302592/basin"))
+		MvcResult rtn = mockMvc.perform(get("/api/comid/13302592/basin"))
 				.andExpect(status().isOk())
 				.andExpect(header().string(BasinTransformer.BASIN_COUNT_HEADER, "1"))
 				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))

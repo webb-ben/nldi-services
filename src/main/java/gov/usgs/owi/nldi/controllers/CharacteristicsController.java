@@ -11,18 +11,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.NumberUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.services.ConfigurationService;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
@@ -30,13 +29,14 @@ import gov.usgs.owi.nldi.transform.CharacteristicDataTransformer;
 import gov.usgs.owi.nldi.transform.CharacteristicMetadataTransformer;
 
 @Controller
-@RequestMapping
 public class CharacteristicsController extends BaseController {
 	private static final Logger LOG = LoggerFactory.getLogger(CharacteristicsController.class);
+	
+	protected ConfigurationService configurationService;
 
 	@Autowired
-	public CharacteristicsController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, @Qualifier("rootUrl") String inRootUrl, LogService inLogService) {
-		super(inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl, inLogService);
+	public CharacteristicsController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService, LogService inLogService) {
+		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService.getRootUrl(), inLogService);
 	}
 
 	@GetMapping(value="{characteristicType}/characteristics")

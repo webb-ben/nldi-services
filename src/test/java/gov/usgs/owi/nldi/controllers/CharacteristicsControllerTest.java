@@ -23,9 +23,12 @@ import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
-import gov.usgs.owi.nldi.springinit.TestSpringConfig;
+import gov.usgs.owi.nldi.services.TestConfigurationService;
+
 
 public class CharacteristicsControllerTest {
+	
+	private TestConfigurationService configurationService;
 
 	private StreamingDao streamingDao;
 	@Mock
@@ -43,7 +46,8 @@ public class CharacteristicsControllerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		controller = new CharacteristicsController(lookupDao, streamingDao, navigation, parameters, TestSpringConfig.TEST_ROOT_URL, logService);
+		configurationService = new TestConfigurationService();
+		controller = new CharacteristicsController(lookupDao, streamingDao, navigation, parameters, configurationService, logService);
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 
