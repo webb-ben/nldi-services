@@ -35,6 +35,7 @@ before_install:
 
 install:
   - cd $TRAVIS_BUILD_DIR
+  - touch secrets.env
   - docker-compose up -d $DOCKER_IMAGE
 
 before_script:
