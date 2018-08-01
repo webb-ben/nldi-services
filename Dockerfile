@@ -11,7 +11,7 @@ ARG BUILD_COMMAND="mvn package"
 RUN ${BUILD_COMMAND}
 
 
-FROM code.chs.usgs.gov:5001/wma-devops-public/wma-spring-boot-base:latest
+FROM cidasdpdasartip.cr.usgs.gov:8447/wma/wma-spring-boot-base:latest
 
 ENV HEALTHY_RESPONSE_CONTAINS='{"status":"UP"}'
 COPY --from=build /build/target/nldi-services-*.jar app.jar
