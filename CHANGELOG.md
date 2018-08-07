@@ -7,5 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Using Spring Boot
+- Docker container created
 
 [Unreleased]: https://github.com/ACWI-SSWD/nldi-services/compare/nldi-services-0.7.0...master

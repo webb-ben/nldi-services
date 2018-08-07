@@ -23,15 +23,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.NONE,
 		classes={DbTestConfig.class, LookupDao.class, ConfigurationService.class})
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
+@DatabaseSetup("classpath:/testData/featureWqp.xml")
 public class LookupDaoIT extends BaseIT {
 
-	
+
 	@Autowired
 	private LookupDao lookupDao;
-	
+
 	@Autowired
 	private ConfigurationService configurationService;
-	
+
 	@Test
 	public void getFeatureTest() throws IOException, JSONException {
 		Map<String, Object> parameterMap = new HashMap<>();

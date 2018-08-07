@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/ACWI-SSWD/nldi-services.svg?branch=master)](https://travis-ci.org/ACWI-SSWD/nldi-services)
 
-##Public API
+## Public API
 The services are accessed via an http GET request. All navigation output is generated as GeoJSON ("application/vnd.geo+json")
 
 #### The root is {host}/nldi.
@@ -37,7 +37,7 @@ Both endpoints accept the same query parameters to further refine/restrict the n
 * __stopComid={stopid}__ for use with __PP__ navigation between the __{featureSourceId}__ and __{stopid}__
   * (only applicable to NHDPlus comid navigation and the __{stopid}__ must be downstream of the __{featureSourceId}__)
 
-##Developer Environment
+## Developer Environment
 
 [nldi-db](https://travis-ci.org/ACWI-SSWD/nldi-db) contains everything you need to set up a development database environment. It includes data for the Yahara River in Wisconsin.
 
@@ -78,6 +78,6 @@ nldi-db docker container running on the same machine as the tests):
 </profiles>
 ```
 
-If running integration tests without maven, you may specify the properties in the file, 
-application-it.yml. See the maven-failsafe-plugin configuration in the pom.xml 
+If running integration tests without maven, you may specify the properties in the file,
+application-it.yml. See the maven-failsafe-plugin configuration in the pom.xml
 for the mapping of properties to varables.
