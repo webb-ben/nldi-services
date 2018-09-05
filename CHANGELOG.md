@@ -8,5 +8,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Using Spring Boot
 - Docker container created
+- Load environment variables via entrypoint script
 
 [Unreleased]: https://github.com/ACWI-SSWD/nldi-services/compare/nldi-services-0.7.0...master
