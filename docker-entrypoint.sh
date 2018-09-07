@@ -9,8 +9,8 @@ file_env() {
 	done < "$1"
 }
 
-if [ -z $MOUNT_DIRECTORY]; then
-	# if file exists then export enviroment variables
+if [ -z $MOUNT_DIRECTORY ]; then
+	# if mount exists then export enviroment variables
 	for FILE in $MOUNT_DIRECTORY/*.env; do
 		file_env $FILE
 	done
