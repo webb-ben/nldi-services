@@ -15,4 +15,6 @@ if  ! [ -z ${MOUNT_DIRECTORY} ]; then
 	done
 fi
 
+/home/spring/entrypoint.sh
+
 exec "$@"
