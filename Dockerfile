@@ -16,6 +16,6 @@ FROM cidasdpdasartip.cr.usgs.gov:8447/wma/wma-spring-boot-base:latest
 ENV HEALTHY_RESPONSE_CONTAINS='{"status":"UP"}'
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY --from=build /build/target/nldi-services-*.jar app.jar
-ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["docker-entrypoint.sh"]
 HEALTHCHECK --interval=30s --timeout=3s \
   CMD curl -k "https://127.0.0.1:${serverPort}${serverContextPath}${HEALTH_CHECK_ENDPOINT}" | grep -q ${HEALTHY_RESPONSE_CONTAINS} || exit 1
