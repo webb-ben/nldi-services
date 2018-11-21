@@ -1,0 +1,16 @@
+@Library('dockerBuildLibrary') _
+
+pipeline {
+    agent {
+        node {
+            label 'project:any'
+        }
+    }
+    stages {
+        stage('build artifact') {
+            steps {
+                dockerPipeline()
+            }
+        }
+    }
+}
