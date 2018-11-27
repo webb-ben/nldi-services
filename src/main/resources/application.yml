@@ -4,12 +4,19 @@ spring:
     username: ${nldiDbUsername}
     password: ${nldiDbPassword}
     driver-class-name: org.postgresql.Driver
-      
-  profiles: 
+
+  profiles:
     active: default,swagger
-  
+
+server:
+  port: ${serverPort}
+  servlet:
+    context-path: ${serverContextPath}
+
+logging:
+  level: ${springFrameworkLogLevel}
+
 nldi:
   displayProtocol: ${nldiProtocol}
   displayHost: ${nldiHost}
   displayPath: ${nldiPath:}
-  
