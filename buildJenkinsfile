@@ -6,6 +6,9 @@ pipeline {
             label 'project:any'
         }
     }
+    parameters {
+        choice(choices: ['snapshots', 'releases'], description: 'type of build', name: 'BUILD_TYPE')
+    }
     stages {
         stage('build artifact') {
             steps {
