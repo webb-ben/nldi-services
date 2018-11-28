@@ -8,6 +8,10 @@ spring:
   profiles:
     active: default,swagger
 
+logging:
+  level:
+    root: ${springFrameworkLogLevel}
+
 server:
   port: ${serverPort}
   servlet:
