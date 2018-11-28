@@ -13,9 +13,6 @@ server:
   servlet:
     context-path: ${serverContextPath}
 
-logging:
-  level: ${springFrameworkLogLevel}
-
 nldi:
   displayProtocol: ${nldiProtocol}
   displayHost: ${nldiHost}
