@@ -1,0 +1,11 @@
+projectName: "nldi"
+applicationName: "nldi-services"
+dockerImageName: "nldi-services"
+containerPort: 8080
+artifactoryPath: "nldi"
+gitlabPath: "wma/docker/nldi"
+repoPath: "ACWI-SSWD/nldi-services"
+memory: 768
+rulePriority: 10
+healthCheck: "/swagger-ui.html"
+contextPath: "/nldi/*"

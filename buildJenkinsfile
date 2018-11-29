@@ -1,0 +1,19 @@
+@Library('dockerCI@0.1.0') _
+
+pipeline {
+    agent {
+        node {
+            label 'project:any'
+        }
+    }
+    parameters {
+        choice(choices: ['snapshots', 'releases'], description: 'type of build', name: 'BUILD_TYPE')
+    }
+    stages {
+        stage('build artifact') {
+            steps {
+                dockerPipeline()
+            }
+        }
+    }
+}
