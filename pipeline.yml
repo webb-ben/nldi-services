@@ -7,5 +7,5 @@ gitlabPath: "wma/docker/nldi"
 repoPath: "ACWI-SSWD/nldi-services"
 memory: 768
 rulePriority: 10
-healthCheck: "/swagger-ui.html"
+healthCheck: "/nldi/swagger-ui.html"
 contextPath: "/nldi/*"
