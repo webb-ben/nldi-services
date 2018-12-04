@@ -9,3 +9,4 @@ memory: 768
 rulePriority: 10
 healthCheck: "/nldi/swagger-ui.html"
 contextPath: "/nldi/*"
+deployJobName: "NLDI-services-container-deploy"
