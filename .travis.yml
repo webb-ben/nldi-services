@@ -8,26 +8,26 @@ services:
 jdk:
   - oraclejdk8
 
-addons:
-  postgresql: 9.6
-  apt:
-    packages:
-    - postgresql-9.6-postgis-2.3
+#addons:
+#  postgresql: 9.6
+#  apt:
+#    packages:
+#    - postgresql-9.6-postgis-2.3
 
 env:
   - DOCKER_IMAGE=nldi-services
 
 before_install:
-  - cd ~
-  - git clone https://github.com/ACWI-SSWD/nldi-db.git
-  - wget https://cida.usgs.gov/artifactory/nldi/datasets/nhdplus.yahara.pgdump.gz
-  - wget https://cida.usgs.gov/artifactory/nldi/datasets/characteristic_data.yahara.pgdump.gz
-  - mkdir ~/liquibase
-  - cd ~/liquibase
-  - wget https://github.com/liquibase/liquibase/releases/download/liquibase-parent-3.4.2/liquibase-3.4.2-bin.tar.gz
-  - tar -xzf liquibase-3.4.2-bin.tar.gz -C ./
-  - cd ~/liquibase/lib
-  - wget https://jdbc.postgresql.org/download/postgresql-9.4-1204.jdbc42.jar
+#  - cd ~
+#  - git clone https://github.com/ACWI-SSWD/nldi-db.git
+#  - wget https://cida.usgs.gov/artifactory/nldi/datasets/nhdplus.yahara.pgdump.gz
+#  - wget https://cida.usgs.gov/artifactory/nldi/datasets/characteristic_data.yahara.pgdump.gz
+#  - mkdir ~/liquibase
+#  - cd ~/liquibase
+#  - wget https://github.com/liquibase/liquibase/releases/download/liquibase-parent-3.4.2/liquibase-3.4.2-bin.tar.gz
+#  - tar -xzf liquibase-3.4.2-bin.tar.gz -C ./
+#  - cd ~/liquibase/lib
+#  - wget https://jdbc.postgresql.org/download/postgresql-9.4-1204.jdbc42.jar
   - curl -L https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64 > clair-scanner
   - chmod +x clair-scanner
   - sudo mv clair-scanner /usr/local/bin
@@ -46,13 +46,13 @@ install:
   - docker-compose up -d $DOCKER_IMAGE
 
 before_script:
-  - psql -U postgres -c 'create database nldi;'
-  - psql -U postgres -c "create extension postgis"
-  - psql -U postgres -c "create role nldi with superuser login;"
-  - ~/liquibase/liquibase --driver=org.postgresql.Driver --url=jdbc:postgresql://127.0.0.1:5432/nldi --username=postgres --password= --changeLogFile=/home/travis/nldi-db/nldi-liquibase/src/main/resources/liquibase/postgres/changeLog.xml update
-  - ~/liquibase/liquibase --driver=org.postgresql.Driver --url=jdbc:postgresql://127.0.0.1:5432/nldi --username=postgres --password= --changeLogFile=/home/travis/nldi-db/nldi-liquibase/src/main/resources/liquibase/changeLog.xml update
-  - gunzip -c ~/nhdplus.yahara.pgdump.gz | pg_restore --data-only | psql -h 127.0.0.1 -p 5432 -U postgres -w -a -d nldi
-  - gunzip -c ~/characteristic_data.yahara.pgdump.gz | pg_restore --data-only | psql -h 127.0.0.1 -p 5432 -U postgres -w -a -d nldi
+#  - psql -U postgres -c 'create database nldi;'
+#  - psql -U postgres -c "create extension postgis"
+#  - psql -U postgres -c "create role nldi with superuser login;"
+#  - ~/liquibase/liquibase --driver=org.postgresql.Driver --url=jdbc:postgresql://127.0.0.1:5432/nldi --username=postgres --password= --changeLogFile=/home/travis/nldi-db/nldi-liquibase/src/main/resources/liquibase/postgres/changeLog.xml update
+#  - ~/liquibase/liquibase --driver=org.postgresql.Driver --url=jdbc:postgresql://127.0.0.1:5432/nldi --username=postgres --password= --changeLogFile=/home/travis/nldi-db/nldi-liquibase/src/main/resources/liquibase/changeLog.xml update
+#  - gunzip -c ~/nhdplus.yahara.pgdump.gz | pg_restore --data-only | psql -h 127.0.0.1 -p 5432 -U postgres -w -a -d nldi
+#  - gunzip -c ~/characteristic_data.yahara.pgdump.gz | pg_restore --data-only | psql -h 127.0.0.1 -p 5432 -U postgres -w -a -d nldi
   - cd $TRAVIS_BUILD_DIR
   - echo "<settings><profiles><profile><id>default</id><activation><activeByDefault>true</activeByDefault></activation>
               <properties>
