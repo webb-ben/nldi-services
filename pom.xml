@@ -189,6 +189,45 @@
 					</execution>
 				</executions>
 			</plugin>
+<plugin>
+  <groupId>io.fabric8</groupId>
+  <artifactId>docker-maven-plugin</artifactId>
+  <version>0.28.0</version>
+  <executions>
+    <execution>
+     <id>start</id>
+     <phase>pre-integration-test</phase>
+     <goals>
+       <goal>build</goal>
+       <goal>start</goal>
+     </goals>
+   </execution>
+   <execution>
+     <id>stop</id>
+     <phase>post-integration-test</phase>
+     <goals>
+       <goal>stop</goal>
+     </goals>
+   </execution>
+ </executions>
+ <configuration>
+<!--    <dockerHost></dockerHost> -->
+     <images>
+       <image>
+         <name>usgswma/nldi-db:ci</name>
+         <run>
+          <ports>
+            <port>5435:5432</port>
+          </ports>
+          <wait>
+            <log>Database ready to use. Enjoy!</log>
+            <time>900000</time>
+          </wait>
+        </run>
+      </image>
+    </images>
+  </configuration>
+</plugin>
 		</plugins>
 	</build>
 
