@@ -219,7 +219,8 @@
 <showLogs>true</showLogs>
      <images>
        <image>
-         <name>nldi-db_nldi_db_ci</name>
+<!--          <name>nldi-db_nldi_db_ci</name> -->
+         <name>usgswma/nldi-db:ci</name>
          <run>
           <ports>
             <port>5435:5432</port>
