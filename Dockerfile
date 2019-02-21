@@ -15,8 +15,6 @@ FROM usgswma/openjdk:debian-stretch-openjdk-11.0.2-89c4dd2d55ba476c77aa8fd5274dc
 RUN apt-get update && \
   apt-get install --no-install-recommends --no-upgrade curl netcat -y && \
   rm -rf /var/lib/apt/lists/*
-  
-RUN apt-get update && apt-get install --no-install-recommends --no-upgrade -y curl && rm -rf /var/lib/apt/lists/*  
 
 COPY --chown=1000:1000 --from=build /build/target/nldi-services.jar app.jar
 
