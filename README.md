@@ -48,6 +48,9 @@ nldiDbPort: portNumberForDatabase
 nldiDbUsername: dbUserName
 nldiDbPassword: dbPassword
 
+serverPort: 8080
+serverContext: '/nldi'
+
 nldiProtocol: http
 nldiHost: localhost:8080
 ```
