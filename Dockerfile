@@ -18,7 +18,7 @@ RUN apt-get update && \
   
 RUN apt-get update && apt-get install --no-install-recommends --no-upgrade -y curl && rm -rf /var/lib/apt/lists/*  
 
-COPY --chown=1000:1000 --from=build /build/target/nldi_services.jar app.jar
+COPY --chown=1000:1000 --from=build /build/target/nldi-services.jar app.jar
 
 USER $USER
 
