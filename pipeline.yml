@@ -4,7 +4,8 @@ dockerImageName: "nldi-services"
 containerPort: 8080
 artifactoryPath: "nldi"
 gitlabPath: "wma/docker/nldi"
-repoPath: "ACWI-SSWD/nldi-services"
+gitRepoPath: "https://github.com/ACWI-SSWD/nldi-services.git"
+gitRepoCredentialsId: "Jenkins-GitHub-Read-Write-Token"
 memory: 768
 rulePriority: 10
 healthCheck: "/nldi/swagger-ui.html"

@@ -21,19 +21,6 @@
 		<wma.artifactory.url>https://cida.usgs.gov/artifactory</wma.artifactory.url>
 	</properties>
 
-	<distributionManagement>
-		<repository>
-			<id>release</id>
-			<name>cidasdpdasartip.cr.usgs.gov-releases</name>
-			<url>${wma.artifactory.url}/wma-maven-releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>cidasdpdasartip.cr.usgs.gov-snapshots</name>
-			<url>${wma.artifactory.url}/wma-maven-snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<scm>
 		<connection>scm:git:https://github.com/ACWI-SSWD/nldi-services.git</connection>
 		<developerConnection>scm:git:https://${env.GITHUB_USER}:${env.GITHUB_PASS}@github.com/ACWI-SSWD/nldi-services.git</developerConnection>
@@ -190,6 +177,7 @@
 				</executions>
 			</plugin>
 		</plugins>
+        <finalName>nldi-services</finalName>
 	</build>
 
 </project>
