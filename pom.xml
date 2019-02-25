@@ -4,7 +4,7 @@
 
 	<groupId>gov.usgs.owi</groupId>
 	<artifactId>nldi-services</artifactId>
-	<version>0.9-SNAPSHOT</version>
+	<version>0.9</version>
 	<packaging>jar</packaging>
 
 	<name>nldi-services</name>
