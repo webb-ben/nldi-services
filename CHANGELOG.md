@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Updated to use the usgswma/openjdk image and build the project in the Dockerfile
+- Updated POM dependencies
 
 
 ## [0.8.0]
