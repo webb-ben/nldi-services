@@ -22,7 +22,7 @@ public class SwaggerConfig {
 
 	@Autowired
 	private ConfigurationService configurationService;
-	
+
 	@Bean
 	public Docket nldiServicesApi() {
 		Set<String> protocols = new HashSet<>();
@@ -44,7 +44,7 @@ public class SwaggerConfig {
 		protected String applicationPath() {
 			return configurationService.getDisplayPath();
 		}
-	
+
 		@Override
 		protected String getDocumentationPath() {
 			return configurationService.getDisplayPath();

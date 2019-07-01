@@ -44,7 +44,7 @@ public class LookupControllerTest {
 	private Parameters parameters;
 	@Mock
 	private LogService logService;
-	
+
 	private TestConfigurationService configurationService;
 	private LookupController controller;
 	private MockHttpServletResponse response;
@@ -55,7 +55,7 @@ public class LookupControllerTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		configurationService = new TestConfigurationService();
-		
+
 		controller = new LookupController(lookupDao, streamingDao, navigation, parameters, configurationService, logService);
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
@@ -112,7 +112,7 @@ public class LookupControllerTest {
 		assertEquals("{upstreamMain=http://owi-test.usgs.gov:8080/test-url/test/test123/navigate/UM, upstreamTributaries=http://owi-test.usgs.gov:8080/test-url/test/test123/navigate/UT, downstreamMain=http://owi-test.usgs.gov:8080/test-url/test/test123/navigate/DM, downstreamDiversions=http://owi-test.usgs.gov:8080/test-url/test/test123/navigate/DD}",
 				out.toString());
 	}
-	
+
 	public static List<Map<String, Object>> getTestList() {
 		List<Map<String, Object>> rtn = new ArrayList<>();
 		Map<String, Object> entry = new HashMap<>();

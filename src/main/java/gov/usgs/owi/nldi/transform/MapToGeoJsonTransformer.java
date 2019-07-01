@@ -14,7 +14,7 @@ public abstract class MapToGeoJsonTransformer extends MapToJsonTransformer {
 	static final String COUNT_SUFFIX = "_count";
 	static final String SHAPE = "shape";
 	static final String TOTAL_ROWS = "total_rows";
-	
+
 	private static final String FEATURE_COLLECTION = "FeatureCollection";
 	private static final String FEATURE_INIT_CAP = "Feature";
 	private static final String GEOMETRY = "geometry";

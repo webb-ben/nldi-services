@@ -41,7 +41,7 @@ public class LookupController extends BaseController {
 	private static final String DOWNSTREAM_MAIN = "downstreamMain";
 	private static final String UPSTREAM_MAIN = "upstreamMain";
 	private static final String UPSTREAM_TRIBUTARIES = "upstreamTributaries";
-	
+
 	protected ConfigurationService configurationService;
 
 	@Autowired

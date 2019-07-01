@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -23,6 +24,7 @@ public class GlobalDefaultExceptionHandlerTest {
 	WebRequest request;
 
 	private GlobalDefaultExceptionHandler controller = new GlobalDefaultExceptionHandler();
+	private HttpInputMessage httpInputMessage;
 
 	@Before
 	public void setUp() throws Exception {
@@ -48,12 +50,12 @@ public class GlobalDefaultExceptionHandlerTest {
 
 		response = new MockHttpServletResponse();
 		assertEquals("ok to see",
-				controller.handleUncaughtException(new HttpMessageNotReadableException("ok to see\nhide this\nand this"), request, response));
+				controller.handleUncaughtException(new HttpMessageNotReadableException("ok to see\nhide this\nand this", httpInputMessage), request, response));
 		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
 
 		response = new MockHttpServletResponse();
 		assertEquals("Some123$Mes\tsage!!.",
-				controller.handleUncaughtException(new HttpMessageNotReadableException("Some123$Mes\tsage!!."), request, response));
+				controller.handleUncaughtException(new HttpMessageNotReadableException("Some123$Mes\tsage!!.", httpInputMessage), request, response));
 		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
 	}
 

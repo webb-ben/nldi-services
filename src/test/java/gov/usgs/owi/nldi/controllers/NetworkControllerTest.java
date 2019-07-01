@@ -37,7 +37,7 @@ public class NetworkControllerTest {
 	private Parameters parameters;
 	@Mock
 	private LogService logService;
-	
+
 	private TestConfigurationService configurationService;
 	private NetworkController controller;
 	private MockHttpServletResponse response;

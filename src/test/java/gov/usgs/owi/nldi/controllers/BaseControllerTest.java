@@ -45,7 +45,7 @@ public class BaseControllerTest {
 	@Mock
 	private LogService logService;
 	private HttpServletResponse response;
-	
+
 	private static final String TEST_ROOT_URL = "http://owi-test.usgs.gov:8080/test-url";
 
 	private class TestBaseController extends BaseController {
@@ -72,7 +72,6 @@ public class BaseControllerTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void getSessionIdTest() throws Exception {
 		when(navigation.navigate(anyMap())).thenReturn(new HashMap<String, String>());
 		when(navigation.interpretResult(anyMap())).thenReturn("abc");
@@ -82,7 +81,6 @@ public class BaseControllerTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void streamFeaturesTest() throws Exception {
 		controller.streamFeatures(response, "123", "navigationMode", "456", "789", "dataSource", false);
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
@@ -92,7 +90,6 @@ public class BaseControllerTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void streamFeaturesLegacyTest() throws Exception {
 		when(navigation.navigate(anyMap())).thenReturn(new HashMap<String, String>());
 		when(navigation.interpretResult(anyMap())).thenReturn(null, "abc");
@@ -106,7 +103,6 @@ public class BaseControllerTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void streamFlowLinesTest() throws Exception {
 		controller.streamFlowLines(response, "123", "navigationMode", "456", "789", false);
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
@@ -116,7 +112,6 @@ public class BaseControllerTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void streamBasinTest() throws Exception {
 		controller.streamBasin(response, "123");
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
@@ -126,7 +121,6 @@ public class BaseControllerTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void streamFlowLinesLegacyTest() throws Exception {
 		when(navigation.navigate(anyMap())).thenReturn(new HashMap<String, String>());
 		when(navigation.interpretResult(anyMap())).thenReturn(null, "abc");
@@ -139,7 +133,6 @@ public class BaseControllerTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void streamResultsTest() {
 		controller.streamResults(transformer, "navigationMode", new HashMap<String, Object>());
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));

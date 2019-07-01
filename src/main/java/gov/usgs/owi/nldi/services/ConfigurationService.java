@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ConfigurationService {
-	
+
 	@Value("${nldi.displayProtocol}")
 	private String displayProtocol;
-	
+
 	@Value("${nldi.displayHost}")
 	private String displayHost;
-	
+
 	@Value("${nldi.displayPath}")
 	private String displayPath;
 
@@ -27,12 +27,8 @@ public class ConfigurationService {
 	public String getDisplayPath() {
 		return displayPath;
 	}
-	
+
 	public String getRootUrl() {
 		return getDisplayProtocol() + "://" + getDisplayHost() + getDisplayPath();
 	}
-	
-	
-	
-	
 }

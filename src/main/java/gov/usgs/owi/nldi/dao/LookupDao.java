@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LookupDao extends BaseDao {
-	
+
 	public static final String ROOT_URL = "rootUrl";
 
 	public static final String FEATURE_SOURCE = "featureSource";
