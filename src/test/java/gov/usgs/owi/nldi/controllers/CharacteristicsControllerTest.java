@@ -55,7 +55,7 @@ public class CharacteristicsControllerTest {
 	}
 
 	@Test
-	public void getCharacteristicsTest() throws IOException {
+	public void getCharacteristicsTest() throws Exception {
 		controller.getCharacteristics(request, response, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
@@ -73,7 +73,7 @@ public class CharacteristicsControllerTest {
 	}
 
 	@Test
-	public void getBasinTest() throws IOException {
+	public void getBasinTest() throws Exception {
 		controller.getBasin(request, response, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));

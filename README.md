@@ -5,7 +5,7 @@
 ## Public API
 The services are accessed via an http GET request. All navigation output is generated as GeoJSON ("application/vnd.geo+json")
 
-#### The root is {host}/nldi.
+#### The root is {host}/nldi/api.
 Both a test and a production are exposed to the public:
 __https://cida-test.er.usgs.gov/nldi__ is the test root.
 __https://cida.usgs.gov/nldi__ is the production root.

@@ -13,8 +13,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,7 +33,7 @@ import gov.usgs.owi.nldi.transform.FeatureTransformer;
 
 @RestController
 public class LookupController extends BaseController {
-	private static final Logger LOG = LoggerFactory.getLogger(LookupController.class);
+//	private static final Logger LOG = LoggerFactory.getLogger(LookupController.class);
 
 	private static final String DOWNSTREAM_DIVERSIONS = "downstreamDiversions";
 	private static final String DOWNSTREAM_MAIN = "downstreamMain";
@@ -84,16 +82,17 @@ public class LookupController extends BaseController {
 			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID) throws IOException {
 		BigInteger logId = logService.logRequest(request);
-		try (FeatureTransformer transformer = new FeatureTransformer(response, rootUrl)) {
+//		try (FeatureTransformer transformer = new FeatureTransformer(response, rootUrl)) {
+			FeatureTransformer transformer = new FeatureTransformer(response, rootUrl);
 			Map<String, Object> parameterMap = new HashMap<> ();
 			parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
 			parameterMap.put(Parameters.FEATURE_ID, featureID);
 			addContentHeader(response);
 			streamResults(transformer, BaseDao.FEATURE, parameterMap);
-		} catch (Exception e) {
-			LOG.error(e.getLocalizedMessage());
-			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
-		}
+//		} catch (Exception e) {
+//			LOG.error(e.getLocalizedMessage());
+//			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
+//		}
 		logService.logRequestComplete(logId, response.getStatus());
 	}
 

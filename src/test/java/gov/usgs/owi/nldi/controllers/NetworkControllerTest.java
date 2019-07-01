@@ -1,11 +1,10 @@
 package gov.usgs.owi.nldi.controllers;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.math.BigInteger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +54,7 @@ public class NetworkControllerTest {
 	}
 
 	@Test
-	public void getFlowlinesTest() throws IOException {
+	public void getFlowlinesTest() throws Exception {
 		controller.getFlowlines(request, response, null, null, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
@@ -64,7 +63,7 @@ public class NetworkControllerTest {
 	}
 
 	@Test
-	public void getFeaturesTest() throws IOException {
+	public void getFeaturesTest() throws Exception {
 		controller.getFeatures(request, response, null, null, null, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
@@ -73,7 +72,7 @@ public class NetworkControllerTest {
 	}
 
 	@Test
-	public void getBasinTest() throws IOException {
+	public void getBasinTest() throws Exception {
 		controller.getFeatures(request, response, null, null, BaseDao.BASIN, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
