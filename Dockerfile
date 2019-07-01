@@ -1,21 +1,22 @@
-FROM maven:3.5.3-jdk-8 AS build
+FROM maven:3.6.0-jdk-11 AS build
+LABEL maintainer="gs-w_eto_eb_federal_employees@usgs.gov"
 
 # Add pom.xml and install dependencies
 COPY pom.xml /build/pom.xml
 WORKDIR /build
-RUN mvn clean
+RUN mvn -B dependency:go-offline
 
 # Add source code and (by default) build the jar
 COPY src /build/src
-ARG BUILD_COMMAND="mvn package"
-RUN ${BUILD_COMMAND}
+RUN mvn -B clean package -Dmaven.test.skip=true
 
+FROM usgswma/openjdk:debian-stretch-openjdk-11.0.2-89c4dd2d55ba476c77aa8fd5274dcb8a1ef115b7
 
-FROM cidasdpdasartip.cr.usgs.gov:8447/wma/wma-spring-boot-base:latest
+COPY --chown=1000:1000 --from=build /build/target/nldi-services.jar app.jar
 
-ENV HEALTHY_RESPONSE_CONTAINS='{"status":"UP"}'
-COPY docker-entrypoint.sh /usr/local/bin/
-COPY --from=build /build/target/nldi-services-*.jar app.jar
-CMD ["docker-entrypoint.sh"]
+USER $USER
+
+CMD ["java", "-jar", "app.jar"]
+
 HEALTHCHECK --interval=30s --timeout=3s \
-  CMD curl -k "http://127.0.0.1:8080/nldi/actuator/health" | grep -q ${HEALTHY_RESPONSE_CONTAINS} || exit 1
+  CMD curl -H "Accept: application/json" -v -k "http://127.0.0.1:${SERVER_PORT}${SERVER_CONTEXT_PATH}/actuator/health" | grep -q "{\"status\":\"UP\"}" || exit 1
