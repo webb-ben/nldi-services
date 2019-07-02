@@ -193,6 +193,7 @@
                 <configuration>
 <!--                     Uncomment to see detailed container logs -->
 <!--                     <showLogs>true</showLogs> -->
+                    <containerNamePattern>%a</containerNamePattern>
                     <images>
                         <image>
                             <name>usgswma/nldi-db:ci</name>
