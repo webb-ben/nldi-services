@@ -154,11 +154,11 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <environmentVariables>
-                        <nldiDbUrl>${nldi.url}</nldiDbUrl>
-                        <nldiUsername>${nldi.dbUsername}</nldiUsername>
-                        <nldiPassword>${nldi.dbPassword}</nldiPassword>
-                        <dbUnitUsername>${nldi.dbUnitUsername}</dbUnitUsername>
-                        <dbUnitPassword>${nldi.dbUnitPassword}</dbUnitPassword>
+                        <nldiDbUrl>jdbc:postgresql://${TESTING_DATABASE_ADDRESS}:${TESTING_DATABASE_PORT}/nldi_db_name</nldiDbUrl>
+                        <nldiUsername>read_only_user</nldiUsername>
+                        <nldiPassword>changeMe</nldiPassword>
+                        <dbUnitUsername>nldi</dbUnitUsername>
+                        <dbUnitPassword>changeMe</dbUnitPassword>
                     </environmentVariables>
                 </configuration>
                 <executions>
@@ -191,20 +191,32 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <showLogs>true</showLogs>
+<!--                     Uncomment to see detailed container logs -->
+<!--                     <showLogs>true</showLogs> -->
                     <images>
                         <image>
                             <name>usgswma/nldi-db:ci</name>
+                            <alias>nldiDatabase</alias>
                             <run>
+                                <network>
+                                    <mode>custom</mode>
+                                    <name>${TESTING_DATABASE_NETWORK}</name>
+                                </network>
                                 <ports>
-                                    <port>${nldi.dbPort}:5432</port>
+                                    <port>5445:5432</port>
                                 </ports>
                                 <env>
-                                    <POSTGRES_PASSWORD>${nldi.dbPassword}</POSTGRES_PASSWORD>
-                                    <POSTGRES_DB>${nldi.dbName}</POSTGRES_DB>
-                                    <NLDI_PASSWORD>${nldi.dbPassword}</NLDI_PASSWORD>
-                                    <NLDI_DATA_PASSWORD>${nldi.dbPassword}</NLDI_DATA_PASSWORD>
-                                    <NLDI_USER_PASSWORD>${nldi.dbPassword}</NLDI_USER_PASSWORD>
+                                    <POSTGRES_PASSWORD>changeMe</POSTGRES_PASSWORD>
+                                    <NLDI_DATABASE_ADDRESS>127.0.0.1</NLDI_DATABASE_ADDRESS>
+                                    <NLDI_DATABASE_NAME>nldi_db_name</NLDI_DATABASE_NAME>
+                                    <NLDI_DB_OWNER_USERNAME>nldi</NLDI_DB_OWNER_USERNAME>
+                                    <NLDI_DB_OWNER_PASSWORD>changeMe</NLDI_DB_OWNER_PASSWORD>
+                                    <NLDI_SCHEMA_OWNER_USERNAME>nldi_schema_owner</NLDI_SCHEMA_OWNER_USERNAME>
+                                    <NLDI_SCHEMA_OWNER_PASSWORD>changeMe</NLDI_SCHEMA_OWNER_PASSWORD>
+                                    <NHDPLUS_SCHEMA_OWNER_USERNAME>nhdplus</NHDPLUS_SCHEMA_OWNER_USERNAME>
+                                    <NLDI_READ_ONLY_USERNAME>read_only_user</NLDI_READ_ONLY_USERNAME>
+                                    <NLDI_READ_ONLY_PASSWORD>changeMe</NLDI_READ_ONLY_PASSWORD>
+                                    <LOCAL_NETWORK_NAME>nldi</LOCAL_NETWORK_NAME>
                                 </env>
                                 <wait>
                                     <time>45000</time>
