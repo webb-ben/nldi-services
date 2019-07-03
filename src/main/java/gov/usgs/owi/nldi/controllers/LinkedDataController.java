@@ -1,6 +1,5 @@
 package gov.usgs.owi.nldi.controllers;
 
-import java.io.IOException;
 import java.math.BigInteger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +41,7 @@ public class LinkedDataController extends BaseController {
 			@PathVariable(Parameters.NAVIGATION_MODE) String navigationMode,
 			@RequestParam(value=Parameters.STOP_COMID, required=false) String stopComid,
 			@RequestParam(value=Parameters.DISTANCE, required=false) String distance,
-			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws IOException {
+			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws Exception {
 
 		BigInteger logId = logService.logRequest(request);
 		String comid = getComid(featureSource, featureID);
@@ -62,7 +61,7 @@ public class LinkedDataController extends BaseController {
 			@PathVariable(value=DATA_SOURCE) String dataSource,
 			@RequestParam(value=Parameters.STOP_COMID, required=false) String stopComid,
 			@RequestParam(value=Parameters.DISTANCE, required=false) String distance,
-			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws IOException {
+			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws Exception {
 
 		BigInteger logId = logService.logRequest(request);
 		String comid = getComid(featureSource, featureID);

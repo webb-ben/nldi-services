@@ -1,6 +1,5 @@
 package gov.usgs.owi.nldi.controllers;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.NumberUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import de.jkeylockmanager.manager.KeyLockManager;
 import de.jkeylockmanager.manager.KeyLockManagers;
@@ -27,7 +27,6 @@ import gov.usgs.owi.nldi.transform.BasinTransformer;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import gov.usgs.owi.nldi.transform.FlowLineTransformer;
 import gov.usgs.owi.nldi.transform.ITransformer;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("api")
 public abstract class BaseController {
@@ -57,9 +56,10 @@ public abstract class BaseController {
 	}
 
 	protected void streamFlowLines(HttpServletResponse response,
-			String comid, String navigationMode, String stopComid, String distance, boolean legacy) throws IOException {
+			String comid, String navigationMode, String stopComid, String distance, boolean legacy) throws Exception {
 		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid);
-		try (FlowLineTransformer transformer = new FlowLineTransformer(response)) {
+//		try (FlowLineTransformer transformer = new FlowLineTransformer(response)) {
+		FlowLineTransformer transformer = new FlowLineTransformer(response);
 			if (legacy) {
 				String sessionId = getSessionId(parameterMap);
 				if (null != sessionId) {
@@ -75,16 +75,17 @@ public abstract class BaseController {
 				streamResults(transformer, BaseDao.FLOW_LINES, parameterMap);
 			}
 
-		} catch (Exception e) {
-			LOG.error(e.getLocalizedMessage());
-			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
-		}
+//		} catch (Exception e) {
+//			LOG.error(e.getLocalizedMessage());
+//			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
+//		}
 	}
 
 	protected void streamFeatures(HttpServletResponse response,
-			String comid, String navigationMode, String stopComid, String distance, String dataSource, boolean legacy) throws IOException {
+			String comid, String navigationMode, String stopComid, String distance, String dataSource, boolean legacy) throws Exception {
 		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid);
-		try (FeatureTransformer transformer = new FeatureTransformer(response, rootUrl)) {
+//		try (FeatureTransformer transformer = new FeatureTransformer(response, rootUrl)) {
+		FeatureTransformer transformer = new FeatureTransformer(response, rootUrl);
 			if (legacy) {
 				String sessionId = getSessionId(parameterMap);
 				if (null != sessionId) {
@@ -102,23 +103,24 @@ public abstract class BaseController {
 				streamResults(transformer, BaseDao.FEATURES, parameterMap);
 			}
 	
-		} catch (Exception e) {
-			LOG.error(e.getLocalizedMessage());
-			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
-		}
+//		} catch (Exception e) {
+//			LOG.error(e.getLocalizedMessage());
+//			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
+//		}
 	}
 
-	protected void streamBasin(HttpServletResponse response, String comid) throws IOException {
+	protected void streamBasin(HttpServletResponse response, String comid) throws Exception {
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
-		try (BasinTransformer transformer = new BasinTransformer(response)) {
+//		try (BasinTransformer transformer = new BasinTransformer(response)) {
+			BasinTransformer transformer = new BasinTransformer(response);
 			addContentHeader(response);
 			streamResults(transformer, BaseDao.BASIN, parameterMap);
 
-		} catch (Exception e) {
-			LOG.error(e.getLocalizedMessage());
-			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
-		}
+//		} catch (Exception e) {
+//			LOG.error(e.getLocalizedMessage());
+//			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
+//		}
 	}
 
 	protected void streamResults(ITransformer transformer, String featureType, Map<String, Object> parameterMap) {

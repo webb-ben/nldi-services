@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class GlobalDefaultExceptionHandler {
+public class GlobalDefaultExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final Logger LOG = LoggerFactory.getLogger(GlobalDefaultExceptionHandler.class);
 
 	@ExceptionHandler(Exception.class)
