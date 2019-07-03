@@ -26,7 +26,7 @@ public class FeatureTransformer extends MapToGeoJsonTransformer {
 	static final String REACHCODE = "reachcode";
 	static final String SOURCE_NAME_DB = "source_name";
 	static final String URI = "uri";
-	
+
 	private static final String SOURCE_NAME = "sourceName";
 	private static final String NAVIGATION = "navigation";
 

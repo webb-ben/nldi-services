@@ -31,11 +31,11 @@ public class MapToGeoJsonTransformerTest {
 
 	private class TestTransformer extends MapToGeoJsonTransformer {
 		public int writePropertiesCalled = 0;
-		
+
 		public TestTransformer(HttpServletResponse response) throws IOException {
 			super(response, TEST_COUNT_HEADER);
 		}
-		
+
 		@Override
 		protected void writeProperties(JsonGenerator jsonGenerator, Map<String, Object> resultMap) {
 			writePropertiesCalled = writePropertiesCalled + 1;
@@ -90,7 +90,7 @@ public class MapToGeoJsonTransformerTest {
 
 		transformer.write((Object) map);
 		assertEquals(2, transformer.writePropertiesCalled);
-		
+
 		String secondWrite = firstWrite + "," + ITERATIVE_JSON + "{\"prop2\":\"propValue2\"}}";
 		try {
 			transformer.g.flush();
@@ -98,9 +98,9 @@ public class MapToGeoJsonTransformerTest {
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
 		}
-		
+
 		transformer.end();
-		
+
 		try {
 			assertEquals(secondWrite + "]}", response.getContentAsString());
 		} catch (IOException e) {

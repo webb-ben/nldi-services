@@ -1,20 +1,17 @@
 
 package gov.usgs.owi.nldi.springinit;
 
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory;
 import org.postgresql.ds.PGSimpleDataSource;
-import org.springframework.context.EnvironmentAware;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.env.Environment;
 
 import com.github.springtestdbunit.bean.DatabaseConfigBean;
 import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.TestConfiguration;
 
 @TestConfiguration
 @Import(MybatisConfig.class)
@@ -22,16 +19,16 @@ public class DbTestConfig {
 
 	@Value("${nldiDbUrl}")
 	private String datasourceUrl;
-	
+
 	@Value("${nldiUsername}")
 	private String datasourceUsername;
-	
+
 	@Value("${nldiPassword}")
 	private String datasourcePassword;
-	
+
 	@Value("${dbUnitUsername}")
 	private String dbUnitDatasourceUsername;
-	
+
 	@Value("${dbUnitPassword}")
 	private String dbUnitDatasourcePassword;
 
@@ -53,7 +50,6 @@ public class DbTestConfig {
 		return ds;
 	}
 
-	
 	//Beans to support DBunit for unit testing with PostgreSQL.
 	@Bean
 	public DatabaseConfigBean dbUnitDatabaseConfig() {

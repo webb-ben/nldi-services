@@ -31,9 +31,9 @@ public class CharacteristicMetadataTransformer extends MapToJsonTransformer {
 	@Override
 	void initJson(JsonGenerator g, Map<String, Object> resultMap) {
 		try {
-			g.writeStartObject();																			// {
-			g.writeFieldName(BaseDao.CHARACTERISTICS_METADATA);														// chars: 
-			g.writeStartArray();																			// [
+			g.writeStartObject();
+			g.writeFieldName(BaseDao.CHARACTERISTICS_METADATA);
+			g.writeStartArray();
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing json", e);
 		}
@@ -42,18 +42,18 @@ public class CharacteristicMetadataTransformer extends MapToJsonTransformer {
 	@Override
 	void writeMap(JsonGenerator g, Map<String, Object> resultMap) {
 		try {
-			g.writeStartObject();																			// {
-			g.writeObjectFieldStart(CHARACTERISTIC);														// char : {
-			g.writeStringField(CHARACTERISTIC_ID, getValue(resultMap, CHARACTERISTIC_ID));					// a : b
-			g.writeStringField(CHARACTERISTIC_DESCRIPTION, getValue(resultMap, CHARACTERISTIC_DESCRIPTION));// a : b
-			g.writeStringField(UNIT, getValue(resultMap, UNIT));											// a : b
-			g.writeStringField(DATASET_LABEL, getValue(resultMap, DATASET_LABEL));							// a : b
-			g.writeStringField(DATASET_URL, getValue(resultMap, DATASET_URL));								// a : b
-			g.writeStringField(THEME_LABEL, getValue(resultMap, THEME_LABEL));								// a : b
-			g.writeStringField(THEME_URL, getValue(resultMap, THEME_URL));									// a : b
-			g.writeStringField(CHARACTERISTIC_TYPE, getValue(resultMap, CHARACTERISTIC_TYPE));				// a : b
-			g.writeEndObject();																				// }
-			g.writeEndObject();																				// }
+			g.writeStartObject();
+			g.writeObjectFieldStart(CHARACTERISTIC);
+			g.writeStringField(CHARACTERISTIC_ID, getValue(resultMap, CHARACTERISTIC_ID));
+			g.writeStringField(CHARACTERISTIC_DESCRIPTION, getValue(resultMap, CHARACTERISTIC_DESCRIPTION));
+			g.writeStringField(UNIT, getValue(resultMap, UNIT));
+			g.writeStringField(DATASET_LABEL, getValue(resultMap, DATASET_LABEL));
+			g.writeStringField(DATASET_URL, getValue(resultMap, DATASET_URL));
+			g.writeStringField(THEME_LABEL, getValue(resultMap, THEME_LABEL));
+			g.writeStringField(THEME_URL, getValue(resultMap, THEME_URL));
+			g.writeStringField(CHARACTERISTIC_TYPE, getValue(resultMap, CHARACTERISTIC_TYPE));
+			g.writeEndObject();
+			g.writeEndObject();
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing json", e);
 		}

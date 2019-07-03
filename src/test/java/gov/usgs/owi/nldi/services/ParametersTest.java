@@ -19,9 +19,9 @@ public class ParametersTest {
 	@Test
 	public void processParametersTest() {
 		assertTrue(parameters.processParameters(null, null, null, null).isEmpty());
-		
+
 		assertTrue(parameters.processParameters("", "", "", "").isEmpty());
-		
+
 		assertTrue(parameters.processParameters(" ", " ", " ", " ").isEmpty());
 
 		Map<String, Object> parameterMap = parameters.processParameters("123", "DD", "456", "789");

@@ -30,7 +30,7 @@ public class MapToJsonTransformerTest {
 		public int addResponseHeadersCalledCount = 0;
 		public int initJsonCalledCount = 0;
 		public int writeMapCalledCount = 0;
-		
+
 		public TestTransformer(HttpServletResponse response) throws IOException {
 			super(response);
 		}
@@ -40,13 +40,13 @@ public class MapToJsonTransformerTest {
 			assertEquals(initJsonCount, initJsonCalledCount);
 			assertEquals(writeMapCount, writeMapCalledCount);
 		}
-		
+
 		@Override
 		void addResponseHeaders(HttpServletResponse response, Map<String, Object> resultMap) {
 			addResponseHeadersCalledCount = addResponseHeadersCalledCount + 1;
 			response.addHeader(TEST_HEADER_NAME, TEST_HEADER_VALUE);
 		}
-		
+
 		@Override
 		void initJson(JsonGenerator jsonGenerator, Map<String, Object> resultMap) {
 			initJsonCalledCount = initJsonCalledCount + 1;
@@ -58,7 +58,7 @@ public class MapToJsonTransformerTest {
 				fail(e.getLocalizedMessage());
 			}
 		}
-		
+
 		@Override
 		void writeMap(JsonGenerator jsonGenerator, Map<String, Object> resultMap) {
 			writeMapCalledCount = writeMapCalledCount + 1;
@@ -114,16 +114,16 @@ public class MapToJsonTransformerTest {
 
 		testTransformer.write((Object) result);
 		testTransformer.assertMethodCallCounts(1, 1, 2);
-		
+
 		try {
 			testTransformer.g.flush();
 			assertEquals(INITIAL_JSON + "{\"prop1\":\"propValue1\"},{\"prop2\":\"propValue2\"}", response.getContentAsString());
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
 		}
-		
+
 		testTransformer.end();
-		
+
 		try {
 			assertEquals(INITIAL_JSON + "{\"prop1\":\"propValue1\"},{\"prop2\":\"propValue2\"}]}", response.getContentAsString());
 		} catch (IOException e) {

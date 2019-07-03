@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StreamingDao extends BaseDao {
-	
+
 	public static final String SESSION_ID = "sessionId";
 
 	private static final String NS = "stream.";

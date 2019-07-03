@@ -43,7 +43,7 @@ public class LinkedDataControllerTest {
 	private Parameters parameters;
 	@Mock
 	private LogService logService;
-	
+
 	private TestConfigurationService configurationService;
 	private LinkedDataController controller;
 	private MockHttpServletResponse response;

@@ -27,7 +27,7 @@ import gov.usgs.owi.nldi.services.TestConfigurationService;
 
 
 public class CharacteristicsControllerTest {
-	
+
 	private TestConfigurationService configurationService;
 
 	private StreamingDao streamingDao;

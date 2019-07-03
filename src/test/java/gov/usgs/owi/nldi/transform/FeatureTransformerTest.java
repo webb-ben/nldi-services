@@ -18,7 +18,7 @@ public class FeatureTransformerTest {
 
 	protected FeatureTransformer transformer;
 	protected MockHttpServletResponse response;
-	
+
 	private static final String TEST_ROOT_URL = "http://owi-test.usgs.gov:8080/test-url";
 
 	@Before

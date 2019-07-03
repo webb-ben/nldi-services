@@ -114,7 +114,7 @@ public abstract class BaseController {
 		try (BasinTransformer transformer = new BasinTransformer(response)) {
 			addContentHeader(response);
 			streamResults(transformer, BaseDao.BASIN, parameterMap);
-	
+
 		} catch (Exception e) {
 			LOG.error(e.getLocalizedMessage());
 			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
@@ -149,7 +149,7 @@ public abstract class BaseController {
 		Map<String, Object> parameterMap = new HashMap<> ();
 		parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
 		parameterMap.put(Parameters.FEATURE_ID, featureID);
-	
+
 		Map<String, Object> feature = lookupDao.getComid(BaseDao.FEATURE, parameterMap);
 		if (null == feature || !feature.containsKey(Parameters.COMID)) {
 			return null;

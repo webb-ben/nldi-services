@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +23,7 @@ import gov.usgs.owi.nldi.services.Parameters;
 @RestController
 @RequestMapping(value="api/comid/{comid}/navigate/{navigationMode}")
 public class NetworkController extends BaseController {
-	
+
 	protected ConfigurationService configurationService;
 
 	@Autowired

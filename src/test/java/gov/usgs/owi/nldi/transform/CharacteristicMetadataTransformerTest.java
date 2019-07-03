@@ -31,7 +31,6 @@ public class CharacteristicMetadataTransformerTest {
 		transformer.close();
 	}
 
-
 	@Test
 	public void initJsonTest() {
 		transformer.initJson(transformer.g, null);

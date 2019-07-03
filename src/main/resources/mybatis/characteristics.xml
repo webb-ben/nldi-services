@@ -20,7 +20,7 @@
         dataTable.characteristic_value,
         dataTable.percent_nodata
     </sql>
-    
+
     <sql id="characteristicIdFilter">
         and dataTable.characteristic_id in <foreach item="i" collection="characteristicId" open="(" separator="," close=")">#{i}</foreach>
     </sql>
