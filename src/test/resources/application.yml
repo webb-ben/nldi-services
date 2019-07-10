@@ -1,5 +1,0 @@
-
-nldi:
-  displayProtocol: http
-  displayHost: "owi-test.usgs.gov:8080"
-  displayPath: "/test-url"

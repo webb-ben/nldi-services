@@ -1,91 +1,96 @@
 package gov.usgs.owi.nldi.controllers;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
-
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import gov.usgs.owi.nldi.BaseIT;
-import gov.usgs.owi.nldi.dao.LogDao;
-import gov.usgs.owi.nldi.dao.LookupDao;
-import gov.usgs.owi.nldi.dao.NavigationDao;
-import gov.usgs.owi.nldi.dao.StreamingDao;
-import gov.usgs.owi.nldi.services.ConfigurationService;
-import gov.usgs.owi.nldi.services.LogService;
-import gov.usgs.owi.nldi.services.Navigation;
-import gov.usgs.owi.nldi.services.Parameters;
-import gov.usgs.owi.nldi.springinit.DbTestConfig;
-import gov.usgs.owi.nldi.springinit.SpringConfig;
 import gov.usgs.owi.nldi.transform.FlowLineTransformer;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.MOCK,
-		classes={DbTestConfig.class, SpringConfig.class, 
-		LinkedDataController.class, LookupDao.class, StreamingDao.class,
-		Navigation.class, NavigationDao.class, Parameters.class, 
-		ConfigurationService.class, LogService.class, LogDao.class})
+@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
 public class LinkedDataControllerFlowlineIT extends BaseIT {
 
-	@Autowired
-	private WebApplicationContext wac;
+	@Value("${serverContextPath}")
+	private String context;
 
-	private MockMvc mockMvc;
+	@LocalServerPort
+	private int port;
+
+	@Autowired
+	private TestRestTemplate restTemplate;
 
 	private static final String RESULT_FOLDER_WQP  = "feature/flowline/wqp/";
 	private static final String RESULT_FOLDER_HUC  = "feature/flowline/huc12pp/";
 
 	@Before
 	public void setup() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		urlRoot = "http://localhost:" + port + context;
 	}
 
 	@Test
 	@DatabaseSetup("classpath:/testData/featureWqp.xml")
 	public void getWqpUMTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/api/wqp/USGS-05427880/navigate/UM"))
-				.andExpect(status().isOk())
-				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "10"))
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
-				.andReturn();
-
-		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_UM.json"))).allowingAnyArrayOrdering());
+		assertEntity(restTemplate,
+				"/api/wqp/USGS-05427880/navigate/UM",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"10",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_UM.json"),
+				true,
+				false);
 	}
 
 	@Test
 	@DatabaseSetup("classpath:/testData/featureHuc12pp.xml")
 	public void getHuc12ppDM10Test() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/api/huc12pp/070900020601/navigate/DM?distance=10"))
-				.andExpect(status().isOk())
-				.andExpect(header().string(FlowLineTransformer.FLOW_LINES_COUNT_HEADER, "6"))
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
-				.andReturn();
-
-		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_HUC, "huc12pp_070900020601_DM_distance_10.json"))).allowingAnyArrayOrdering());
+		assertEntity(restTemplate,
+				"/api/huc12pp/070900020601/navigate/DM?distance=10",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"6",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_HUC, "huc12pp_070900020601_DM_distance_10.json"),
+				true,
+				false);
 	}
 
 	@Test
 	public void badInputTest() throws Exception {
-		mockMvc.perform(get("/api/wqx/USGS-05427880/navigate/DM"))
-				.andExpect(status().isNotFound());
+		assertEntity(restTemplate,
+				"/api/wqx/USGS-05427880/navigate/DM",
+				HttpStatus.NOT_FOUND.value(),
+				null,
+				null,
+				null,
+				null,
+				true,
+				false);
+	}
+
+	//Parameter Error Testing
+	@Test
+	public void badNavigationModeTest() throws Exception {
+		assertEntity(restTemplate,
+				"/api/wqp/USGS-05427880/navigate/XX",
+				HttpStatus.BAD_REQUEST.value(),
+				null,
+				null,
+				null,
+				"getFlowlines.navigationMode: must match \"DD|DM|PP|UT|UM\"",
+				false,
+				false);
 	}
 
 }

@@ -1,11 +1,15 @@
 package gov.usgs.owi.nldi.services;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.MappingIterator;
@@ -42,7 +46,7 @@ public class Navigation {
 		return navigationResult;
 	}
 
-	public String interpretResult(Map<?,?> navigationResult) throws Exception {
+	public String interpretResult(Map<?,?> navigationResult, HttpServletResponse response) throws IOException {
 		//An Error Result - {navigate=(,,,,-1,"Valid navigation type codes are UM, UT, DM, DD and PP.",)}
 		//Another Error - {navigate=(13297246,1.1545800000,13297198,48.5846800000,310,"Start ComID must have a hydroseq greater than the hydroseq for stop ComID.",{f170f490-00ad-11e6-8f62-0242ac110003})}
 		//A Good Result - {navigate=(13297246,0.0000000000,,,0,,{4d06cca2-001e-11e6-b9d0-0242ac110003})}
@@ -67,7 +71,7 @@ public class Navigation {
 			} else {
 				String msg = "{\"errorCode\":" + resultCode + ", \"errorMessage\":\"" + statusMessage + "\"}";
 				LOG.debug(msg);
-				throw new RuntimeException(msg);
+				response.sendError(HttpStatus.BAD_REQUEST.value(), msg);
 			}
 		}
 

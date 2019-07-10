@@ -4,7 +4,9 @@ import java.math.BigInteger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Pattern;
 
+import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,27 +36,37 @@ public class NetworkController extends BaseController {
 
 	@GetMapping
 	public void getFlowlines(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable(Parameters.COMID) String comid,
-			@PathVariable(Parameters.NAVIGATION_MODE) String navigationMode,
-			@RequestParam(value=Parameters.STOP_COMID, required=false) String stopComid,
-			@RequestParam(value=Parameters.DISTANCE, required=false) String distance,
+			@PathVariable(Parameters.COMID) @Range(min=1, max=Integer.MAX_VALUE) String comid,
+			@PathVariable(Parameters.NAVIGATION_MODE) @Pattern(regexp=REGEX_NAVIGATION_MODE) String navigationMode,
+			@RequestParam(value=Parameters.STOP_COMID, required=false) @Range(min=1, max=Integer.MAX_VALUE) String stopComid,
+			@RequestParam(value=Parameters.DISTANCE, required=false) @Range(min=1, max=Integer.MAX_VALUE) String distance,
 			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws Exception {
 		BigInteger logId = logService.logRequest(request);
-		streamFlowLines(response, comid, navigationMode, stopComid, distance, isLegacy(legacy, navigationMode));
-		logService.logRequestComplete(logId, response.getStatus());
+		try {
+			streamFlowLines(response, comid, navigationMode, stopComid, distance, isLegacy(legacy, navigationMode));
+		} catch (Exception e) {
+			GlobalDefaultExceptionHandler.handleError(e, response);
+		} finally {
+			logService.logRequestComplete(logId, response.getStatus());
+		}
 	}
 
 	@GetMapping(value="{dataSource}")
 	public void getFeatures(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable(Parameters.COMID) String comid,
-			@PathVariable(Parameters.NAVIGATION_MODE) String navigationMode,
+			@PathVariable(Parameters.COMID) @Range(min=1, max=Integer.MAX_VALUE) String comid,
+			@PathVariable(Parameters.NAVIGATION_MODE) @Pattern(regexp=REGEX_NAVIGATION_MODE) String navigationMode,
 			@PathVariable(value=DATA_SOURCE) String dataSource,
-			@RequestParam(value=Parameters.STOP_COMID, required=false) String stopComid,
-			@RequestParam(value=Parameters.DISTANCE, required=false) String distance,
+			@RequestParam(value=Parameters.STOP_COMID, required=false) @Range(min=1, max=Integer.MAX_VALUE) String stopComid,
+			@RequestParam(value=Parameters.DISTANCE, required=false) @Range(min=1, max=Integer.MAX_VALUE) String distance,
 			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws Exception {
 		BigInteger logId = logService.logRequest(request);
-		streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource, isLegacy(legacy, navigationMode));
-		logService.logRequestComplete(logId, response.getStatus());
+		try {
+			streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource, isLegacy(legacy, navigationMode));
+		} catch (Exception e) {
+			GlobalDefaultExceptionHandler.handleError(e, response);
+		} finally {
+			logService.logRequestComplete(logId, response.getStatus());
+		}
 	}
 
 }

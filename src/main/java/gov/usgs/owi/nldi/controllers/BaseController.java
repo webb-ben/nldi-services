@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.ibatis.session.ResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.util.NumberUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import de.jkeylockmanager.manager.KeyLockManager;
@@ -29,11 +29,13 @@ import gov.usgs.owi.nldi.transform.FlowLineTransformer;
 import gov.usgs.owi.nldi.transform.ITransformer;
 
 @RequestMapping("api")
+@Validated
 public abstract class BaseController {
 	private static final Logger LOG = LoggerFactory.getLogger(BaseController.class);
 
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	public static final String MIME_TYPE_GEOJSON = "application/vnd.geo+json";
+	public static final String REGEX_NAVIGATION_MODE = "DD|DM|PP|UT|UM";
 
 	static final String DATA_SOURCE = "dataSource";
 
@@ -58,69 +60,45 @@ public abstract class BaseController {
 	protected void streamFlowLines(HttpServletResponse response,
 			String comid, String navigationMode, String stopComid, String distance, boolean legacy) throws Exception {
 		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid);
-//		try (FlowLineTransformer transformer = new FlowLineTransformer(response)) {
 		FlowLineTransformer transformer = new FlowLineTransformer(response);
-			if (legacy) {
-				String sessionId = getSessionId(parameterMap);
-				if (null != sessionId) {
-					parameterMap.put(StreamingDao.SESSION_ID, sessionId);
-					addContentHeader(response);
-					streamResults(transformer, BaseDao.FLOW_LINES_LEGACY, parameterMap);
-				} else {
-					response.setStatus(HttpStatus.BAD_REQUEST.value());
-				}
-			} else {
-				parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
+		if (legacy) {
+			String sessionId = getSessionId(parameterMap, response);
+			if (null != sessionId) {
+				parameterMap.put(StreamingDao.SESSION_ID, sessionId);
 				addContentHeader(response);
-				streamResults(transformer, BaseDao.FLOW_LINES, parameterMap);
+				streamResults(transformer, BaseDao.FLOW_LINES_LEGACY, parameterMap);
 			}
-
-//		} catch (Exception e) {
-//			LOG.error(e.getLocalizedMessage());
-//			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
-//		}
+		} else {
+			addContentHeader(response);
+			streamResults(transformer, BaseDao.FLOW_LINES, parameterMap);
+		}
 	}
 
 	protected void streamFeatures(HttpServletResponse response,
 			String comid, String navigationMode, String stopComid, String distance, String dataSource, boolean legacy) throws Exception {
 		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid);
-//		try (FeatureTransformer transformer = new FeatureTransformer(response, rootUrl)) {
 		FeatureTransformer transformer = new FeatureTransformer(response, rootUrl);
-			if (legacy) {
-				String sessionId = getSessionId(parameterMap);
-				if (null != sessionId) {
-					parameterMap.put(StreamingDao.SESSION_ID, sessionId);
-					parameterMap.put(DATA_SOURCE, dataSource.toLowerCase());
-					addContentHeader(response);
-					streamResults(transformer, BaseDao.FEATURES_LEGACY, parameterMap);
-				} else {
-					response.setStatus(HttpStatus.BAD_REQUEST.value());
-				}
-			} else {
-				parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
+		if (legacy) {
+			String sessionId = getSessionId(parameterMap, response);
+			if (null != sessionId) {
+				parameterMap.put(StreamingDao.SESSION_ID, sessionId);
 				parameterMap.put(DATA_SOURCE, dataSource.toLowerCase());
 				addContentHeader(response);
-				streamResults(transformer, BaseDao.FEATURES, parameterMap);
+				streamResults(transformer, BaseDao.FEATURES_LEGACY, parameterMap);
 			}
-	
-//		} catch (Exception e) {
-//			LOG.error(e.getLocalizedMessage());
-//			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
-//		}
+		} else {
+			parameterMap.put(DATA_SOURCE, dataSource.toLowerCase());
+			addContentHeader(response);
+			streamResults(transformer, BaseDao.FEATURES, parameterMap);
+		}
 	}
 
 	protected void streamBasin(HttpServletResponse response, String comid) throws Exception {
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
-//		try (BasinTransformer transformer = new BasinTransformer(response)) {
-			BasinTransformer transformer = new BasinTransformer(response);
-			addContentHeader(response);
-			streamResults(transformer, BaseDao.BASIN, parameterMap);
-
-//		} catch (Exception e) {
-//			LOG.error(e.getLocalizedMessage());
-//			response.sendError(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage());
-//		}
+		BasinTransformer transformer = new BasinTransformer(response);
+		addContentHeader(response);
+		streamResults(transformer, BaseDao.BASIN, parameterMap);
 	}
 
 	protected void streamResults(ITransformer transformer, String featureType, Map<String, Object> parameterMap) {
@@ -135,11 +113,11 @@ public abstract class BaseController {
 		response.setHeader(HEADER_CONTENT_TYPE, MIME_TYPE_GEOJSON);
 	}
 
-	protected String getSessionId(Map<String, Object> parameterMap) throws Exception {
+	protected String getSessionId(Map<String, Object> parameterMap, HttpServletResponse response) throws Exception {
 		// No NPE testing - should never get here without parameters.
 		int key = parameterMap.hashCode();
 		Map<String, String> navigationResult = lockManager.executeLocked(key, () -> navigation.navigate(parameterMap));
-		return navigation.interpretResult(navigationResult);
+		return navigation.interpretResult(navigationResult, response);
 	}
 
 	protected boolean isLegacy(String legacy, String navigationMode) {

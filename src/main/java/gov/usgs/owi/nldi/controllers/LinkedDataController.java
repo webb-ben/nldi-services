@@ -4,7 +4,9 @@ import java.math.BigInteger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Pattern;
 
+import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,38 +40,48 @@ public class LinkedDataController extends BaseController {
 	public void getFlowlines(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID,
-			@PathVariable(Parameters.NAVIGATION_MODE) String navigationMode,
-			@RequestParam(value=Parameters.STOP_COMID, required=false) String stopComid,
-			@RequestParam(value=Parameters.DISTANCE, required=false) String distance,
+			@PathVariable(Parameters.NAVIGATION_MODE) @Pattern(regexp=REGEX_NAVIGATION_MODE) String navigationMode,
+			@RequestParam(value=Parameters.STOP_COMID, required=false) @Range(min=1, max=Integer.MAX_VALUE) String stopComid,
+			@RequestParam(value=Parameters.DISTANCE, required=false) @Range(min=1, max=Integer.MAX_VALUE) String distance,
 			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws Exception {
 
 		BigInteger logId = logService.logRequest(request);
-		String comid = getComid(featureSource, featureID);
-		if (null == comid) {
-			response.setStatus(HttpStatus.NOT_FOUND.value());
-		} else {
-			streamFlowLines(response, comid, navigationMode, stopComid, distance, isLegacy(legacy, navigationMode));
+		try {
+			String comid = getComid(featureSource, featureID);
+			if (null == comid) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+			} else {
+				streamFlowLines(response, comid, navigationMode, stopComid, distance, isLegacy(legacy, navigationMode));
+			}
+		} catch (Exception e) {
+			GlobalDefaultExceptionHandler.handleError(e, response);
+		} finally {
+			logService.logRequestComplete(logId, response.getStatus());
 		}
-		logService.logRequestComplete(logId, response.getStatus());
 	}
 
 	@GetMapping(value="{dataSource}")
 	public void getFeatures(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID,
-			@PathVariable(Parameters.NAVIGATION_MODE) String navigationMode,
+			@PathVariable(Parameters.NAVIGATION_MODE) @Pattern(regexp=REGEX_NAVIGATION_MODE) String navigationMode,
 			@PathVariable(value=DATA_SOURCE) String dataSource,
-			@RequestParam(value=Parameters.STOP_COMID, required=false) String stopComid,
-			@RequestParam(value=Parameters.DISTANCE, required=false) String distance,
+			@RequestParam(value=Parameters.STOP_COMID, required=false) @Range(min=1, max=Integer.MAX_VALUE) String stopComid,
+			@RequestParam(value=Parameters.DISTANCE, required=false) @Range(min=1, max=Integer.MAX_VALUE) String distance,
 			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws Exception {
 
 		BigInteger logId = logService.logRequest(request);
-		String comid = getComid(featureSource, featureID);
-		if (null == comid) {
-			response.setStatus(HttpStatus.NOT_FOUND.value());
-		} else {
-			streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource, isLegacy(legacy, navigationMode));
+		try {
+			String comid = getComid(featureSource, featureID);
+			if (null == comid) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+			} else {
+				streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource, isLegacy(legacy, navigationMode));
+			}
+		} catch (Exception e) {
+			GlobalDefaultExceptionHandler.handleError(e, response);
+		} finally {
+			logService.logRequestComplete(logId, response.getStatus());
 		}
-		logService.logRequestComplete(logId, response.getStatus());
 	}
 }

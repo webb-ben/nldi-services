@@ -8,8 +8,8 @@ The services are accessed via an http GET request. All navigation output is gene
 
 #### The root is {host}/nldi/api.
 Both a test and a production are exposed to the public:
-__https://cida-test.er.usgs.gov/nldi__ is the test root.
-__https://cida.usgs.gov/nldi__ is the production root.
+__https://labs.waterdata.usgs.gov/nldi/api__ is the test root.
+__https://labs.waterdata.usgs.gov/nldi/api__ is the production root.
 This endpoint will give you the valid dataSource names for the other endpoints. There is documentation at /about and a demo UI at /about/demo.
 
 #### Display Up/Down Stream Flow Lines
@@ -38,10 +38,14 @@ Both endpoints accept the same query parameters to further refine/restrict the n
 * __stopComid={stopid}__ for use with __PP__ navigation between the __{featureSourceId}__ and __{stopid}__
   * (only applicable to NHDPlus comid navigation and the __{stopid}__ must be downstream of the __{featureSourceId}__)
 
-## Developer Environment
+## Development
+This is a Spring Batch/Boot project. All of the normal caveats relating to a Spring Batch/Boot application apply.
 
-[nldi-db](https://travis-ci.org/ACWI-SSWD/nldi-db) contains everything you need to set up a development database environment. It includes data for the Yahara River in Wisconsin.
+### Dependencies
+This application utilizes a PostgreSQL database.
+[nldi-db](https://github.com/ACWI-SSWD/nldi-db) contains everything you need to set up a development database environment. It includes data for the Yahara River in Wisconsin.
 
+### Environment variables
 To run the project you will need to create the file application.yml in the project's root directory and add the following:
 ```
 nldiDbHost: hostNameOfDatabase
@@ -49,39 +53,28 @@ nldiDbPort: portNumberForDatabase
 nldiDbUsername: dbUserName
 nldiDbPassword: dbPassword
 
-serverPort: 8080
-serverContext: '/nldi'
-
 nldiProtocol: http
-nldiHost: localhost:8080
-```
-To run:
-```
-% mvn spring-boot:run
+nldiHost: owi-test.usgs.gov:8080
+nldiPath: /test-url
+
+serverContextPath: /nldi
+springFrameworkLogLevel: INFO
+serverPort: 8080
+
+spring.security.user.password: changeMe
 ```
 
-This project has some integration testing against the database. The "package" goal of the maven command will stop the build before running them.
-To set up the project for running the integration tests, add the following to your maven settings.xml file (the values below will work with the
-nldi-db docker container running on the same machine as the tests):
+### Testing
+This project contains JUnit tests. Maven can be used to run them (in addition to the capabilities of your IDE).
 
-```
-<profiles>
-  <profile>
-    <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <nldi.url>jdbc:postgresql://127.0.0.1:5433/nldi</nldi.url>
-        <nldi.dbUsername>nldi</nldi.dbUsername>
-        <nldi.dbPassword>nldi</nldi.dbPassword>
-        <nldi.dbUnitUsername>nldi</nldi.dbUnitUsername>
-        <nldi.dbUnitPassword>nldi</nldi.dbUnitPassword>
-      </properties>
-  </profile>
-</profiles>
+To run the unit tests of the application use:
+
+```shell
+mvn package
 ```
 
-If running integration tests without maven, you may specify the properties in the file,
-application-it.yml. See the maven-failsafe-plugin configuration in the pom.xml
-for the mapping of properties to varables.
+To additionally start up a Docker database and run the integration tests of the application use:
+
+```shell
+mvn verify -DTESTING_DATABASE_PORT=5445 -DTESTING_DATABASE_ADDRESS=localhost -DTESTING_DATABASE_NETWORK=nldiServices
+```

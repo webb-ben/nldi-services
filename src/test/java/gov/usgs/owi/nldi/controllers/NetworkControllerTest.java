@@ -58,8 +58,8 @@ public class NetworkControllerTest {
 		controller.getFlowlines(request, response, null, null, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-		//this is a BAD_REQUEST because the BaseController.streamFeatures dependencies are not all mocked
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+		//this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
 	}
 
 	@Test
@@ -67,8 +67,8 @@ public class NetworkControllerTest {
 		controller.getFeatures(request, response, null, null, null, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-		//this is a BAD_REQUEST because the BaseController.streamFeatures dependencies are not all mocked
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+		//this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
 	}
 
 	@Test
@@ -76,8 +76,8 @@ public class NetworkControllerTest {
 		controller.getFeatures(request, response, null, null, BaseDao.BASIN, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-		//this is a BAD_REQUEST because the BaseController.streamFeatures dependencies are not all mocked
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+		//this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
 	}
 
 }

@@ -1,13 +1,29 @@
-projectName: "nldi"
-applicationName: "nldi-services"
-dockerImageName: "nldi-services"
-containerPort: 8080
+# docker image path in artifactory
 artifactoryPath: "nldi"
-gitlabPath: "wma/docker/nldi"
+# docker image path in gitlab
+gitlabPath: "wma/docker/nldi/nldi-services"
+# name of the docker image
+dockerImageName: "nldi-services"
+# 
+repoPath: "ACWI-SSWD/nldi-services.git"
+# name of the git repo
 gitRepoUrl: "https://github.com/ACWI-SSWD/nldi-services.git"
+# Jenkins credential for pushing back to repo
 gitRepoCredentialsId: "Jenkins-GitHub-Read-Write-Token"
-memory: 768
-rulePriority: 10
-healthCheck: "/nldi/swagger-ui.html"
-contextPath: "/nldi/*"
+# name of the deploy job to trigger
 deployJobName: "NLDI-services-container-deploy"
+# name of the project
+projectName: "nldi"
+# maximum amount of RAM for running Docker containers in the service
+memory: 768
+# name of the application or service
+applicationName: "nldi-services"
+# integer representing the order of precedence of the ALB rule.
+# set to a low priority; services are given higher priority.
+rulePriority: 10
+# port that is exposed by your container
+containerPort: 8080
+# string parameter specifying a path that ALB should use to verify that your application is alive
+healthCheck: "/nldi/about/health"
+# string parameter that tells the ALB how to route requests to the containers (e.g. /my-app/*); this forms a listener rule for the load balancer
+contextPath: "/nldi/*"

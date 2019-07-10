@@ -3,6 +3,7 @@ package gov.usgs.owi.nldi.controllers;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +23,13 @@ public class GlobalDefaultExceptionHandler extends ResponseEntityExceptionHandle
 
 	@ExceptionHandler(Exception.class)
 	public @ResponseBody String handleUncaughtException(Exception ex, WebRequest request, HttpServletResponse response) throws IOException {
+		return handleError(ex, response);
+	}
+
+	public static String handleError(Exception ex, HttpServletResponse response) {
 		if (ex instanceof MissingServletRequestParameterException
-				|| ex instanceof HttpMediaTypeNotSupportedException) {
+				|| ex instanceof HttpMediaTypeNotSupportedException
+				|| ex instanceof ConstraintViolationException) {
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ex.getLocalizedMessage();
 		} else if (ex instanceof HttpMessageNotReadableException) {
@@ -44,5 +50,4 @@ public class GlobalDefaultExceptionHandler extends ResponseEntityExceptionHandle
 			return msgText;
 		}
 	}
-
 }
