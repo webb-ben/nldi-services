@@ -2,14 +2,13 @@ package gov.usgs.owi.nldi.controllers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -74,7 +73,7 @@ public class LinkedDataControllerTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void getFlowlinesTest() throws IOException {
+	public void getFlowlinesTest() throws Exception {
 		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(null, goodFeature());
 		controller.getFlowlines(request, response, null, null, null, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
@@ -84,13 +83,13 @@ public class LinkedDataControllerTest {
 		controller.getFlowlines(request, response, null, null, null, null, null, null);
 		verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
 		verify(logService, times(2)).logRequestComplete(any(BigInteger.class), any(int.class));
-		//this is a BAD_REQUEST because the BaseController.streamFeatures dependencies are not all mocked
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+		//this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void getFeaturesTest() throws IOException {
+	public void getFeaturesTest() throws Exception {
 		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(null, goodFeature());
 		controller.getFeatures(request, response, null, null, null, null, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
@@ -100,8 +99,8 @@ public class LinkedDataControllerTest {
 		controller.getFeatures(request, response, null, null, null, null, null, null, null);
 		verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
 		verify(logService, times(2)).logRequestComplete(any(BigInteger.class), any(int.class));
-		//this is a BAD_REQUEST because the BaseController.streamFeatures dependencies are not all mocked
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+		//this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
 	}
 
 	public static Map<String, Object> goodFeature() {

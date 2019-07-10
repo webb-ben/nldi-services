@@ -21,3 +21,22 @@ nldi:
   displayProtocol: ${nldiProtocol}
   displayHost: ${nldiHost}
   displayPath: ${nldiPath:}
+
+management:
+  endpoints:
+    enabled-by-default: false
+    jmx:
+      exposure:
+        exclude: "*"
+    web:
+      base-path: /about
+      exposure:
+        include:
+        - info
+        - health
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+      show-details: never

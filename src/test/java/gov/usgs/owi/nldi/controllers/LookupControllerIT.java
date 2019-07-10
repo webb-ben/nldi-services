@@ -1,146 +1,156 @@
 package gov.usgs.owi.nldi.controllers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONArrayAs;
-import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import gov.usgs.owi.nldi.BaseIT;
-import gov.usgs.owi.nldi.dao.LogDao;
-import gov.usgs.owi.nldi.dao.LookupDao;
-import gov.usgs.owi.nldi.dao.NavigationDao;
-import gov.usgs.owi.nldi.dao.StreamingDao;
-import gov.usgs.owi.nldi.services.ConfigurationService;
-import gov.usgs.owi.nldi.services.LogService;
-import gov.usgs.owi.nldi.services.Navigation;
-import gov.usgs.owi.nldi.services.Parameters;
-import gov.usgs.owi.nldi.springinit.DbTestConfig;
-import gov.usgs.owi.nldi.springinit.SpringConfig;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.MOCK,
-		classes={DbTestConfig.class, SpringConfig.class, 
-		LookupController.class, LookupDao.class, StreamingDao.class,
-		Navigation.class, NavigationDao.class, Parameters.class, 
-		ConfigurationService.class, LogService.class, LogDao.class})
+@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
 @DatabaseSetup("classpath:/testData/crawlerSource.xml")
 public class LookupControllerIT extends BaseIT {
 
-	@Autowired
-	private WebApplicationContext wac;
+	@Value("${serverContextPath}")
+	private String context;
 
-	private MockMvc mockMvc;
+	@LocalServerPort
+	private int port;
+
+	@Autowired
+	private TestRestTemplate restTemplate;
 
 	private static final String RESULT_FOLDER  = "lookup/";
 
 	@Before
 	public void setup() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		urlRoot = "http://localhost:" + port + context;
 	}
 
 	//DataSources Testing
 	@Test
 	public void getDataSourcesTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/api"))
-				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andReturn();
-
-		assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+		String actualbody = assertEntity(restTemplate,
+				"/api",
+				HttpStatus.OK.value(),
+				null,
+				null,
+				MediaType.APPLICATION_JSON_UTF8_VALUE,
+				null,
+				false,
+				false);
+		assertThat(new JSONArray(actualbody),
 				sameJSONArrayAs(new JSONArray(getCompareFile(RESULT_FOLDER, "dataSources.json"))).allowingAnyArrayOrdering());
 	}
 
 	//Features Testing
 	@Test
 	public void getFeaturesTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/api/comid"))
-				.andExpect(status().isBadRequest())
-				.andReturn();
-
-		assertEquals("This functionality is not implemented.", rtn.getResponse().getErrorMessage());
+		assertEntity(restTemplate,
+				"/api/comid",
+				HttpStatus.BAD_REQUEST.value(),
+				null,
+				null,
+				null,
+				"{\"status\":400,\"error\":\"Bad Request\",\"message\":\"This functionality is not implemented.\",\"path\":\"/nldi/api/comid\"}",
+				true,
+				true);
 	}
 
 	//Object Testing Catchment
 	@Test
 	public void getComidTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/api/comid/13297246"))
-				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
-				.andReturn();
-
-		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "comid_13297246.json"))).allowingAnyArrayOrdering());
+		assertEntity(restTemplate,
+				"/api/comid/13297246",
+				HttpStatus.OK.value(),
+				null,
+				null,
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER, "comid_13297246.json"),
+				true,
+				false);
 	}
 
 	//Linked Object Testing WQP
 	@Test
 	@DatabaseSetup("classpath:/testData/featureWqp.xml")
 	public void getWqpTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/api/wqp/USGS-05427880"))
-				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
-				.andReturn();
-
-		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880.json"))).allowingAnyArrayOrdering());
+		assertEntity(restTemplate,
+				"/api/wqp/USGS-05427880",
+				HttpStatus.OK.value(),
+				null,
+				null,
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880.json"),
+				true,
+				false);
 	}
 
 	//Linked Object Testing huc12pp
 	@Test
 	@DatabaseSetup("classpath:/testData/featureHuc12pp.xml")
 	public void gethuc12ppTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/api/huc12pp/070900020604"))
-				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, NetworkController.MIME_TYPE_GEOJSON))
-				.andReturn();
-
-		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER_HUC, "huc12pp_070900020604.json"))).allowingAnyArrayOrdering());
+		assertEntity(restTemplate,
+				"/api/huc12pp/070900020604",
+				HttpStatus.OK.value(),
+				null,
+				null,
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_HUC, "huc12pp_070900020604.json"),
+				true,
+				false);
 	}
 
 	//Navigation Types Testing
 	@Test
 	@DatabaseSetup("classpath:/testData/featureWqp.xml")
 	public void getNavigationTypesTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/api/wqp/USGS-05427880/navigate"))
-				.andExpect(status().isOk())
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andReturn();
-
-		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-				sameJSONObjectAs(new JSONObject(getCompareFile(RESULT_FOLDER, "wqp_USGS-05427880.json"))).allowingAnyArrayOrdering());
+		assertEntity(restTemplate,
+				"/api/wqp/USGS-05427880/navigate",
+				HttpStatus.OK.value(),
+				null,
+				null,
+				MediaType.APPLICATION_JSON_UTF8_VALUE,
+				getCompareFile(RESULT_FOLDER, "wqp_USGS-05427880.json"),
+				true,
+				false);
 	}
 
 	@Test
 	public void getNavigationTypesNotFoundTest() throws Exception {
-		mockMvc.perform(get("/api/wqx/USGS-05427880/navigate"))
-				.andExpect(status().isNotFound())
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE));
+		assertEntity(restTemplate,
+				"/api/wqx/USGS-05427880/navigate",
+				HttpStatus.NOT_FOUND.value(),
+				null,
+				null,
+				MediaType.APPLICATION_JSON_UTF8_VALUE,
+				null,
+				true,
+				false);
 
-		mockMvc.perform(get("/api/wqp/USGX-05427880/navigate"))
-				.andExpect(status().isNotFound())
-				.andExpect(header().string(NetworkController.HEADER_CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andReturn();
+		assertEntity(restTemplate,
+				"/api/wqp/USGX-05427880/navigate",
+				HttpStatus.NOT_FOUND.value(),
+				null,
+				null,
+				MediaType.APPLICATION_JSON_UTF8_VALUE,
+				null,
+				true,
+				false);
 	}
 
 }

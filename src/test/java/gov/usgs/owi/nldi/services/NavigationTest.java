@@ -12,12 +12,18 @@ import static org.mockito.Mockito.when;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.owi.nldi.dao.NavigationDao;
+
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 public class NavigationTest {
@@ -26,34 +32,44 @@ public class NavigationTest {
 	private NavigationDao navigationDao;
 
 	private Navigation navigation;
+	private HttpServletResponse response;
 
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		navigation = new Navigation(navigationDao);
+		response = new MockHttpServletResponse();
 	}
 
 	@Test
-	public void interpretResultTest() {
+	public void interpretResultTest_Good() {
 		try {
-			assertEquals("{4d06cca2-001e-11e6-b9d0-0242ac110003}", navigation.interpretResult(goodResult()));
+			assertEquals("{4d06cca2-001e-11e6-b9d0-0242ac110003}", navigation.interpretResult(goodResult(), response));
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
+	}
 
+	@Test
+	public void interpretResultTest_Bad1() throws UnsupportedEncodingException {
 		try {
-			assertNull(navigation.interpretResult(badResult1()));
-			fail("Did not get expected exception.");
+			assertNull(navigation.interpretResult(badResult1(), response));
 		} catch (Exception e) {
-			assertEquals("{\"errorCode\":-1, \"errorMessage\":\"Valid navigation type codes are UM, UT, DM, DD and PP.\"}", e.getMessage());
+			fail(e.getMessage());
 		}
+		assertEquals(HttpStatus.BAD_REQUEST.value(), ((MockHttpServletResponse) response).getStatus());
+		assertEquals("{\"errorCode\":-1, \"errorMessage\":\"Valid navigation type codes are UM, UT, DM, DD and PP.\"}", ((MockHttpServletResponse) response).getErrorMessage());
+	}
 
+	@Test
+	public void interpretResultTest_Bad2() throws UnsupportedEncodingException {
 		try {
-			assertNull(navigation.interpretResult(badResult2()));
-			fail("Did not get expected exception.");
+			assertNull(navigation.interpretResult(badResult2(), response));
 		} catch (Exception e) {
-			assertEquals("{\"errorCode\":310, \"errorMessage\":\"Start ComID must have a hydroseq greater than the hydroseq for stop ComID.\"}", e.getMessage());
+			fail(e.getMessage());
 		}
+		assertEquals(HttpStatus.BAD_REQUEST.value(), ((MockHttpServletResponse) response).getStatus());
+		assertEquals("{\"errorCode\":310, \"errorMessage\":\"Start ComID must have a hydroseq greater than the hydroseq for stop ComID.\"}", ((MockHttpServletResponse) response).getErrorMessage());
 	}
 
 	@Test

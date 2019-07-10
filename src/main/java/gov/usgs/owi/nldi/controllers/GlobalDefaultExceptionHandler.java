@@ -3,6 +3,7 @@ package gov.usgs.owi.nldi.controllers;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,15 +15,21 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class GlobalDefaultExceptionHandler {
+public class GlobalDefaultExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final Logger LOG = LoggerFactory.getLogger(GlobalDefaultExceptionHandler.class);
 
 	@ExceptionHandler(Exception.class)
 	public @ResponseBody String handleUncaughtException(Exception ex, WebRequest request, HttpServletResponse response) throws IOException {
+		return handleError(ex, response);
+	}
+
+	public static String handleError(Exception ex, HttpServletResponse response) {
 		if (ex instanceof MissingServletRequestParameterException
-				|| ex instanceof HttpMediaTypeNotSupportedException) {
+				|| ex instanceof HttpMediaTypeNotSupportedException
+				|| ex instanceof ConstraintViolationException) {
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ex.getLocalizedMessage();
 		} else if (ex instanceof HttpMessageNotReadableException) {
@@ -43,5 +50,4 @@ public class GlobalDefaultExceptionHandler {
 			return msgText;
 		}
 	}
-
 }

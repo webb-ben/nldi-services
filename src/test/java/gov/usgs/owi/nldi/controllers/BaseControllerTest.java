@@ -67,17 +67,17 @@ public class BaseControllerTest {
 	public void addContentHeaderTest() {
 		controller.addContentHeader(response);
 
-		assertTrue(response.containsHeader(NetworkController.HEADER_CONTENT_TYPE));
-		assertEquals(NetworkController.MIME_TYPE_GEOJSON, response.getHeader(NetworkController.HEADER_CONTENT_TYPE));
+		assertTrue(response.containsHeader(BaseController.HEADER_CONTENT_TYPE));
+		assertEquals(BaseController.MIME_TYPE_GEOJSON, response.getHeader(BaseController.HEADER_CONTENT_TYPE));
 	}
 
 	@Test
 	public void getSessionIdTest() throws Exception {
 		when(navigation.navigate(anyMap())).thenReturn(new HashMap<String, String>());
-		when(navigation.interpretResult(anyMap())).thenReturn("abc");
-		assertEquals("abc", controller.getSessionId(new HashMap<String, Object>()));
+		when(navigation.interpretResult(anyMap(), any(HttpServletResponse.class))).thenReturn("abc");
+		assertEquals("abc", controller.getSessionId(new HashMap<String, Object>(), response));
 		verify(navigation).navigate(anyMap());
-		verify(navigation).interpretResult(anyMap());
+		verify(navigation).interpretResult(anyMap(), any(HttpServletResponse.class));
 	}
 
 	@Test
@@ -85,18 +85,17 @@ public class BaseControllerTest {
 		controller.streamFeatures(response, "123", "navigationMode", "456", "789", "dataSource", false);
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
 		verify(navigation, never()).navigate(anyMap());
-		verify(navigation, never()).interpretResult(anyMap());
+		verify(navigation, never()).interpretResult(anyMap(), any(HttpServletResponse.class));
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 
 	@Test
 	public void streamFeaturesLegacyTest() throws Exception {
 		when(navigation.navigate(anyMap())).thenReturn(new HashMap<String, String>());
-		when(navigation.interpretResult(anyMap())).thenReturn(null, "abc");
+		when(navigation.interpretResult(anyMap(), any(HttpServletResponse.class))).thenReturn(null, "abc");
 
 		controller.streamFeatures(response, "123", "navigationMode", "456", "789", "dataSource", true);
 		verify(streamingDao, never()).stream(anyString(), anyMap(), any(ResultHandler.class));
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
 
 		controller.streamFeatures(response, "123", "navigationMode", "456", "789", "dataSource", true);
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
@@ -107,7 +106,7 @@ public class BaseControllerTest {
 		controller.streamFlowLines(response, "123", "navigationMode", "456", "789", false);
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
 		verify(navigation, never()).navigate(anyMap());
-		verify(navigation, never()).interpretResult(anyMap());
+		verify(navigation, never()).interpretResult(anyMap(), any(HttpServletResponse.class));
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 
@@ -116,17 +115,16 @@ public class BaseControllerTest {
 		controller.streamBasin(response, "123");
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
 		verify(navigation, never()).navigate(anyMap());
-		verify(navigation, never()).interpretResult(anyMap());
+		verify(navigation, never()).interpretResult(anyMap(), any(HttpServletResponse.class));
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 
 	@Test
 	public void streamFlowLinesLegacyTest() throws Exception {
 		when(navigation.navigate(anyMap())).thenReturn(new HashMap<String, String>());
-		when(navigation.interpretResult(anyMap())).thenReturn(null, "abc");
+		when(navigation.interpretResult(anyMap(), any(HttpServletResponse.class))).thenReturn(null, "abc");
 		controller.streamFlowLines(response, "123", "navigationMode", "456", "789", true);
 		verify(streamingDao, never()).stream(anyString(), anyMap(), any(ResultHandler.class));
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
 
 		controller.streamFlowLines(response, "123", "navigationMode", "456", "789", true);
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));

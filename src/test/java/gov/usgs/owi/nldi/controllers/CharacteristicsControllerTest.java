@@ -55,12 +55,12 @@ public class CharacteristicsControllerTest {
 	}
 
 	@Test
-	public void getCharacteristicsTest() throws IOException {
+	public void getCharacteristicsTest() throws Exception {
 		controller.getCharacteristics(request, response, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-		//this is a BAD_REQUEST because of NPEs
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+		//this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
 	}
 
 	@Test
@@ -68,17 +68,17 @@ public class CharacteristicsControllerTest {
 		controller.getCharacteristicData(request, response, null, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-		//this is a BAD_REQUEST because of NPEs
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+		//this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
 	}
 
 	@Test
-	public void getBasinTest() throws IOException {
+	public void getBasinTest() throws Exception {
 		controller.getBasin(request, response, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-		//this is a BAD_REQUEST because the getComid is not mocked
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+		//this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
 	}
 
 }

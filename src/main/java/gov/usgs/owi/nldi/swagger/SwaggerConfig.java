@@ -1,6 +1,5 @@
-package gov.usgs.owi.nldi.springinit;
+package gov.usgs.owi.nldi.swagger;
 
-import gov.usgs.owi.nldi.services.ConfigurationService;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import gov.usgs.owi.nldi.services.ConfigurationService;
 import springfox.documentation.PathProvider;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.paths.AbstractPathProvider;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -30,7 +32,12 @@ public class SwaggerConfig {
 		return new Docket(DocumentationType.SWAGGER_2)
 				.protocols(protocols)
 				.host(configurationService.getDisplayHost())
-				.pathProvider(pathProvider());
+				.pathProvider(pathProvider())
+				.useDefaultResponseMessages(false)
+				.select()
+					.paths(PathSelectors.any())
+					.apis(RequestHandlerSelectors.basePackage("gov.usgs.owi.nldi"))
+					.build();
 	}
 
 	@Bean
