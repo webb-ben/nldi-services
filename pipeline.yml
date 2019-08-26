@@ -13,7 +13,7 @@ gitRepoCredentialsId: "Jenkins-GitHub-Read-Write-Token"
 # name of the deploy job to trigger
 deployJobName: "NLDI-services-container-deploy"
 # name of the project
-projectName: "nldi"
+projectName: "iow-allegemein"
 # maximum amount of RAM for running Docker containers in the service
 memory: 768
 # name of the application or service
