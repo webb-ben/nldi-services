@@ -4,7 +4,7 @@ artifactoryPath: "nldi"
 gitlabPath: "wma/docker/nldi/nldi-services"
 # name of the docker image
 dockerImageName: "nldi-services"
-# 
+#
 repoPath: "ACWI-SSWD/nldi-services.git"
 # name of the git repo
 gitRepoUrl: "https://github.com/ACWI-SSWD/nldi-services.git"
@@ -24,6 +24,6 @@ rulePriority: 10
 # port that is exposed by your container
 containerPort: 8080
 # string parameter specifying a path that ALB should use to verify that your application is alive
-healthCheck: "/nldi/about/health"
+healthCheck: "/api/nldi/about/health"
 # string parameter that tells the ALB how to route requests to the containers (e.g. /my-app/*); this forms a listener rule for the load balancer
-contextPath: "/nldi/*"
+contextPath: "/api/nldi/*"
