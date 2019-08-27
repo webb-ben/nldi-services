@@ -23,6 +23,7 @@ public class FeatureTransformerTest {
 
 	@Before
 	public void beforeTest() throws IOException {
+		configurationService = new TestConfigurationService();
 		response = new MockHttpServletResponse();
 		transformer = new FeatureTransformer(response, configurationService);
 	}

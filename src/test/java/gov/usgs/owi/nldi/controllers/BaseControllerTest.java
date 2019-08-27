@@ -58,7 +58,7 @@ public class BaseControllerTest {
 	private TestBaseController controller;
 
 	@Before
-	public void setup() {
+	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		controller = new TestBaseController(lookupDao, streamingDao, navigation, parameters, configurationService, logService);
 		response = new MockHttpServletResponse();
