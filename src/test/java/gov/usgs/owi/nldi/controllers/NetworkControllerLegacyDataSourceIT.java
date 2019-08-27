@@ -42,7 +42,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidUtTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13293474/navigate/UT/wqp?legacy=true",
+				"/linked-data/comid/13293474/navigate/UT/wqp?legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"22",
@@ -55,7 +55,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidUtDistanceTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13297246/navigate/UT/wqp?distance=10&legacy=true",
+				"/linked-data/comid/13297246/navigate/UT/wqp?distance=10&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"6",
@@ -69,7 +69,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidUmTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13293474/navigate/UM/wqp?legacy=true",
+				"/linked-data/comid/13293474/navigate/UM/wqp?legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"17",
@@ -82,7 +82,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidUmDistanceTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13297246/navigate/UM/wqp?distance=10&legacy=true",
+				"/linked-data/comid/13297246/navigate/UM/wqp?distance=10&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"6",
@@ -96,7 +96,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidDmTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13296790/navigate/DM/wqp?legacy=true",
+				"/linked-data/comid/13296790/navigate/DM/wqp?legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"6",
@@ -109,7 +109,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidDmDistanceTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13293474/navigate/DM/wqp?distance=10&legacy=true",
+				"/linked-data/comid/13293474/navigate/DM/wqp?distance=10&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"31",
@@ -123,7 +123,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidDdTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13294310/navigate/DD/wqp?legacy=true",
+				"/linked-data/comid/13294310/navigate/DD/wqp?legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"17",
@@ -136,7 +136,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidDdDistanceTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13294310/navigate/DD/wqp?distance=11&legacy=true",
+				"/linked-data/comid/13294310/navigate/DD/wqp?distance=11&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"1",
@@ -150,7 +150,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidPpStopComidInvalidTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13297246/navigate/PP/wqp?stopComid=13297198&legacy=true",
+				"/linked-data/comid/13297246/navigate/PP/wqp?stopComid=13297198&legacy=true",
 				HttpStatus.BAD_REQUEST.value(),
 				null,
 				null,
@@ -163,7 +163,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidPpStopComidTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13297198/navigate/PP/wqp?stopComid=13297246&legacy=true",
+				"/linked-data/comid/13297198/navigate/PP/wqp?stopComid=13297246&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"16",

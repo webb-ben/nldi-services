@@ -16,6 +16,7 @@
         <springfox.version>2.9.2</springfox.version>
         <jackson.version>2.9.6</jackson.version>
         <wma.artifactory.url>https://cida.usgs.gov/artifactory</wma.artifactory.url>
+        <log.db.ready>database system is ready to accept connections</log.db.ready>
     </properties>
 
     <ciManagement>
@@ -240,6 +241,7 @@
                                     <LOCAL_NETWORK_NAME>nldi</LOCAL_NETWORK_NAME>
                                 </env>
                                 <wait>
+                                    <log>(?s)${log.db.ready}.*${log.db.ready}.*${log.db.ready}</log>
                                     <time>45000</time>
                                 </wait>
                             </run>

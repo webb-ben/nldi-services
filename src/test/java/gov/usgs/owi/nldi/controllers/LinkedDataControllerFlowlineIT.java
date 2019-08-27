@@ -42,7 +42,7 @@ public class LinkedDataControllerFlowlineIT extends BaseIT {
 	@DatabaseSetup("classpath:/testData/featureWqp.xml")
 	public void getWqpUMTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/wqp/USGS-05427880/navigate/UM",
+				"/linked-data/wqp/USGS-05427880/navigate/UM",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"10",
@@ -56,7 +56,7 @@ public class LinkedDataControllerFlowlineIT extends BaseIT {
 	@DatabaseSetup("classpath:/testData/featureHuc12pp.xml")
 	public void getHuc12ppDM10Test() throws Exception {
 		assertEntity(restTemplate,
-				"/api/huc12pp/070900020601/navigate/DM?distance=10",
+				"/linked-data/huc12pp/070900020601/navigate/DM?distance=10",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"6",
@@ -69,7 +69,7 @@ public class LinkedDataControllerFlowlineIT extends BaseIT {
 	@Test
 	public void badInputTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/wqx/USGS-05427880/navigate/DM",
+				"/linked-data/wqx/USGS-05427880/navigate/DM",
 				HttpStatus.NOT_FOUND.value(),
 				null,
 				null,
@@ -83,7 +83,7 @@ public class LinkedDataControllerFlowlineIT extends BaseIT {
 	@Test
 	public void badNavigationModeTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/wqp/USGS-05427880/navigate/XX",
+				"/linked-data/wqp/USGS-05427880/navigate/XX",
 				HttpStatus.BAD_REQUEST.value(),
 				null,
 				null,

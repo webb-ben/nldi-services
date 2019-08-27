@@ -40,7 +40,7 @@ public class LinkedDataControllerDataSourceIT extends BaseIT {
 	@DatabaseSetup("classpath:/testData/featureWqp.xml")
 	public void getWqpUtTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/wqp/USGS-05427880/navigate/UT/wqp",
+				"/linked-data/wqp/USGS-05427880/navigate/UT/wqp",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"13",
@@ -56,7 +56,7 @@ public class LinkedDataControllerDataSourceIT extends BaseIT {
 	@DatabaseSetup("classpath:/testData/featureWqp.xml")
 	public void getWqpDmTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/wqp/USGS-05427880/navigate/DM/huc12pp",
+				"/linked-data/wqp/USGS-05427880/navigate/DM/huc12pp",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"9",
@@ -69,7 +69,7 @@ public class LinkedDataControllerDataSourceIT extends BaseIT {
 	@Test
 	public void badInputTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/wqx/USGS-05427880/navigate/DM/huc12pp",
+				"/linked-data/wqx/USGS-05427880/navigate/DM/huc12pp",
 				HttpStatus.NOT_FOUND.value(),
 				null,
 				null,
@@ -83,7 +83,7 @@ public class LinkedDataControllerDataSourceIT extends BaseIT {
 	@Test
 	public void badNavigationModeTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/wqp/USGS-05427880/navigate/XX/huc12pp",
+				"/linked-data/wqp/USGS-05427880/navigate/XX/huc12pp",
 				HttpStatus.BAD_REQUEST.value(),
 				null,
 				null,
