@@ -13,18 +13,19 @@ import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
+import gov.usgs.owi.nldi.services.TestConfigurationService;
 
 public class FeatureTransformerTest {
 
+	protected TestConfigurationService configurationService;
 	protected FeatureTransformer transformer;
 	protected MockHttpServletResponse response;
 
-	private static final String TEST_ROOT_URL = "http://owi-test.usgs.gov:8080/test-url";
-
 	@Before
 	public void beforeTest() throws IOException {
+		configurationService = new TestConfigurationService();
 		response = new MockHttpServletResponse();
-		transformer = new FeatureTransformer(response, TEST_ROOT_URL);
+		transformer = new FeatureTransformer(response, configurationService);
 	}
 
 	@After
@@ -52,7 +53,7 @@ public class FeatureTransformerTest {
 			transformer.g.flush();
 			assertEquals("{\"source\":\"sourceValue\",\"sourceName\":\"sourceNameValue\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\","
 					+ "\"uri\":\"uriValue\",\"comid\":\"47439231\",\"reachcode\":\"05020002004263\",\"measure\":\"1.38233\","
-					+ "\"navigation\":\"" + TEST_ROOT_URL + "/sourcevalue/identifierValue/navigate\"}",
+					+ "\"navigation\":\"" + configurationService.getRootUrl() + "/sourcevalue/identifierValue/navigate\"}",
 					response.getContentAsString());
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
@@ -78,7 +79,7 @@ public class FeatureTransformerTest {
 			transformer.g.flush();
 			assertEquals("{\"source\":\"source2Value\",\"sourceName\":\"sourceName2Value\",\"identifier\":\"identifier2Value\",\"name\":\"name2Value\","
 						+ "\"uri\":\"uri2Value\",\"comid\":\"81149213\","
-						+ "\"navigation\":\"" + TEST_ROOT_URL + "/source2value/identifier2Value/navigate\"}",
+						+ "\"navigation\":\"" + configurationService.getRootUrl() + "/source2value/identifier2Value/navigate\"}",
 						response.getContentAsString());
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());

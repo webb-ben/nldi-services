@@ -29,6 +29,6 @@ public class ConfigurationService {
 	}
 
 	public String getRootUrl() {
-		return getDisplayProtocol() + "://" + getDisplayHost() + getDisplayPath();
+		return getDisplayProtocol() + "://" + getDisplayHost() + getDisplayPath() + "/linked-data";
 	}
 }

@@ -42,7 +42,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	@Test
 	public void getComidUtTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13293474/navigate/UT",
+				"/linked-data/comid/13293474/navigate/UT",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"7",
@@ -55,7 +55,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	@Test
 	public void getComidUtDistanceTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13297246/navigate/UT?distance=10",
+				"/linked-data/comid/13297246/navigate/UT?distance=10",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"9",
@@ -68,7 +68,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	@Test
 	public void getComidUtDiversionTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13294158/navigate/UT",
+				"/linked-data/comid/13294158/navigate/UT",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"15",
@@ -82,7 +82,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	@Test
 	public void getComidUmTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13293474/navigate/UM",
+				"/linked-data/comid/13293474/navigate/UM",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"4",
@@ -95,7 +95,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	@Test
 	public void getComidUmDistanceTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13297246/navigate/UM?distance=10",
+				"/linked-data/comid/13297246/navigate/UM?distance=10",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"6",
@@ -109,7 +109,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	@Test
 	public void getComidDmTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13296790/navigate/DM",
+				"/linked-data/comid/13296790/navigate/DM",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"5",
@@ -122,7 +122,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	@Test
 	public void getComidDmDiversionsNotIncludedTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13294310/navigate/DM",
+				"/linked-data/comid/13294310/navigate/DM",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"42",
@@ -135,7 +135,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	@Test
 	public void getComidDmDistanceTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13293474/navigate/DM?distance=10",
+				"/linked-data/comid/13293474/navigate/DM?distance=10",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"8",
@@ -149,7 +149,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	@Test
 	public void getComidDdTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13294310/navigate/DD",
+				"/linked-data/comid/13294310/navigate/DD",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"49",
@@ -163,7 +163,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	public void getComidDdDistanceTest() throws Exception {
 		//We are going to sacrifice a little accuracy for performance, so this does not match the old way...
 		assertEntity(restTemplate,
-				"/api/comid/13294310/navigate/DD?distance=11",
+				"/linked-data/comid/13294310/navigate/DD?distance=11",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"13",
@@ -177,7 +177,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	@Test
 	public void getComidPpStopComidInvalidTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13297246/navigate/PP?stopComid=13297198",
+				"/linked-data/comid/13297246/navigate/PP?stopComid=13297198",
 				HttpStatus.BAD_REQUEST.value(),
 				null,
 				null,
@@ -190,7 +190,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	@Test
 	public void getComidPpStopComidTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13297198/navigate/PP?stopComid=13297246",
+				"/linked-data/comid/13297198/navigate/PP?stopComid=13297246",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"12",
@@ -205,7 +205,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	@Test
 	public void interestingTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13293844/navigate/DM?distance=5",
+				"/linked-data/comid/13293844/navigate/DM?distance=5",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"7",
@@ -215,7 +215,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				false);
 
 		assertEntity(restTemplate,
-				"/api/comid/13293844/navigate/DD?distance=5",
+				"/linked-data/comid/13293844/navigate/DD?distance=5",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"14",
@@ -225,7 +225,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				false);
 
 		assertEntity(restTemplate,
-				"/api/comid/13294328/navigate/DM?distance=5",
+				"/linked-data/comid/13294328/navigate/DM?distance=5",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"6",
@@ -235,7 +235,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				false);
 
 		assertEntity(restTemplate,
-				"/api/comid/13294328/navigate/DD?distance=5",
+				"/linked-data/comid/13294328/navigate/DD?distance=5",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"10",
@@ -245,7 +245,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				false);
 
 		assertEntity(restTemplate,
-				"/api/comid/13294390/navigate/UM?distance=5",
+				"/linked-data/comid/13294390/navigate/UM?distance=5",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"6",
@@ -255,7 +255,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				false);
 
 		assertEntity(restTemplate,
-				"/api/comid/13294390/navigate/UT?distance=5",
+				"/linked-data/comid/13294390/navigate/UT?distance=5",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"22",
@@ -269,7 +269,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	@Test
 	public void badNavigationModeTest() throws Exception {
 		assertEntity(restTemplate,
-				"/api/comid/13297198/navigate/XX",
+				"/linked-data/comid/13297198/navigate/XX",
 				HttpStatus.BAD_REQUEST.value(),
 				null,
 				null,
