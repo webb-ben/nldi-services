@@ -11,6 +11,8 @@ spring:
 logging:
   level:
     root: ${springFrameworkLogLevel}
+    javax.management: OFF
+    sun.rmi: OFF
 
 server:
   port: ${serverPort}

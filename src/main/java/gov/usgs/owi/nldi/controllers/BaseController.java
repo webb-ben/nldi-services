@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.NumberUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import de.jkeylockmanager.manager.KeyLockManager;
 import de.jkeylockmanager.manager.KeyLockManagers;
@@ -20,6 +19,7 @@ import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.dao.StreamingResultHandler;
+import gov.usgs.owi.nldi.services.ConfigurationService;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
@@ -28,7 +28,6 @@ import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import gov.usgs.owi.nldi.transform.FlowLineTransformer;
 import gov.usgs.owi.nldi.transform.ITransformer;
 
-@RequestMapping("api")
 @Validated
 public abstract class BaseController {
 	private static final Logger LOG = LoggerFactory.getLogger(BaseController.class);
@@ -43,17 +42,17 @@ public abstract class BaseController {
 	protected final StreamingDao streamingDao;
 	protected final Navigation navigation;
 	protected final Parameters parameters;
-	protected final String rootUrl;
+	protected final ConfigurationService configurationService;
 	protected final LogService logService;
 
 	private final KeyLockManager lockManager = KeyLockManagers.newLock();
 
-	public BaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, String inRootUrl, LogService inLogService) {
+	public BaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, ConfigurationService inConfigurationService, LogService inLogService) {
 		lookupDao = inLookupDao;
 		streamingDao = inStreamingDao;
 		navigation = inNavigation;
 		parameters = inParameters;
-		rootUrl = inRootUrl;
+		configurationService = inConfigurationService;
 		logService = inLogService;
 	}
 
@@ -77,7 +76,7 @@ public abstract class BaseController {
 	protected void streamFeatures(HttpServletResponse response,
 			String comid, String navigationMode, String stopComid, String distance, String dataSource, boolean legacy) throws Exception {
 		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid);
-		FeatureTransformer transformer = new FeatureTransformer(response, rootUrl);
+		FeatureTransformer transformer = new FeatureTransformer(response, configurationService);
 		if (legacy) {
 			String sessionId = getSessionId(parameterMap, response);
 			if (null != sessionId) {

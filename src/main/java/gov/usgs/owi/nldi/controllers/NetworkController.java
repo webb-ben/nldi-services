@@ -22,16 +22,14 @@ import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
 
 @RestController
-@RequestMapping(value="api/comid/{comid}/navigate/{navigationMode}")
+@RequestMapping(value="linked-data/comid/{comid}/navigate/{navigationMode}")
 public class NetworkController extends BaseController {
-
-	protected ConfigurationService configurationService;
 
 	@Autowired
 	public NetworkController(LookupDao inLookupDao, StreamingDao inStreamingDao,
 			Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
 			LogService inLogService) {
-		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService.getRootUrl(), inLogService);
+		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService);
 	}
 
 	@GetMapping

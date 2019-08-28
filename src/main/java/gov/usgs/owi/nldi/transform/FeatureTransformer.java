@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.NavigationDao;
+import gov.usgs.owi.nldi.services.ConfigurationService;
 
 public class FeatureTransformer extends MapToGeoJsonTransformer {
 
@@ -30,11 +31,11 @@ public class FeatureTransformer extends MapToGeoJsonTransformer {
 	private static final String SOURCE_NAME = "sourceName";
 	private static final String NAVIGATION = "navigation";
 
-	private String rootUrl;
+	private final ConfigurationService configurationService;
 
-	public FeatureTransformer(HttpServletResponse response, String rootUrl) {
+	public FeatureTransformer(HttpServletResponse response, ConfigurationService configurationService) {
 		super(response, FEATURE_COUNT_HEADER);
-		this.rootUrl = rootUrl;
+		this.configurationService = configurationService;
 	}
 
 	@Override
@@ -54,7 +55,7 @@ public class FeatureTransformer extends MapToGeoJsonTransformer {
 			if (StringUtils.hasText(getValue(resultMap, MEASURE))) {
 				jsonGenerator.writeStringField(MEASURE, getValue(resultMap, MEASURE));
 			}
-			jsonGenerator.writeStringField(NAVIGATION, String.join("/", rootUrl, source.toLowerCase(), URLEncoder.encode(identifier, DEFAULT_ENCODING), NavigationDao.NAVIGATE));
+			jsonGenerator.writeStringField(NAVIGATION, String.join("/", configurationService.getRootUrl(), source.toLowerCase(), URLEncoder.encode(identifier, DEFAULT_ENCODING), NavigationDao.NAVIGATE));
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing properties", e);
 		}

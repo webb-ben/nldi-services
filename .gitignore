@@ -8,3 +8,4 @@
 /src/main/webapp/META-INF/context.xml
 /.idea/
 /secrets.env
+/.attach_pid*

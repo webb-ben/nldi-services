@@ -25,6 +25,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.services.ConfigurationService;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
@@ -32,6 +33,8 @@ import gov.usgs.owi.nldi.transform.ITransformer;
 
 public class BaseControllerTest {
 
+	@Mock
+	private ConfigurationService configurationService;
 	@Mock
 	private LookupDao lookupDao;
 	@Mock
@@ -46,20 +49,18 @@ public class BaseControllerTest {
 	private LogService logService;
 	private HttpServletResponse response;
 
-	private static final String TEST_ROOT_URL = "http://owi-test.usgs.gov:8080/test-url";
-
 	private class TestBaseController extends BaseController {
-		public TestBaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, String inRootUrl, LogService inLogService) {
-			super(inLookupDao, inStreamingDao, inNavigation, inParameters, inRootUrl, inLogService);
+		public TestBaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, ConfigurationService inConfigurationService, LogService inLogService) {
+			super(inLookupDao, inStreamingDao, inNavigation, inParameters, inConfigurationService, inLogService);
 		}
 	}
 
 	private TestBaseController controller;
 
 	@Before
-	public void setup() {
+	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		controller = new TestBaseController(lookupDao, streamingDao, navigation, parameters, TEST_ROOT_URL, logService);
+		controller = new TestBaseController(lookupDao, streamingDao, navigation, parameters, configurationService, logService);
 		response = new MockHttpServletResponse();
 	}
 
