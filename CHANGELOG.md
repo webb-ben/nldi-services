@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - REST endpoint mappings
   - Updated POM dependencies
   - Updated URL paths used in deployment
+  - CORS
 
 ## [1.1.0](https://github.com/ACWI-SSWD/nldi-services/compare/nldi-services-1.0.0...nldi-services-1.1.0)
 ### Changed
