@@ -30,3 +30,8 @@ contextPath: "/api/nldi/*"
 # configuration repository paths
 configRepoPath: "wma/docker/nldi/nldi-services"
 configCredentialsId: "wma-eto-eb-rsa"
+urlRules:
+  - type: forward
+    conditions:
+      - "/api/nldi/*"
+    priority: 319
