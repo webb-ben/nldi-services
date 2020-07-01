@@ -37,6 +37,7 @@ import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.swagger.model.DataSource;
 import gov.usgs.owi.nldi.transform.CharacteristicDataTransformer;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
+import gov.usgs.owi.nldi.transform.FeatureCollectionTransformer;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
@@ -80,18 +81,25 @@ public class LinkedDataController extends BaseController {
 		return rtn;
 	}
 
-	@ApiOperation(value="getFeatures", hidden=true)
 	@GetMapping(value="linked-data/{featureSource}", produces=MediaType.APPLICATION_JSON_VALUE)
-	public Object getFeatures(HttpServletRequest request, HttpServletResponse response, @PathVariable(LookupDao.FEATURE_SOURCE) String featureSource) throws IOException {
+	public void getFeatures(HttpServletRequest request, HttpServletResponse response,
+							@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource) {
 		BigInteger logId = logService.logRequest(request);
+
 		try {
-			response.sendError(HttpStatus.BAD_REQUEST.value(), "This functionality is not implemented.");
+			Map<String, Object> parameterMap = new HashMap<>();
+
+			parameterMap.put(LookupDao.ROOT_URL, configurationService.getRootUrl());
+			parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+			FeatureCollectionTransformer transformer = new FeatureCollectionTransformer(response, configurationService);
+			addContentHeader(response);
+			streamResults(transformer, BaseDao.FEATURES_COLLECTION, parameterMap);
+
 		} catch (Exception e) {
 			GlobalDefaultExceptionHandler.handleError(e, response);
 		} finally {
 			logService.logRequestComplete(logId, response.getStatus());
 		}
-		return null;
 	}
 
 	@GetMapping(value="linked-data/{featureSource}/{featureID}", produces=MediaType.APPLICATION_JSON_VALUE)
