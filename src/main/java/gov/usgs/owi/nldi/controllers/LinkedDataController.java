@@ -163,16 +163,20 @@ public class LinkedDataController extends BaseController {
 			@RequestParam(value=Parameters.CHARACTERISTIC_ID, required=false) String[] characteristicIds) throws IOException {
 		BigInteger logId = logService.logRequest(request);
 		try (CharacteristicDataTransformer transformer = new CharacteristicDataTransformer(response)) {
+      
 			String comid = getComid(featureSource, featureID);
+      
 			if (null == comid) {
-				response.sendError(HttpStatus.NOT_FOUND.value(), "Feature not found");
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+			} else {
+				Map<String, Object> parameterMap = new HashMap<> ();
+				parameterMap.put(Parameters.CHARACTERISTIC_TYPE, characteristicType.toLowerCase());
+				parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
+				parameterMap.put(Parameters.CHARACTERISTIC_ID, characteristicIds);
+				addContentHeader(response);
+				streamResults(transformer, BaseDao.CHARACTERISTIC_DATA, parameterMap);
 			}
-			Map<String, Object> parameterMap = new HashMap<> ();
-			parameterMap.put(Parameters.CHARACTERISTIC_TYPE, characteristicType.toLowerCase());
-			parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
-			parameterMap.put(Parameters.CHARACTERISTIC_ID, characteristicIds);
-			addContentHeader(response);
-			streamResults(transformer, BaseDao.CHARACTERISTIC_DATA, parameterMap);
+
 		} catch (Exception e) {
 			GlobalDefaultExceptionHandler.handleError(e, response);
 		} finally {
@@ -190,10 +194,10 @@ public class LinkedDataController extends BaseController {
 		try {
 			String comid = getComid(featureSource, featureID);
 
-			if (null != comid) {
-				streamBasin(response, comid);
+			if (null == comid) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
 			} else {
-				response.sendError(HttpStatus.NOT_FOUND.value(), "Basin not found");
+				streamBasin(response, comid);
 			}
 		} catch (Exception e) {
 			GlobalDefaultExceptionHandler.handleError(e, response);
