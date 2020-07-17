@@ -6,9 +6,9 @@ import java.util.Map;
 
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import gov.usgs.owi.nldi.BaseIT;
@@ -17,14 +17,17 @@ import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.springinit.DbTestConfig;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
+
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.NONE,
 		classes={DbTestConfig.class, StreamingDao.class})
 public class StreamingDaoIT extends BaseIT {
 
 	@Autowired
-	StreamingDao streamingDao;
+	private StreamingDao streamingDao;
+
+	private TestResultHandler handler;
 
 	private class TestResultHandler implements ResultHandler<Object> {
 		//TODO put the results somewhere to check them and allow them to be cleared between queries
@@ -35,15 +38,13 @@ public class StreamingDaoIT extends BaseIT {
 		}
 	}
 
-	TestResultHandler handler;
-
-	@Before
-	public void init() {
+	@BeforeEach
+	public void setUp() {
 		handler = new TestResultHandler();
 	}
 
-	@After
-	public void cleanup() {
+	@AfterEach
+	public void tearDown() {
 		handler = null;
 	}
 

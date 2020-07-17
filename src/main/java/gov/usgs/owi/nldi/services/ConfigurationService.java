@@ -1,4 +1,3 @@
-
 package gov.usgs.owi.nldi.services;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -42,4 +41,14 @@ public class ConfigurationService {
 	public String getAppVersion() {
 		return appVersion;
 	}
+
+	public String getSwaggerApiDocsUrl() {
+		return getDisplayPath() + "/v3/api-docs/swagger-config";
+
+	}
 }
+
+
+
+
+

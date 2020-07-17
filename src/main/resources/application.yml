@@ -46,3 +46,4 @@ management:
 
 springdoc:
   version: "@project.version@"
+

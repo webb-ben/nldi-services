@@ -1,8 +1,9 @@
 package gov.usgs.owi.nldi.services;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -14,8 +15,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class NavigationTest {
 	private Navigation navigation;
 	private HttpServletResponse response;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		navigation = new Navigation(navigationDao);
@@ -42,7 +43,7 @@ public class NavigationTest {
 	}
 
 	@Test
-	public void interpretResultTest_Good() {
+	public void interpretResultTestGood() {
 		try {
 			assertEquals("{4d06cca2-001e-11e6-b9d0-0242ac110003}", navigation.interpretResult(goodResult(), response));
 		} catch (Exception e) {
@@ -51,7 +52,7 @@ public class NavigationTest {
 	}
 
 	@Test
-	public void interpretResultTest_Bad1() throws UnsupportedEncodingException {
+	public void interpretResultTestBad1() throws UnsupportedEncodingException {
 		try {
 			assertNull(navigation.interpretResult(badResult1(), response));
 		} catch (Exception e) {
@@ -62,7 +63,7 @@ public class NavigationTest {
 	}
 
 	@Test
-	public void interpretResultTest_Bad2() throws UnsupportedEncodingException {
+	public void interpretResultTestBad2() throws UnsupportedEncodingException {
 		try {
 			assertNull(navigation.interpretResult(badResult2(), response));
 		} catch (Exception e) {
