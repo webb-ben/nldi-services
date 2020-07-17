@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Pattern;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,6 @@ import gov.usgs.owi.nldi.services.Parameters;
 @RequestMapping(value="linked-data/comid/{comid}/navigate/{navigationMode}")
 public class NetworkController extends BaseController {
 
-	//swagger documentation for /linked-data/{featureSource}/{featureID}/navigate/{navigationMode} endpoint
-	@Operation(summary = "getFlowlines", description = "returns the flowlines for the specified navigation in WGS84 lat/lon GeoJSON")
-	
 	@Autowired
 	public NetworkController(LookupDao inLookupDao, StreamingDao inStreamingDao,
 			Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
@@ -36,6 +34,9 @@ public class NetworkController extends BaseController {
 		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService);
 	}
 
+	//swagger documentation for /linked-data/{featureSource}/{featureID}/navigate/{navigationMode} endpoint
+	@Operation(summary = "getFlowlines", description = "returns the flowlines for the specified navigation in WGS84 lat/lon GeoJSON")
+	
 	@GetMapping
 	public void getFlowlines(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(Parameters.COMID) @Range(min=1, max=Integer.MAX_VALUE) String comid,
