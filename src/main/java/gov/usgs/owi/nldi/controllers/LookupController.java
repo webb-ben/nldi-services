@@ -24,6 +24,9 @@ import gov.usgs.owi.nldi.transform.CharacteristicMetadataTransformer;
 @RestController
 public class LookupController extends BaseController {
 
+	//swagger documentation for /lookups/{characteristicType}/characteristics endpoint
+	@Operation(summary = "getCharacteristics", description = "Returns available characteristics metadata")
+	
 	@Autowired
 	public LookupController(LookupDao inLookupDao, StreamingDao inStreamingDao,
 			Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
