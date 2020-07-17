@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Pattern;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class NetworkController extends BaseController {
 		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService);
 	}
 
+	//swagger documentation for /linked-data/{featureSource}/{featureID}/navigate/{navigationMode} endpoint
+	@Operation(summary = "getFlowlines", description = "returns the flowlines for the specified navigation in WGS84 lat/lon GeoJSON")
+	
 	@GetMapping
 	public void getFlowlines(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(Parameters.COMID) @Range(min=1, max=Integer.MAX_VALUE) String comid,
@@ -52,6 +56,9 @@ public class NetworkController extends BaseController {
 		}
 	}
 
+	//swagger documentation for /linked-data/{featureSource}/{featureID}/navigate/{navigationMode}/{dataSource} endpoint
+	@Operation(summary = "getFeatures", description = "Returns all features found along the specified navigation as points in WGS84 lat/lon GeoJSON")
+	
 	@GetMapping(value="{dataSource}")
 	public void getFeatures(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(Parameters.COMID) @Range(min=1, max=Integer.MAX_VALUE) String comid,

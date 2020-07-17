@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,9 @@ public class LookupController extends BaseController {
 			LogService inLogService) {
 		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService);
 	}
+
+	//swagger documentation for /lookups/{characteristicType}/characteristics endpoint
+	@Operation(summary = "getCharacteristics", description = "Returns available characteristics metadata")
 
 	@GetMapping(value="lookups/{characteristicType}/characteristics")
 	public void getCharacteristics(HttpServletRequest request, HttpServletResponse response,
