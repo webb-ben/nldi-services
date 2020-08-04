@@ -38,7 +38,7 @@ public class GlobalDefaultExceptionHandler extends ResponseEntityExceptionHandle
 				//This exception's message contains implementation details after the new line, so only take up to that.
 				return ex.getLocalizedMessage().substring(0, ex.getLocalizedMessage().indexOf("\n"));
 			} else {
-				return ex.getLocalizedMessage().replaceAll("([a-zA-Z]+\\.)+","");
+				return ex.getLocalizedMessage().replaceAll("([a-zA-Z]+\\.)+", "");
 			}
 		} else if (ex instanceof ResponseStatusException) {
 			response.setStatus(HttpStatus.BAD_REQUEST.value());

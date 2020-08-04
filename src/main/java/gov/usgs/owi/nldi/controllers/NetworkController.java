@@ -1,5 +1,13 @@
 package gov.usgs.owi.nldi.controllers;
 
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Pattern;
+
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
@@ -25,12 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Pattern;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 public class NetworkController extends BaseController {
@@ -43,18 +45,25 @@ public class NetworkController extends BaseController {
 	}
 
 	//swagger documentation for /linked-data/{featureSource}/{featureID}/navigate/{navigationMode} endpoint
-	@Operation(summary = "getFlowlines", description = "returns the flowlines for the specified navigation in WGS84 lat/lon GeoJSON")
+	@Operation(summary = "getFlowlines (deprecated)", description = "returns the flowlines for the specified navigation in WGS84 lat/lon GeoJSON")
 	@GetMapping(value="linked-data/comid/{comid}/navigate/{navigationMode}", produces= MediaType.APPLICATION_JSON_VALUE)
 	@Deprecated
-	public void getFlowlines(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable(Parameters.COMID) @Range(min=1, max=Integer.MAX_VALUE) String comid,
-			@PathVariable(Parameters.NAVIGATION_MODE) @Pattern(regexp=REGEX_NAVIGATION_MODE) String navigationMode,
-			@RequestParam(value=Parameters.STOP_COMID, required=false) @Range(min=1, max=Integer.MAX_VALUE) String stopComid,
-			@Parameter(description=Parameters.DISTANCE_DESCRIPTION)
-				@RequestParam(value=Parameters.DISTANCE, required=false, defaultValue=Parameters.MAX_DISTANCE)
-			@Pattern(message=Parameters.DISTANCE_VALIDATION_MESSAGE, regexp=Parameters.DISTANCE_VALIDATION_REGEX) String distance,
-			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws Exception {
+	public void getFlowlines(
+		HttpServletRequest request, HttpServletResponse response,
+		@PathVariable(Parameters.COMID) @Range(min=1, max=Integer.MAX_VALUE) String comid,
+		@PathVariable(Parameters.NAVIGATION_MODE) @Pattern(regexp=REGEX_NAVIGATION_MODE) String navigationMode,
+		@RequestParam(value=Parameters.STOP_COMID, required=false) @Range(min=1, max=Integer.MAX_VALUE) String stopComid,
+		@Parameter(description=Parameters.DISTANCE_DESCRIPTION)
+		@RequestParam(value=Parameters.DISTANCE, required=false, defaultValue=Parameters.MAX_DISTANCE)
+		@Pattern(message=Parameters.DISTANCE_VALIDATION_MESSAGE, regexp=Parameters.DISTANCE_VALIDATION_REGEX) String distance,
+		@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws Exception {
+
 		BigInteger logId = logService.logRequest(request);
+		if (stopComid != null && (Integer.parseInt(stopComid) < Integer.parseInt(comid))) {
+			logService.logRequestComplete(logId, HttpStatus.BAD_REQUEST.value());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, BaseController.COMID_MISMATCH_ERROR);
+		}
+
 		try {
 			streamFlowLines(response, comid, navigationMode, stopComid, distance, isLegacy(legacy, navigationMode));
 		} catch (Exception e) {
@@ -79,6 +88,10 @@ public class NetworkController extends BaseController {
 		@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws Exception {
 
 		BigInteger logId = logService.logRequest(request);
+		if (stopComid != null && (Integer.parseInt(stopComid) < Integer.parseInt(comid))) {
+			logService.logRequestComplete(logId, HttpStatus.BAD_REQUEST.value());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, BaseController.COMID_MISMATCH_ERROR);
+		}
 		try {
 
 			streamFlowLines(response, comid, navigationMode, stopComid, distance, isLegacy(legacy, navigationMode));
@@ -102,6 +115,11 @@ public class NetworkController extends BaseController {
 			@Pattern(message=Parameters.DISTANCE_VALIDATION_MESSAGE, regexp=Parameters.DISTANCE_VALIDATION_REGEX) String distance,
 			@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws Exception {
 		BigInteger logId = logService.logRequest(request);
+		if (stopComid != null && (Integer.parseInt(stopComid) < Integer.parseInt(comid))) {
+			logService.logRequestComplete(logId, HttpStatus.BAD_REQUEST.value());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, BaseController.COMID_MISMATCH_ERROR);
+		}
+
 		try {
 			streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource, isLegacy(legacy, navigationMode));
 		} finally {
@@ -124,6 +142,10 @@ public class NetworkController extends BaseController {
 		@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws Exception {
 
 		BigInteger logId = logService.logRequest(request);
+		if (stopComid != null && (Integer.parseInt(stopComid) < Integer.parseInt(comid))) {
+			logService.logRequestComplete(logId, HttpStatus.BAD_REQUEST.value());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, BaseController.COMID_MISMATCH_ERROR);
+		}
 		try {
 			streamFeatures(response, comid, navigationMode, stopComid, distance, dataSource, isLegacy(legacy, navigationMode));
 		} catch (Exception e) {
