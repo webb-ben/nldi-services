@@ -43,7 +43,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidUtTest() throws Exception {
 		assertEntity(restTemplate,
-				"/linked-data/comid/13293474/navigation/UT/wqp?legacy=true",
+				"/linked-data/comid/13293474/navigation/UT/wqp?distance=9999&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"22",
@@ -70,7 +70,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidUmTest() throws Exception {
 		assertEntity(restTemplate,
-				"/linked-data/comid/13293474/navigation/UM/wqp?legacy=true",
+				"/linked-data/comid/13293474/navigation/UM/wqp?distance=9999&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"17",
@@ -97,7 +97,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidDmTest() throws Exception {
 		assertEntity(restTemplate,
-				"/linked-data/comid/13296790/navigation/DM/wqp?legacy=true",
+				"/linked-data/comid/13296790/navigation/DM/wqp?distance=9999&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"6",
@@ -124,7 +124,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidDdTest() throws Exception {
 		assertEntity(restTemplate,
-				"/linked-data/comid/13294310/navigation/DD/wqp?legacy=true",
+				"/linked-data/comid/13294310/navigation/DD/wqp?distance=9999&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"17",
@@ -151,7 +151,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidPpStopComidInvalidTest() throws Exception {
 		String actualbody = assertEntity(restTemplate,
-				"/linked-data/comid/13297246/navigate/PP/wqp?stopComid=13297198&legacy=true",
+				"/linked-data/comid/13297246/navigation/PP/wqp?distance=9999&stopComid=13297198&legacy=true",
 				HttpStatus.BAD_REQUEST.value(),
 				null,
 				null,
@@ -165,7 +165,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidPpStopComidTest() throws Exception {
 		assertEntity(restTemplate,
-				"/linked-data/comid/13297198/navigation/PP/wqp?stopComid=13297246&legacy=true",
+				"/linked-data/comid/13297198/navigation/PP/wqp?distance=9999&stopComid=13297246&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"16",
@@ -174,5 +174,4 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 				true,
 				false);
 	}
-
 }
