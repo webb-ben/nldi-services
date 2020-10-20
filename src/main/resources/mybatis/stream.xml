@@ -67,7 +67,14 @@
                              x.dnminorhyd = navigation_results.hydroseq))
                    )
         select 1 total_rows,
-               st_asgeojson(st_simplify(st_union(catchmentsp.the_geom), .001)) shape
+                <choose>
+                    <when test="simplified == true">
+                        st_asgeojson(st_simplify(st_union(catchmentsp.the_geom), .001)) shape
+                    </when>
+                    <otherwise>
+                        st_asgeojson(st_union(catchmentsp.the_geom)) shape
+                    </otherwise>
+                </choose>
           from navigation_results
                join characteristic_data.catchmentsp
                  on navigation_results.comid = catchmentsp.featureid
