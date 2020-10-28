@@ -109,9 +109,10 @@ public abstract class BaseController {
 		streamResults(transformer, featureType, parameterMap);
 	}
 
-	protected void streamBasin(HttpServletResponse response, String comid) throws Exception {
+	protected void streamBasin(HttpServletResponse response, String comid, Boolean simplified) throws Exception {
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
+		parameterMap.put(Parameters.SIMPLIFIED, simplified);
 		BasinTransformer transformer = new BasinTransformer(response);
 		addContentHeader(response);
 		streamResults(transformer, BaseDao.BASIN, parameterMap);

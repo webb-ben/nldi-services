@@ -169,7 +169,18 @@ public class LinkedDataControllerTest {
 		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(goodFeature());
 		doNothing().when(streamingDao).stream(anyString(), anyMap(), any());
 
-		controller.getBasin(request, response, "DoesntMatter", "DoesntMatter");
+		controller.getBasin(request, response, "DoesntMatter", "DoesntMatter", true);
+		verify(logService).logRequest(any(HttpServletRequest.class));
+		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+
+	@Test
+	public void getBasinNonSimplifiedTest() throws Exception {
+		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(goodFeature());
+		doNothing().when(streamingDao).stream(anyString(), anyMap(), any());
+
+		controller.getBasin(request, response, "DoesntMatter", "DoesntMatter", false);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -177,7 +188,7 @@ public class LinkedDataControllerTest {
 
 	@Test
 	public void getBasinWithNullParamsTest() throws Exception {
-		controller.getBasin(request, response, null, null);
+		controller.getBasin(request, response, null, null, true);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
 		//this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
@@ -186,7 +197,7 @@ public class LinkedDataControllerTest {
 
 	@Test
 	public void getBasinWithNonexistingComidTest() throws Exception {
-		controller.getBasin(request, response, "NowhereSource", "IDontExist");
+		controller.getBasin(request, response, "NowhereSource", "IDontExist", true);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());

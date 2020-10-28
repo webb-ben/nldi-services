@@ -244,7 +244,8 @@ public class LinkedDataController extends BaseController {
 	@GetMapping(value="linked-data/{featureSource}/{featureID}/basin", produces=MediaType.APPLICATION_JSON_VALUE)
 	public void getBasin(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
-			@PathVariable(Parameters.FEATURE_ID) String featureID) throws Exception {
+			@PathVariable(Parameters.FEATURE_ID) String featureID,
+			@RequestParam(value = Parameters.SIMPLIFIED, required = false, defaultValue = "true") Boolean simplified) throws Exception {
 
 		BigInteger logId = logService.logRequest(request);
 
@@ -254,7 +255,7 @@ public class LinkedDataController extends BaseController {
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 			} else {
-				streamBasin(response, comid);
+				streamBasin(response, comid, simplified);
 			}
 		} catch (Exception e) {
 			GlobalDefaultExceptionHandler.handleError(e, response);
