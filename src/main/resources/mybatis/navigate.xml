@@ -76,7 +76,7 @@
                            nav
                      where x.hydroseq = nav.dnhydroseq and
                            x.terminalpathid = nav.terminalpathid and
-                           x.fcode != 56600
+                           x.fcode != ${coastal_fcode}
                            <if test="null != distance">
                                and x.pathlength + x.lengthkm >= nav.stoplength
                            </if>
@@ -102,7 +102,7 @@
                      where (x.hydroseq = nav.dnhydroseq or
                             (nav.dnminorhyd != 0 and
                              x.hydroseq = nav.dnminorhyd)) and
-                           x.fcode != 56600 and
+                           x.fcode != ${coastal_fcode} and
                            nav.terminalflag != 1
                            <if test="null != distance">
                                and x.pathlength + x.lengthkm >= nav.stoplength
@@ -127,7 +127,7 @@
                            nav
                      where x.hydroseq = nav.uphydroseq and
                            x.levelpathid = nav.levelpathid and
-                           x.fcode != 56600
+                           x.fcode != ${coastal_fcode}
                            <if test="null != distance">
                                and x.pathlength &lt;= nav.stoplength
                            </if>
@@ -153,7 +153,7 @@
                            (x.dnhydroseq = navigation_results.hydroseq or
                             (x.dnminorhyd != 0 and
                              x.dnminorhyd = navigation_results.hydroseq)) and
-                            x.fcode != 56600
+                            x.fcode != ${coastal_fcode}
                            <if test="null != distance">
                                and x.pathlength &lt;= navigation_results.stoplength
                            </if>

@@ -27,6 +27,7 @@ public class MybatisConfig {
 		config.setCacheEnabled(false);
 		config.setLazyLoadingEnabled(false);
 		config.setAggressiveLazyLoading(false);
+		config.getVariables().put("coastal_fcode", "56600"); // global constant for coastal feature fcode values
 
 		registerAliases(config.getTypeAliasRegistry());
 
