@@ -2,7 +2,9 @@ package gov.usgs.owi.nldi.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -52,5 +54,15 @@ public class GlobalDefaultExceptionHandler extends ResponseEntityExceptionHandle
 			LOG.error(msgText, ex);
 			return msgText;
 		}
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleMissingServletRequestParameter(
+			MissingServletRequestParameterException ex,
+			HttpHeaders headers,
+			HttpStatus status,
+			WebRequest request
+	) {
+		return new ResponseEntity<>(ex.getLocalizedMessage(), headers, status);
 	}
 }
