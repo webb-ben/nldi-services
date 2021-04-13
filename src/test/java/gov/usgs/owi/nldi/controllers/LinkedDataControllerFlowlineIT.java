@@ -109,8 +109,20 @@ public class LinkedDataControllerFlowlineIT extends BaseIT {
 				getCompareFile(RESULT_FOLDER_HUC, "huc12pp_070900020601_DM_distance_empty.json"),
 				true,
 				false);
+	}
 
-
+	@Test
+	@DatabaseSetup("classpath:/testData/featureHuc12pp.xml")
+	public void getHuc12ppDMTestMissingParameter() throws Exception {
+		assertEntity(restTemplate,
+				"/linked-data/huc12pp/070900020601/navigation/DM/flowlines",
+				HttpStatus.BAD_REQUEST.value(),
+				null,
+				null,
+				null,
+				getCompareFile(RESULT_FOLDER_HUC, "huc12pp_070900020601_DM_no_distance.txt"),
+				false,
+				false);
 	}
 
 	@Test
