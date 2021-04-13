@@ -1,4 +1,4 @@
-FROM maven:3.6.0-jdk-11 AS build
+FROM artifactory.wma.chs.usgs.gov/docker-official-mirror/maven:3.6.0-jdk-11 AS build
 LABEL maintainer="gs-w_eto_eb_federal_employees@usgs.gov"
 
 # Add pom.xml and install dependencies
@@ -10,7 +10,7 @@ RUN mvn -B dependency:go-offline
 COPY src /build/src
 RUN mvn -B clean package -Dmaven.test.skip=true
 
-FROM usgswma/openjdk:debian-stretch-openjdk-11.0.2-89c4dd2d55ba476c77aa8fd5274dcb8a1ef115b7
+FROM artifactory.wma.chs.usgs.gov/docker-official-mirror/usgswma/openjdk:debian-stretch-openjdk-11.0.2-89c4dd2d55ba476c77aa8fd5274dcb8a1ef115b7
 
 COPY --chown=1000:1000 --from=build /build/target/nldi-services-*.jar app.jar
 
