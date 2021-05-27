@@ -23,6 +23,7 @@ applicationName: "nldi-services"
 containerPort: 8080
 # string parameter specifying a path that ALB should use to verify that your application is alive
 healthCheck: "/api/nldi/about/health?f=json"
+healthCheckTimeoutSeconds: 20
 # configuration repository paths
 configRepoPath: "wma/docker/nldi/nldi-services"
 configCredentialsId: "wma-eto-eb-rsa"
