@@ -6,7 +6,7 @@
     <select id="flowLinesLegacy" resultType="java.util.LinkedHashMap" fetchSize="50">
         select count(*) over (partition by 1) total_rows,
                tmp_navigation_results.nhdplus_comid,
-               st_asgeojson(nhdflowline_np21.shape) shape
+               st_asgeojson(nhdflowline_np21.shape, 9, 0) shape
           from nhdplus_navigation.tmp_navigation_results
                join nhdplus.nhdflowline_np21
                  on tmp_navigation_results.nhdplus_comid = nhdflowline_np21.nhdplus_comid 
@@ -17,7 +17,7 @@
         <include refid="navigate.core"/>
         select count(*) over (partition by 1) total_rows,
                nhdplus_comid,
-               st_asgeojson(nhdflowline_np21.shape) shape
+               st_asgeojson(nhdflowline_np21.shape, 9, 0) shape
           from navigation_results
                join nhdplus.nhdflowline_np21
                  on navigation_results.comid = nhdflowline_np21.nhdplus_comid
@@ -69,10 +69,10 @@
         select 1 total_rows,
                 <choose>
                     <when test="simplified == true">
-                        st_asgeojson(st_simplify(st_union(catchmentsp.the_geom), .001)) shape
+                        st_asgeojson(st_simplify(st_union(catchmentsp.the_geom), .001), 9, 0) shape
                     </when>
                     <otherwise>
-                        st_asgeojson(st_union(catchmentsp.the_geom)) shape
+                        st_asgeojson(st_union(catchmentsp.the_geom), 9, 0) shape
                     </otherwise>
                 </choose>
           from navigation_results
