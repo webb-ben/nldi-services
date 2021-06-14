@@ -13,7 +13,7 @@
         feature.comid,
         feature.reachcode,
         feature.measure,
-        st_asgeojson(feature.location) shape
+        st_asgeojson(feature.location, 9, 0) shape
     </sql>
 
     <sql id="comidProperties">
@@ -21,7 +21,7 @@
         'NHDPlus comid' source_name,
         nhdflowline_np21.nhdplus_comid identifier,
         nhdflowline_np21.nhdplus_comid comid,
-        st_asgeojson(nhdflowline_np21.shape) shape
+        st_asgeojson(nhdflowline_np21.shape, 9, 0) shape
     </sql>
 
     <sql id="selectFeatures">
