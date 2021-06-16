@@ -26,9 +26,11 @@ public class FeatureTransformer extends MapToGeoJsonTransformer {
 	protected static final String NAME = "name";
 	protected static final String REACHCODE = "reachcode";
 	protected static final String SOURCE_NAME_DB = "source_name";
+	protected static final String FEATURE_TYPE_DB = "feature_type";
 	protected static final String URI = "uri";
 
 	private static final String SOURCE_NAME = "sourceName";
+	private static final String FEATURE_TYPE = "type";
 	private static final String NAVIGATION = "navigation";
 
 	private final ConfigurationService configurationService;
@@ -43,6 +45,7 @@ public class FeatureTransformer extends MapToGeoJsonTransformer {
 		try {
 			String source = getValue(resultMap, LookupDao.SOURCE);
 			String identifier = getValue(resultMap, IDENTIFIER);
+			jsonGenerator.writeStringField(FEATURE_TYPE, getValue(resultMap, FEATURE_TYPE_DB));
 			jsonGenerator.writeStringField(LookupDao.SOURCE, source);
 			jsonGenerator.writeStringField(SOURCE_NAME, getValue(resultMap, SOURCE_NAME_DB));
 			jsonGenerator.writeStringField(IDENTIFIER, identifier);
