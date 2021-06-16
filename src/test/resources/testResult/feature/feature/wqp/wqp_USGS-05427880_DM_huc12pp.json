@@ -7,6 +7,7 @@
 			"coordinates": [-89.4631902424829, 43.1955902879081]
 		},
 		"properties": {
+			"type": "point",
 			"source": "huc12pp",
 			"sourceName": "huc12pp",
 			"identifier": "070900020601",
@@ -22,6 +23,7 @@
 			"coordinates": [-89.4256525802169, 43.1409362817633]
 		},
 		"properties": {
+			"type": "point",
 			"source": "huc12pp",
 			"sourceName": "huc12pp",
 			"identifier": "070900020602",
@@ -37,6 +39,7 @@
 			"coordinates": [-89.3702469111916, 43.0950620130377]
 		},
 		"properties": {
+			"type": "point",
 			"source": "huc12pp",
 			"sourceName": "huc12pp",
 			"identifier": "070900020604",
@@ -52,6 +55,7 @@
 			"coordinates": [-89.3214631320277, 43.0352328710351]
 		},
 		"properties": {
+			"type": "point",
 			"source": "huc12pp",
 			"sourceName": "huc12pp",
 			"identifier": "070900020702",
@@ -67,6 +71,7 @@
 			"coordinates": [-89.3054766528898, 43.0088387761818]
 		},
 		"properties": {
+			"type": "point",
 			"source": "huc12pp",
 			"sourceName": "huc12pp",
 			"identifier": "070900020703",
@@ -82,6 +87,7 @@
 			"coordinates": [-89.2229641208076, 42.9690484353445]
 		},
 		"properties": {
+			"type": "point",
 			"source": "huc12pp",
 			"sourceName": "huc12pp",
 			"identifier": "070900020902",
@@ -97,6 +103,7 @@
 			"coordinates": [-89.2148305143197, 42.9085920935008]
 		},
 		"properties": {
+			"type": "point",
 			"source": "huc12pp",
 			"sourceName": "huc12pp",
 			"identifier": "070900020903",
@@ -112,6 +119,7 @@
 			"coordinates": [-89.1727074964863, 42.8439427439369]
 		},
 		"properties": {
+			"type": "point",
 			"source": "huc12pp",
 			"sourceName": "huc12pp",
 			"identifier": "070900020904",
@@ -127,6 +135,7 @@
 			"coordinates": [-89.1234184320259, 42.7926315636361]
 		},
 		"properties": {
+			"type": "point",
 			"source": "huc12pp",
 			"sourceName": "huc12pp",
 			"identifier": "070900020905",
