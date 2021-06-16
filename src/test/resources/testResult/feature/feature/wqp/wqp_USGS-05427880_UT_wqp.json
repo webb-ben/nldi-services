@@ -7,6 +7,7 @@
 			"coordinates": [-89.4728889, 43.1922222]
 		},
 		"properties": {
+			"type": "point",
 			"source": "WQP",
 			"sourceName": "Water Quality Portal",
 			"identifier": "USGS-05427880",
@@ -22,6 +23,7 @@
 			"coordinates": [-89.4728889, 43.1922222]
 		},
 		"properties": {
+			"type": "point",
 			"source": "WQP",
 			"sourceName": "Water Quality Portal",
 			"identifier": "USGS-05427880",
@@ -37,6 +39,7 @@
 			"coordinates": [-89.59, 43.19]
 		},
 		"properties": {
+			"type": "point",
 			"source": "WQP",
 			"sourceName": "Water Quality Portal",
 			"identifier": "WIDNR_WQX-10001222",
@@ -52,6 +55,7 @@
 			"coordinates": [-89.592506, 43.194998]
 		},
 		"properties": {
+			"type": "point",
 			"source": "WQP",
 			"sourceName": "Water Quality Portal",
 			"identifier": "WIDNR_WQX-134002",
@@ -67,6 +71,7 @@
 			"coordinates": [-89.493089, 43.186791]
 		},
 		"properties": {
+			"type": "point",
 			"source": "WQP",
 			"sourceName": "Water Quality Portal",
 			"identifier": "WIDNR_WQX-10016974",
@@ -82,6 +87,7 @@
 			"coordinates": [-89.51, 43.2]
 		},
 		"properties": {
+			"type": "point",
 			"source": "WQP",
 			"sourceName": "Water Quality Portal",
 			"identifier": "WIDNR_WQX-10001221",
@@ -97,6 +103,7 @@
 			"coordinates": [-89.55, 43.2]
 		},
 		"properties": {
+			"type": "point",
 			"source": "WQP",
 			"sourceName": "Water Quality Portal",
 			"identifier": "WIDNR_WQX-10001223",
@@ -112,6 +119,7 @@
 			"coordinates": [-89.56, 43.18]
 		},
 		"properties": {
+			"type": "point",
 			"source": "WQP",
 			"sourceName": "Water Quality Portal",
 			"identifier": "WIDNR_WQX-10001227",
@@ -127,6 +135,7 @@
 			"coordinates": [-89.51033, 43.17692]
 		},
 		"properties": {
+			"type": "point",
 			"source": "WQP",
 			"sourceName": "Water Quality Portal",
 			"identifier": "WIDNR_WQX-10017024",
@@ -142,6 +151,7 @@
 			"coordinates": [-89.5299444, 43.2033889]
 		},
 		"properties": {
+			"type": "point",
 			"source": "WQP",
 			"sourceName": "Water Quality Portal",
 			"identifier": "USGS-431212089314801",
@@ -157,6 +167,7 @@
 			"coordinates": [-89.5302222, 43.20225]
 		},
 		"properties": {
+			"type": "point",
 			"source": "WQP",
 			"sourceName": "Water Quality Portal",
 			"identifier": "USGS-431208089314901",
@@ -172,6 +183,7 @@
 			"coordinates": [-89.472768, 43.191892]
 		},
 		"properties": {
+			"type": "point",
 			"source": "WQP",
 			"sourceName": "Water Quality Portal",
 			"identifier": "WIDNR_WQX-10043697",
@@ -187,6 +199,7 @@
 			"coordinates": [-89.5299444, 43.2033889]
 		},
 		"properties": {
+			"type": "point",
 			"source": "WQP",
 			"sourceName": "Water Quality Portal",
 			"identifier": "USGS-431212089314802",

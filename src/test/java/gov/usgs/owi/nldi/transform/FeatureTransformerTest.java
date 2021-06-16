@@ -61,13 +61,14 @@ public class FeatureTransformerTest {
 		map.put(FeatureTransformer.SOURCE_NAME_DB, "sourceNameValue");
 		map.put(FeatureTransformer.REACHCODE, "05020002004263");
 		map.put(FeatureTransformer.MEASURE, 1.3823300000);
+		map.put(FeatureTransformer.FEATURE_TYPE_DB, "typeValue");
 		try {
 			transformer.g.writeStartObject();
 			transformer.writeProperties(transformer.g, map);
 			transformer.g.writeEndObject();
 			//need to flush the JsonGenerator to get at output. 
 			transformer.g.flush();
-			assertEquals("{\"source\":\"sourceValue\",\"sourceName\":\"sourceNameValue\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\","
+			assertEquals("{\"type\":\"typeValue\",\"source\":\"sourceValue\",\"sourceName\":\"sourceNameValue\",\"identifier\":\"identifierValue\",\"name\":\"nameValue\","
 					+ "\"uri\":\"uriValue\",\"comid\":\"47439231\",\"reachcode\":\"05020002004263\",\"measure\":\"1.38233\","
 					+ "\"navigation\":\"" + configurationService.getLinkedDataUrl() + "/sourcevalue/identifierValue/navigation\"}",
 					response.getContentAsString());
@@ -114,6 +115,7 @@ public class FeatureTransformerTest {
 		map.put(FeatureTransformer.URI, "uri2Value");
 		map.put(LookupDao.SOURCE, "source2Value");
 		map.put(FeatureTransformer.SOURCE_NAME_DB, "sourceName2Value");
+		map.put(FeatureTransformer.FEATURE_TYPE_DB, "type2Value");
 
 		try {
 			transformer.g.writeStartObject();
@@ -121,7 +123,7 @@ public class FeatureTransformerTest {
 			transformer.g.writeEndObject();
 			//need to flush the JsonGenerator to get at output. 
 			transformer.g.flush();
-			assertEquals("{\"source\":\"source2Value\",\"sourceName\":\"sourceName2Value\",\"identifier\":\"identifier2Value\",\"name\":\"name2Value\","
+			assertEquals("{\"type\":\"type2Value\",\"source\":\"source2Value\",\"sourceName\":\"sourceName2Value\",\"identifier\":\"identifier2Value\",\"name\":\"name2Value\","
 						+ "\"uri\":\"uri2Value\",\"comid\":\"81149213\","
 						+ "\"navigation\":\"" + configurationService.getLinkedDataUrl() + "/source2value/identifier2Value/navigation\"}",
 						response.getContentAsString());

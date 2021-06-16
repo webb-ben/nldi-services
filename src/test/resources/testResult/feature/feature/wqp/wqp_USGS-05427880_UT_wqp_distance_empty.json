@@ -11,6 +11,7 @@
         ]
       },
       "properties": {
+        "type": "point",
         "source": "WQP",
         "sourceName": "Water Quality Portal",
         "identifier": "WIDNR_WQX-10043697",
@@ -30,6 +31,7 @@
         ]
       },
       "properties": {
+        "type": "point",
         "source": "WQP",
         "sourceName": "Water Quality Portal",
         "identifier": "WIDNR_WQX-10017024",
@@ -49,6 +51,7 @@
         ]
       },
       "properties": {
+        "type": "point",
         "source": "WQP",
         "sourceName": "Water Quality Portal",
         "identifier": "WIDNR_WQX-10016974",
@@ -68,6 +71,7 @@
         ]
       },
       "properties": {
+        "type": "point",
         "source": "WQP",
         "sourceName": "Water Quality Portal",
         "identifier": "WIDNR_WQX-10001221",
@@ -87,6 +91,7 @@
         ]
       },
       "properties": {
+        "type": "point",
         "source": "WQP",
         "sourceName": "Water Quality Portal",
         "identifier": "USGS-05427880",
@@ -106,6 +111,7 @@
         ]
       },
       "properties": {
+        "type": "point",
         "source": "WQP",
         "sourceName": "Water Quality Portal",
         "identifier": "USGS-05427880",
@@ -125,6 +131,7 @@
         ]
       },
       "properties": {
+        "type": "point",
         "source": "WQP",
         "sourceName": "Water Quality Portal",
         "identifier": "USGS-431212089314802",
@@ -144,6 +151,7 @@
         ]
       },
       "properties": {
+        "type": "point",
         "source": "WQP",
         "sourceName": "Water Quality Portal",
         "identifier": "USGS-431212089314801",
@@ -163,6 +171,7 @@
         ]
       },
       "properties": {
+        "type": "point",
         "source": "WQP",
         "sourceName": "Water Quality Portal",
         "identifier": "USGS-431208089314901",
@@ -182,6 +191,7 @@
         ]
       },
       "properties": {
+        "type": "point",
         "source": "WQP",
         "sourceName": "Water Quality Portal",
         "identifier": "WIDNR_WQX-10001223",
@@ -201,6 +211,7 @@
         ]
       },
       "properties": {
+        "type": "point",
         "source": "WQP",
         "sourceName": "Water Quality Portal",
         "identifier": "WIDNR_WQX-134002",
@@ -220,6 +231,7 @@
         ]
       },
       "properties": {
+        "type": "point",
         "source": "WQP",
         "sourceName": "Water Quality Portal",
         "identifier": "WIDNR_WQX-10001227",
@@ -239,6 +251,7 @@
         ]
       },
       "properties": {
+        "type": "point",
         "source": "WQP",
         "sourceName": "Water Quality Portal",
         "identifier": "WIDNR_WQX-10001222",

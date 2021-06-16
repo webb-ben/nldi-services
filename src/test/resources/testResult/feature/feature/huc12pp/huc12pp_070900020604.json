@@ -7,6 +7,7 @@
 			"coordinates": [-89.3702469111916, 43.0950620130377]
 		},
 		"properties": {
+			"type": "point",
 			"source": "huc12pp",
 			"sourceName": "huc12pp",
 			"identifier": "070900020604",

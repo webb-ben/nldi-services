@@ -5,6 +5,7 @@
 
 
     <sql id="featureProperties">
+        crawler_source.feature_type,
         crawler_source.source_suffix source,
         crawler_source.source_name,
         feature.identifier,
