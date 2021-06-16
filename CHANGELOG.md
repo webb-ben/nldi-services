@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/ACWI-SSWD/nldi-services/compare/nldi-services-1.3.0...master)
+## [Unreleased](https://github.com/ACWI-SSWD/nldi-services/compare/nldi-services-1.4.0...master)
+
+### Added
+* Feature properties now includes a "type" field to indicate catchment association
+
+## [1.4.0](https://github.com/ACWI-SSWD/nldi-services/compare/nldi-services-1.3.0...nldi-services-1.4.0)
 ### Changed
 * Missing parameter error now returns an informative message
 * Updated flowline navigation to ignore coastal features
