@@ -11,10 +11,7 @@ import javax.validation.constraints.Pattern;
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
-import gov.usgs.owi.nldi.services.ConfigurationService;
-import gov.usgs.owi.nldi.services.LogService;
-import gov.usgs.owi.nldi.services.Navigation;
-import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.services.*;
 import gov.usgs.owi.nldi.swagger.model.Feature;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,9 +36,9 @@ public class NetworkController extends BaseController {
 
 	@Autowired
 	public NetworkController(LookupDao inLookupDao, StreamingDao inStreamingDao,
-			Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
-			LogService inLogService) {
-		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService);
+							 Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
+							 LogService inLogService, PyGeoApiService inPygeoapiService) {
+		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService, inPygeoapiService);
 	}
 
 	//swagger documentation for /linked-data/{featureSource}/{featureID}/navigate/{navigationMode} endpoint

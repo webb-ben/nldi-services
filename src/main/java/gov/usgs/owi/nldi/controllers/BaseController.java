@@ -1,11 +1,14 @@
 package gov.usgs.owi.nldi.controllers;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import gov.usgs.owi.nldi.transform.*;
 import org.apache.ibatis.session.ResultHandler;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.NumberUtils;
@@ -23,10 +26,7 @@ import gov.usgs.owi.nldi.services.ConfigurationService;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
-import gov.usgs.owi.nldi.transform.BasinTransformer;
-import gov.usgs.owi.nldi.transform.FeatureTransformer;
-import gov.usgs.owi.nldi.transform.FlowLineTransformer;
-import gov.usgs.owi.nldi.transform.ITransformer;
+import gov.usgs.owi.nldi.services.PyGeoApiService;
 
 @Validated
 public abstract class BaseController {
@@ -45,16 +45,20 @@ public abstract class BaseController {
 	protected final Parameters parameters;
 	protected final ConfigurationService configurationService;
 	protected final LogService logService;
+	protected final PyGeoApiService pygeoapiService;
 
 	private final KeyLockManager lockManager = KeyLockManagers.newLock();
 
-	public BaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, ConfigurationService inConfigurationService, LogService inLogService) {
+	public BaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation,
+						  Parameters inParameters, ConfigurationService inConfigurationService,
+						  LogService inLogService, PyGeoApiService inPygeoapiService) {
 		lookupDao = inLookupDao;
 		streamingDao = inStreamingDao;
 		navigation = inNavigation;
 		parameters = inParameters;
 		configurationService = inConfigurationService;
 		logService = inLogService;
+		pygeoapiService = inPygeoapiService;
 	}
 
 
@@ -126,6 +130,13 @@ public abstract class BaseController {
 		LOG.trace("done streaming");
 	}
 
+	protected void handleSplitCatchmentResponse(JSONObject splitCatchmentResponse, HttpServletResponse response) throws IOException {
+		addContentHeader(response);
+		SplitCatchmentTransformer transformer = new SplitCatchmentTransformer(response);
+		transformer.write(splitCatchmentResponse);
+		transformer.end();
+	}
+
 	protected void addContentHeader(HttpServletResponse response) {
 		response.setHeader(HEADER_CONTENT_TYPE, MIME_TYPE_GEOJSON);
 	}
@@ -166,5 +177,80 @@ public abstract class BaseController {
 		} else {
 			return feature.get(Parameters.COMID).toString();
 		}
+	}
+
+	/**
+	 * Fetches distance to flowline for non-null featureSource and featureID.
+	 * If either parameter is null, an IllegalArgumentException is thrown.
+	 *
+	 * @param featureSource
+	 * @param featureID
+	 * @return Distance as a Double
+	 */
+	protected float getDistanceFromFlowline(String featureSource, String featureID) {
+
+		if (null == featureSource || null == featureID) {
+			throw new IllegalArgumentException("A featureSource and featureID are required");
+		}
+
+		Map<String, Object> parameterMap = new HashMap<> ();
+		parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+		parameterMap.put(Parameters.FEATURE_ID, featureID);
+
+		return lookupDao.getDistanceFromFlowline(parameterMap);
+	}
+
+	/**
+	 * Fetches closest point on associated flowline for non-null featureSource and featureID.
+	 * If either parameter is null, an IllegalArgumentException is thrown.
+	 *
+	 * @param featureSource
+	 * @param featureID
+	 * @return Map with "lat" and "lon" keys indicating the closest point on flowline
+	 */
+	protected Map<String, Object> getClosestPointOnFlowline(String featureSource, String featureID) throws Exception {
+
+		if (null == featureSource || null == featureID) {
+			throw new IllegalArgumentException("A featureSource and featureID are required");
+		}
+
+		Map<String, Object> parameterMap = new HashMap<> ();
+		parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+		parameterMap.put(Parameters.FEATURE_ID, featureID);
+
+		Map<String, Object> result = lookupDao.closestPointOnFlowline(parameterMap);
+
+		if (!result.containsKey("lat") || !result.containsKey("lon")) {
+			throw new Exception("getClosestPointOnFlowline did not return lat or lon");
+		}
+
+		return result;
+	}
+
+	/**
+	 * Fetches a feature's lat, lon location for non-null featureSource and featureID.
+	 * If either parameter is null, an IllegalArgumentException is thrown.
+	 *
+	 * @param featureSource
+	 * @param featureID
+	 * @return Map with "lat" and "lon" keys indicating the feature location
+	 */
+	protected Map<String, Object> getFeatureLocation(String featureSource, String featureID) throws Exception {
+
+		if (null == featureSource || null == featureID) {
+			throw new IllegalArgumentException("A featureSource and featureID are required");
+		}
+
+		Map<String, Object> parameterMap = new HashMap<> ();
+		parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+		parameterMap.put(Parameters.FEATURE_ID, featureID);
+
+		Map<String, Object> result = lookupDao.getFeatureLocation(parameterMap);
+
+		if (!result.containsKey("lat") || !result.containsKey("lon")) {
+			throw new Exception("getFeatureLocation did not return lat or lon");
+		}
+
+		return result;
 	}
 }

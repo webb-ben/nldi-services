@@ -15,6 +15,7 @@ import java.util.HashMap;
 
 import javax.servlet.http.HttpServletResponse;
 
+import gov.usgs.owi.nldi.services.*;
 import org.apache.ibatis.session.ResultHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,10 +27,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
-import gov.usgs.owi.nldi.services.ConfigurationService;
-import gov.usgs.owi.nldi.services.LogService;
-import gov.usgs.owi.nldi.services.Navigation;
-import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.transform.ITransformer;
 
 public class BaseControllerTest {
@@ -48,20 +45,24 @@ public class BaseControllerTest {
 	private ITransformer transformer;
 	@Mock
 	private LogService logService;
+	@Mock
+	private PyGeoApiService pygeoapiService;
 	private HttpServletResponse response;
 
 	private TestBaseController controller;
 
 	private class TestBaseController extends BaseController {
-		public TestBaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, ConfigurationService inConfigurationService, LogService inLogService) {
-			super(inLookupDao, inStreamingDao, inNavigation, inParameters, inConfigurationService, inLogService);
+		public TestBaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation,
+								  Parameters inParameters, ConfigurationService inConfigurationService,
+								  LogService inLogService, PyGeoApiService inPygeoapiService) {
+			super(inLookupDao, inStreamingDao, inNavigation, inParameters, inConfigurationService, inLogService, inPygeoapiService);
 		}
 	}
 
 	@BeforeEach
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		controller = new TestBaseController(lookupDao, streamingDao, navigation, parameters, configurationService, logService);
+		controller = new TestBaseController(lookupDao, streamingDao, navigation, parameters, configurationService, logService, pygeoapiService);
 		response = new MockHttpServletResponse();
 	}
 

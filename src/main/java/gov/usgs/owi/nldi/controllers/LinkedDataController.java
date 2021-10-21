@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.hibernate.validator.constraints.Range;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,6 +45,7 @@ import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.swagger.model.DataSource;
 import gov.usgs.owi.nldi.swagger.model.Feature;
+import gov.usgs.owi.nldi.services.PyGeoApiService;
 
 @RestController
 public class LinkedDataController extends BaseController {
@@ -52,12 +54,13 @@ public class LinkedDataController extends BaseController {
 	private static final String DOWNSTREAM_MAIN = "downstreamMain";
 	private static final String UPSTREAM_MAIN = "upstreamMain";
 	private static final String UPSTREAM_TRIBUTARIES = "upstreamTributaries";
+	private static final float SPLIT_CATCHMENT_THRESHOLD = 200f;
 
 	@Autowired
 	public LinkedDataController(LookupDao inLookupDao, StreamingDao inStreamingDao,
 			Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
-			LogService inLogService) {
-		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService);
+			LogService inLogService, PyGeoApiService inPygeoapiService) {
+		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService, inPygeoapiService);
 	}
 
 	//swagger documentation for /linked-data endpoint
@@ -245,7 +248,8 @@ public class LinkedDataController extends BaseController {
 	public void getBasin(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID,
-			@RequestParam(value = Parameters.SIMPLIFIED, required = false, defaultValue = "true") Boolean simplified) throws Exception {
+			@RequestParam(value = Parameters.SIMPLIFIED, required = false, defaultValue = "true") Boolean simplified,
+			@RequestParam(value = Parameters.SPLIT_CATCHMENT, required = false, defaultValue = "false") Boolean splitCatchment) throws Exception {
 
 		BigInteger logId = logService.logRequest(request);
 
@@ -254,9 +258,34 @@ public class LinkedDataController extends BaseController {
 
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
+			} else if (splitCatchment) {
+				// call st_distance to get distance between feature and flowline
+				float distance = getDistanceFromFlowline(featureSource, featureID);
+				String lat, lon;
+
+				if (distance <= SPLIT_CATCHMENT_THRESHOLD) {
+					// get point on flowline closest to feature
+					Map<String, Object> pointResult = getClosestPointOnFlowline(featureSource, featureID);
+					lat = pointResult.get("lat").toString();
+					lon = pointResult.get("lon").toString();
+				} else {
+					// call nldi-flowtrace for a more accurate point on flowline
+					String featureLat, featureLon;
+					Map<String, Object> locationResult = getFeatureLocation(featureSource, featureID);
+					featureLat = locationResult.get("lat").toString();
+					featureLon = locationResult.get("lon").toString();
+					Map<String, String> flowtraceResponse = pygeoapiService.getNldiFlowTraceIntersectionPoint(featureLat, featureLon, true, PyGeoApiService.Direction.NONE);
+					lat = flowtraceResponse.get("lat");
+					lon = flowtraceResponse.get("lon");
+				}
+
+				// call nldi-splitcatchment
+				JSONObject splitCatchmentResponse = pygeoapiService.nldiSplitCatchment(lat, lon, false);
+				handleSplitCatchmentResponse(splitCatchmentResponse, response);
 			} else {
 				streamBasin(response, comid, simplified);
 			}
+
 		} catch (Exception e) {
 			GlobalDefaultExceptionHandler.handleError(e, response);
 		} finally {

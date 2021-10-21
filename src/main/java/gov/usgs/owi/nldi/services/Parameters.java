@@ -30,6 +30,7 @@ public class Parameters {
 	public static final String LATITUDE = "lat";
 	public static final String LONGITUDE = "lon";
 	public static final String SIMPLIFIED = "simplified";
+	public static final String SPLIT_CATCHMENT = "splitCatchment";
 
 	// Validates that the "coords" parameter is in the form POINT(-89.35 43.0864))
 	public static final String POINT_VALIDATION_MESSAGE = "coords must be specified as a point with longitude and latitude, i.e. POINT(-89.35 43.0864)";

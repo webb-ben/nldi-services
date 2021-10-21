@@ -24,6 +24,9 @@ nldi:
   displayHost: ${nldiHost}
   displayPath: ${nldiPath:}
 
+pygeoapi:
+  url: ${pygeoapiUrl}
+
 management:
   endpoints:
     enabled-by-default: false

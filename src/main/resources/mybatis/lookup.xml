@@ -82,7 +82,48 @@
               st_geomfromtext('POINT(${lon} ${lat})', 4269));
     </select>
 
+    <select id="distanceFromFlowline" resultType="float">
+        select st_distance(x.location, x.shape, false)
+        from (
+            select flow.shape, feat.location
+            from nhdplus.nhdflowline_np21 flow
+                inner join nldi_data.feature feat
+                    on feat.comid = flow.nhdplus_comid
+                        and feat.identifier = #{featureID}
+                inner join nldi_data.crawler_source crawler
+                    on crawler.source_suffix = #{featureSource}
+                        and feat.crawler_source_id = crawler.crawler_source_id
+        ) as x;
+    </select>
 
+    <select id="closestPointOnFlowline" resultType="java.util.LinkedHashMap">
+        select st_y(result.point::geometry) as lat, st_x(result.point::geometry) as lon
+        from (
+            select st_closestpoint(x.shape, x.location) as point
+            from (
+                select flow.shape, feat.location
+                from nhdplus.nhdflowline_np21 flow
+                    inner join nldi_data.feature feat
+                        on feat.comid = flow.nhdplus_comid
+                        and feat.identifier = #{featureID}
+                    inner join nldi_data.crawler_source crawler
+                        on crawler.source_suffix = #{featureSource}
+                        and feat.crawler_source_id = crawler.crawler_source_id
+            ) as x
+        ) as result;
+    </select>
+
+    <select id="featureLocation" resultType="java.util.LinkedHashMap">
+        select st_y(result.location::geometry) as lat, st_x(result.location::geometry) as lon
+        from (
+            select distinct feat.location
+                from nldi_data.feature feat
+                inner join nldi_data.crawler_source crawler
+                    on crawler.source_suffix = #{featureSource}
+                    and feat.crawler_source_id = crawler.crawler_source_id
+                where feat.identifier = #{featureID}
+        ) as result;
+    </select>
 
 
 </mapper>
