@@ -6,7 +6,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import gov.usgs.owi.nldi.transform.*;
+import gov.usgs.owi.nldi.transform.BasinTransformer;
+import gov.usgs.owi.nldi.transform.FeatureTransformer;
+import gov.usgs.owi.nldi.transform.FlowLineTransformer;
+import gov.usgs.owi.nldi.transform.SplitCatchmentTransformer;
+import gov.usgs.owi.nldi.transform.ITransformer;
 import org.apache.ibatis.session.ResultHandler;
 import org.json.JSONObject;
 import org.slf4j.Logger;

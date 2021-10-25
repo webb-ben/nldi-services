@@ -148,7 +148,8 @@ public class PyGeoApiService {
         // throw exception on 404 or 500 status codes
         if (responseStatus.getStatusCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR ||
             responseStatus.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-            throw new RuntimeException(responseStatus.getReasonPhrase());
+            LOG.error(responseStatus.getReasonPhrase());
+            throw new RuntimeException("Failed to get response for flow trace");
         }
 
         // return response
@@ -233,7 +234,8 @@ public class PyGeoApiService {
         // throw exception on 404 or 500 status codes
         if (responseStatus.getStatusCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR ||
                 responseStatus.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-            throw new RuntimeException(responseStatus.getReasonPhrase());
+            LOG.error(responseStatus.getReasonPhrase());
+            throw new RuntimeException("Failed to get response for split catchment");
         }
 
         // return response
