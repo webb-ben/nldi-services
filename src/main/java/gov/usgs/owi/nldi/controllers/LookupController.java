@@ -6,13 +6,16 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import gov.usgs.owi.nldi.services.*;
+import gov.usgs.owi.nldi.services.ConfigurationService;
+import gov.usgs.owi.nldi.services.Navigation;
+import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.services.LogService;
+import gov.usgs.owi.nldi.services.PyGeoApiService;
+import gov.usgs.owi.nldi.services.AttributeService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,8 +31,8 @@ public class LookupController extends BaseController {
     @Autowired
     public LookupController(LookupDao inLookupDao, StreamingDao inStreamingDao,
                             Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
-                            LogService inLogService, PyGeoApiService inPygeoapiService) {
-        super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService, inPygeoapiService);
+                            LogService inLogService, PyGeoApiService inPygeoapiService, AttributeService inAttributeService) {
+        super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService, inPygeoapiService, inAttributeService);
     }
 
     //swagger documentation for /lookups/{characteristicType}/characteristics endpoint

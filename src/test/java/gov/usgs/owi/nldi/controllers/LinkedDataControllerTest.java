@@ -50,6 +50,8 @@ public class LinkedDataControllerTest {
 	private LogService logService;
 	@Mock
 	private PyGeoApiService pygeoapiService;
+	@Mock
+	private AttributeService attributeService;
 
 	private TestConfigurationService configurationService;
 	private LinkedDataController controller;
@@ -65,7 +67,8 @@ public class LinkedDataControllerTest {
 		doCallRealMethod().when(streamingDao).stream(anyString(), anyMap(), any());
 
 		configurationService = new TestConfigurationService();
-		controller = new LinkedDataController(lookupDao, streamingDao, navigation, parameters, configurationService, logService, pygeoapiService);
+		attributeService = new AttributeService(lookupDao);
+		controller = new LinkedDataController(lookupDao, streamingDao, navigation, parameters, configurationService, logService, pygeoapiService, attributeService);
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 
@@ -78,17 +81,17 @@ public class LinkedDataControllerTest {
 	public void getComidTest() {
 		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(goodFeature(), null, missingFeature());
 
-		assertEquals("12345", controller.getComid("abc", "def"));
+		assertEquals("12345", attributeService.getComid("abc", "def"));
 
-		assertNull(controller.getComid("abc", "def"));
+		assertNull(attributeService.getComid("abc", "def"));
 
-		assertNull(controller.getComid("abc", "def"));
+		assertNull(attributeService.getComid("abc", "def"));
 	}
 
 	@Test
 	public void getComidWithNullFeatureSourceTest() {
 		assertThrows(IllegalArgumentException.class, () -> {
-			controller.getComid(null, "def");
+			controller.attributeService.getComid(null, "def");
 		});
 
 	}
@@ -96,7 +99,7 @@ public class LinkedDataControllerTest {
 	@Test
 	public void getComidWithNullFeatureIdTest() {
 		assertThrows(IllegalArgumentException.class, () -> {
-			controller.getComid("FakeFeatureSource", null);
+			controller.attributeService.getComid("FakeFeatureSource", null);
 		});
 	}
 

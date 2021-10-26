@@ -33,9 +33,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import gov.usgs.owi.nldi.services.ConfigurationService;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-@Component
+@Service
 public class PyGeoApiService {
     private static final Logger LOG = LoggerFactory.getLogger(PyGeoApiService.class);
 

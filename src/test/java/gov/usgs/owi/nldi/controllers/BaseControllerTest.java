@@ -47,6 +47,8 @@ public class BaseControllerTest {
 	private LogService logService;
 	@Mock
 	private PyGeoApiService pygeoapiService;
+	@Mock
+	private AttributeService attributeService;
 	private HttpServletResponse response;
 
 	private TestBaseController controller;
@@ -54,15 +56,15 @@ public class BaseControllerTest {
 	private class TestBaseController extends BaseController {
 		public TestBaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation,
 								  Parameters inParameters, ConfigurationService inConfigurationService,
-								  LogService inLogService, PyGeoApiService inPygeoapiService) {
-			super(inLookupDao, inStreamingDao, inNavigation, inParameters, inConfigurationService, inLogService, inPygeoapiService);
+								  LogService inLogService, PyGeoApiService inPygeoapiService, AttributeService inAttributeService) {
+			super(inLookupDao, inStreamingDao, inNavigation, inParameters, inConfigurationService, inLogService, inPygeoapiService, inAttributeService);
 		}
 	}
 
 	@BeforeEach
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		controller = new TestBaseController(lookupDao, streamingDao, navigation, parameters, configurationService, logService, pygeoapiService);
+		controller = new TestBaseController(lookupDao, streamingDao, navigation, parameters, configurationService, logService, pygeoapiService, attributeService);
 		response = new MockHttpServletResponse();
 	}
 

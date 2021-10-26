@@ -14,6 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Pattern;
 
+import gov.usgs.owi.nldi.services.ConfigurationService;
+import gov.usgs.owi.nldi.services.Navigation;
+import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.services.LogService;
+import gov.usgs.owi.nldi.services.PyGeoApiService;
+import gov.usgs.owi.nldi.services.AttributeService;
 import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.transform.CharacteristicDataTransformer;
@@ -39,13 +45,8 @@ import org.springframework.web.bind.annotation.RestController;
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
-import gov.usgs.owi.nldi.services.ConfigurationService;
-import gov.usgs.owi.nldi.services.LogService;
-import gov.usgs.owi.nldi.services.Navigation;
-import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.swagger.model.DataSource;
 import gov.usgs.owi.nldi.swagger.model.Feature;
-import gov.usgs.owi.nldi.services.PyGeoApiService;
 
 @RestController
 public class LinkedDataController extends BaseController {
@@ -58,9 +59,9 @@ public class LinkedDataController extends BaseController {
 
 	@Autowired
 	public LinkedDataController(LookupDao inLookupDao, StreamingDao inStreamingDao,
-			Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
-			LogService inLogService, PyGeoApiService inPygeoapiService) {
-		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService, inPygeoapiService);
+								Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
+								LogService inLogService, PyGeoApiService inPygeoapiService, AttributeService inAttributeService) {
+		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService, inPygeoapiService, inAttributeService);
 	}
 
 	//swagger documentation for /linked-data endpoint
@@ -222,7 +223,7 @@ public class LinkedDataController extends BaseController {
 		BigInteger logId = logService.logRequest(request);
 		try (CharacteristicDataTransformer transformer = new CharacteristicDataTransformer(response)) {
       
-			String comid = getComid(featureSource, featureID);
+			String comid = attributeService.getComid(featureSource, featureID);
       
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -254,24 +255,24 @@ public class LinkedDataController extends BaseController {
 		BigInteger logId = logService.logRequest(request);
 
 		try {
-			String comid = getComid(featureSource, featureID);
+			String comid = attributeService.getComid(featureSource, featureID);
 
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 			} else if (splitCatchment) {
 				// call st_distance to get distance between feature and flowline
-				float distance = getDistanceFromFlowline(featureSource, featureID);
+				float distance = attributeService.getDistanceFromFlowline(featureSource, featureID);
 				String lat, lon;
 
 				if (distance <= SPLIT_CATCHMENT_THRESHOLD) {
 					// get point on flowline closest to feature
-					Map<String, Object> pointResult = getClosestPointOnFlowline(featureSource, featureID);
+					Map<String, Object> pointResult = attributeService.getClosestPointOnFlowline(featureSource, featureID);
 					lat = pointResult.get("lat").toString();
 					lon = pointResult.get("lon").toString();
 				} else {
 					// call nldi-flowtrace for a more accurate point on flowline
 					String featureLat, featureLon;
-					Map<String, Object> locationResult = getFeatureLocation(featureSource, featureID);
+					Map<String, Object> locationResult = attributeService.getFeatureLocation(featureSource, featureID);
 					featureLat = locationResult.get("lat").toString();
 					featureLon = locationResult.get("lon").toString();
 					Map<String, String> flowtraceResponse = pygeoapiService.getNldiFlowTraceIntersectionPoint(featureLat, featureLon, true, PyGeoApiService.Direction.NONE);
@@ -310,7 +311,7 @@ public class LinkedDataController extends BaseController {
 		BigInteger logId = logService.logRequest(request);
 
 		try {
-			String comid = getComid(featureSource, featureID);
+			String comid = attributeService.getComid(featureSource, featureID);
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 			} else {
@@ -340,7 +341,7 @@ public class LinkedDataController extends BaseController {
 
 		BigInteger logId = logService.logRequest(request);
 		try {
-			String comid = getComid(featureSource, featureID);
+			String comid = attributeService.getComid(featureSource, featureID);
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 			} else {
@@ -369,7 +370,7 @@ public class LinkedDataController extends BaseController {
 
 		BigInteger logId = logService.logRequest(request);
 		try {
-			String comid = getComid(featureSource, featureID);
+			String comid = attributeService.getComid(featureSource, featureID);
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 			} else {
@@ -439,7 +440,7 @@ public class LinkedDataController extends BaseController {
 		BigInteger logId = logService.logRequest(request);
 
 		try {
-			String comid = getComid(featureSource, featureID);
+			String comid = attributeService.getComid(featureSource, featureID);
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 			} else {

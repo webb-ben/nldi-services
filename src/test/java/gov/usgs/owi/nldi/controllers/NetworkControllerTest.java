@@ -38,6 +38,8 @@ public class NetworkControllerTest {
 	private LogService logService;
 	@Mock
 	private PyGeoApiService pygeoapiService;
+	@Mock
+	private AttributeService attributeService;
 
 	private TestConfigurationService configurationService;
 	private NetworkController controller;
@@ -48,7 +50,7 @@ public class NetworkControllerTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		configurationService = new TestConfigurationService();
-		controller = new NetworkController(lookupDao, streamingDao, navigation, parameters, configurationService, logService, pygeoapiService);
+		controller = new NetworkController(lookupDao, streamingDao, navigation, parameters, configurationService, logService, pygeoapiService, attributeService);
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 
