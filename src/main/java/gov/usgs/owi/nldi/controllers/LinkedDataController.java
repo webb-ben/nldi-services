@@ -14,6 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Pattern;
 
+import gov.usgs.owi.nldi.services.ConfigurationService;
+import gov.usgs.owi.nldi.services.Navigation;
+import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.services.LogService;
+import gov.usgs.owi.nldi.services.PyGeoApiService;
+import gov.usgs.owi.nldi.services.AttributeService;
 import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.transform.CharacteristicDataTransformer;
@@ -26,6 +32,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.hibernate.validator.constraints.Range;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,10 +45,6 @@ import org.springframework.web.bind.annotation.RestController;
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
-import gov.usgs.owi.nldi.services.ConfigurationService;
-import gov.usgs.owi.nldi.services.LogService;
-import gov.usgs.owi.nldi.services.Navigation;
-import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.swagger.model.DataSource;
 import gov.usgs.owi.nldi.swagger.model.Feature;
 
@@ -52,12 +55,13 @@ public class LinkedDataController extends BaseController {
 	private static final String DOWNSTREAM_MAIN = "downstreamMain";
 	private static final String UPSTREAM_MAIN = "upstreamMain";
 	private static final String UPSTREAM_TRIBUTARIES = "upstreamTributaries";
+	private static final float SPLIT_CATCHMENT_THRESHOLD = 200f;
 
 	@Autowired
 	public LinkedDataController(LookupDao inLookupDao, StreamingDao inStreamingDao,
-			Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
-			LogService inLogService) {
-		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService);
+								Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
+								LogService inLogService, PyGeoApiService inPygeoapiService, AttributeService inAttributeService) {
+		super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService, inPygeoapiService, inAttributeService);
 	}
 
 	//swagger documentation for /linked-data endpoint
@@ -219,7 +223,7 @@ public class LinkedDataController extends BaseController {
 		BigInteger logId = logService.logRequest(request);
 		try (CharacteristicDataTransformer transformer = new CharacteristicDataTransformer(response)) {
       
-			String comid = getComid(featureSource, featureID);
+			String comid = attributeService.getComid(featureSource, featureID);
       
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -245,18 +249,44 @@ public class LinkedDataController extends BaseController {
 	public void getBasin(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
 			@PathVariable(Parameters.FEATURE_ID) String featureID,
-			@RequestParam(value = Parameters.SIMPLIFIED, required = false, defaultValue = "true") Boolean simplified) throws Exception {
+			@RequestParam(value = Parameters.SIMPLIFIED, required = false, defaultValue = "true") Boolean simplified,
+			@RequestParam(value = Parameters.SPLIT_CATCHMENT, required = false, defaultValue = "false") Boolean splitCatchment) throws Exception {
 
 		BigInteger logId = logService.logRequest(request);
 
 		try {
-			String comid = getComid(featureSource, featureID);
+			String comid = attributeService.getComid(featureSource, featureID);
 
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
+			} else if (splitCatchment) {
+				// call st_distance to get distance between feature and flowline
+				float distance = attributeService.getDistanceFromFlowline(featureSource, featureID);
+				String lat, lon;
+
+				if (distance <= SPLIT_CATCHMENT_THRESHOLD) {
+					// get point on flowline closest to feature
+					Map<String, Object> pointResult = attributeService.getClosestPointOnFlowline(featureSource, featureID);
+					lat = pointResult.get("lat").toString();
+					lon = pointResult.get("lon").toString();
+				} else {
+					// call nldi-flowtrace for a more accurate point on flowline
+					String featureLat, featureLon;
+					Map<String, Object> locationResult = attributeService.getFeatureLocation(featureSource, featureID);
+					featureLat = locationResult.get("lat").toString();
+					featureLon = locationResult.get("lon").toString();
+					Map<String, String> flowtraceResponse = pygeoapiService.getNldiFlowTraceIntersectionPoint(featureLat, featureLon, true, PyGeoApiService.Direction.NONE);
+					lat = flowtraceResponse.get("lat");
+					lon = flowtraceResponse.get("lon");
+				}
+
+				// call nldi-splitcatchment
+				JSONObject splitCatchmentResponse = pygeoapiService.nldiSplitCatchment(lat, lon, false);
+				handleSplitCatchmentResponse(splitCatchmentResponse, response);
 			} else {
 				streamBasin(response, comid, simplified);
 			}
+
 		} catch (Exception e) {
 			GlobalDefaultExceptionHandler.handleError(e, response);
 		} finally {
@@ -281,7 +311,7 @@ public class LinkedDataController extends BaseController {
 		BigInteger logId = logService.logRequest(request);
 
 		try {
-			String comid = getComid(featureSource, featureID);
+			String comid = attributeService.getComid(featureSource, featureID);
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 			} else {
@@ -311,7 +341,7 @@ public class LinkedDataController extends BaseController {
 
 		BigInteger logId = logService.logRequest(request);
 		try {
-			String comid = getComid(featureSource, featureID);
+			String comid = attributeService.getComid(featureSource, featureID);
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 			} else {
@@ -340,7 +370,7 @@ public class LinkedDataController extends BaseController {
 
 		BigInteger logId = logService.logRequest(request);
 		try {
-			String comid = getComid(featureSource, featureID);
+			String comid = attributeService.getComid(featureSource, featureID);
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 			} else {
@@ -410,7 +440,7 @@ public class LinkedDataController extends BaseController {
 		BigInteger logId = logService.logRequest(request);
 
 		try {
-			String comid = getComid(featureSource, featureID);
+			String comid = attributeService.getComid(featureSource, featureID);
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 			} else {

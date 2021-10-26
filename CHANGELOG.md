@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased](https://github.com/ACWI-SSWD/nldi-services/compare/nldi-services-1.4.0...master)
 
 ### Added
+* getBasin has a new splitCatchment=<true|false> parameter to retrieve a catchment from the basin that 
+is associated with the specified feature
 * Feature properties now includes a "type" field to indicate catchment association
 
 ## [1.4.0](https://github.com/ACWI-SSWD/nldi-services/compare/nldi-services-1.3.0...nldi-services-1.4.0)

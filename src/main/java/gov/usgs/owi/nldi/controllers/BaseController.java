@@ -1,11 +1,24 @@
 package gov.usgs.owi.nldi.controllers;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import gov.usgs.owi.nldi.services.ConfigurationService;
+import gov.usgs.owi.nldi.services.Navigation;
+import gov.usgs.owi.nldi.services.Parameters;
+import gov.usgs.owi.nldi.services.LogService;
+import gov.usgs.owi.nldi.services.PyGeoApiService;
+import gov.usgs.owi.nldi.services.AttributeService;
+import gov.usgs.owi.nldi.transform.BasinTransformer;
+import gov.usgs.owi.nldi.transform.FeatureTransformer;
+import gov.usgs.owi.nldi.transform.FlowLineTransformer;
+import gov.usgs.owi.nldi.transform.SplitCatchmentTransformer;
+import gov.usgs.owi.nldi.transform.ITransformer;
 import org.apache.ibatis.session.ResultHandler;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.NumberUtils;
@@ -19,14 +32,6 @@ import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.dao.StreamingResultHandler;
-import gov.usgs.owi.nldi.services.ConfigurationService;
-import gov.usgs.owi.nldi.services.LogService;
-import gov.usgs.owi.nldi.services.Navigation;
-import gov.usgs.owi.nldi.services.Parameters;
-import gov.usgs.owi.nldi.transform.BasinTransformer;
-import gov.usgs.owi.nldi.transform.FeatureTransformer;
-import gov.usgs.owi.nldi.transform.FlowLineTransformer;
-import gov.usgs.owi.nldi.transform.ITransformer;
 
 @Validated
 public abstract class BaseController {
@@ -45,16 +50,22 @@ public abstract class BaseController {
 	protected final Parameters parameters;
 	protected final ConfigurationService configurationService;
 	protected final LogService logService;
+	protected final PyGeoApiService pygeoapiService;
+	protected final AttributeService attributeService;
 
 	private final KeyLockManager lockManager = KeyLockManagers.newLock();
 
-	public BaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation, Parameters inParameters, ConfigurationService inConfigurationService, LogService inLogService) {
+	public BaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation,
+						  Parameters inParameters, ConfigurationService inConfigurationService,
+						  LogService inLogService, PyGeoApiService inPygeoapiService, AttributeService inAttributeService) {
 		lookupDao = inLookupDao;
 		streamingDao = inStreamingDao;
 		navigation = inNavigation;
 		parameters = inParameters;
 		configurationService = inConfigurationService;
 		logService = inLogService;
+		pygeoapiService = inPygeoapiService;
+		attributeService = inAttributeService;
 	}
 
 
@@ -126,6 +137,13 @@ public abstract class BaseController {
 		LOG.trace("done streaming");
 	}
 
+	protected void handleSplitCatchmentResponse(JSONObject splitCatchmentResponse, HttpServletResponse response) throws IOException {
+		addContentHeader(response);
+		SplitCatchmentTransformer transformer = new SplitCatchmentTransformer(response);
+		transformer.write(splitCatchmentResponse);
+		transformer.end();
+	}
+
 	protected void addContentHeader(HttpServletResponse response) {
 		response.setHeader(HEADER_CONTENT_TYPE, MIME_TYPE_GEOJSON);
 	}
@@ -140,31 +158,5 @@ public abstract class BaseController {
 	protected boolean isLegacy(String legacy, String navigationMode) {
 		return (StringUtils.hasText(legacy) && "true".contentEquals(legacy.trim().toLowerCase()))
 				|| NavigationMode.PP.toString().equalsIgnoreCase(navigationMode);
-	}
-
-	/**
-	 * Fetches a COM ID for non-null featureSource and featureID.
-	 * If either parameter is null, an IllegalArgumentException is thrown.
-	 *
-	 * @param featureSource
-	 * @param featureID
-	 * @return May return null if the COM ID is not found.
-	 */
-	protected String getComid(String featureSource, String featureID) {
-
-		if (null == featureSource || null == featureID) {
-			throw new IllegalArgumentException("A featureSource and featureID are required");
-		}
-
-		Map<String, Object> parameterMap = new HashMap<> ();
-		parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
-		parameterMap.put(Parameters.FEATURE_ID, featureID);
-
-		Map<String, Object> feature = lookupDao.getComid(BaseDao.FEATURE, parameterMap);
-		if (null == feature || !feature.containsKey(Parameters.COMID)) {
-			return null;
-		} else {
-			return feature.get(Parameters.COMID).toString();
-		}
 	}
 }

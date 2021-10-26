@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import gov.usgs.owi.nldi.services.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -35,10 +36,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
-import gov.usgs.owi.nldi.services.LogService;
-import gov.usgs.owi.nldi.services.Navigation;
-import gov.usgs.owi.nldi.services.Parameters;
-import gov.usgs.owi.nldi.services.TestConfigurationService;
 
 public class LinkedDataControllerTest {
 	@Mock
@@ -51,6 +48,10 @@ public class LinkedDataControllerTest {
 	private Parameters parameters;
 	@Mock
 	private LogService logService;
+	@Mock
+	private PyGeoApiService pygeoapiService;
+	@Mock
+	private AttributeService attributeService;
 
 	private TestConfigurationService configurationService;
 	private LinkedDataController controller;
@@ -66,7 +67,8 @@ public class LinkedDataControllerTest {
 		doCallRealMethod().when(streamingDao).stream(anyString(), anyMap(), any());
 
 		configurationService = new TestConfigurationService();
-		controller = new LinkedDataController(lookupDao, streamingDao, navigation, parameters, configurationService, logService);
+		attributeService = new AttributeService(lookupDao);
+		controller = new LinkedDataController(lookupDao, streamingDao, navigation, parameters, configurationService, logService, pygeoapiService, attributeService);
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 
@@ -79,17 +81,17 @@ public class LinkedDataControllerTest {
 	public void getComidTest() {
 		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(goodFeature(), null, missingFeature());
 
-		assertEquals("12345", controller.getComid("abc", "def"));
+		assertEquals("12345", attributeService.getComid("abc", "def"));
 
-		assertNull(controller.getComid("abc", "def"));
+		assertNull(attributeService.getComid("abc", "def"));
 
-		assertNull(controller.getComid("abc", "def"));
+		assertNull(attributeService.getComid("abc", "def"));
 	}
 
 	@Test
 	public void getComidWithNullFeatureSourceTest() {
 		assertThrows(IllegalArgumentException.class, () -> {
-			controller.getComid(null, "def");
+			controller.attributeService.getComid(null, "def");
 		});
 
 	}
@@ -97,7 +99,7 @@ public class LinkedDataControllerTest {
 	@Test
 	public void getComidWithNullFeatureIdTest() {
 		assertThrows(IllegalArgumentException.class, () -> {
-			controller.getComid("FakeFeatureSource", null);
+			controller.attributeService.getComid("FakeFeatureSource", null);
 		});
 	}
 
@@ -169,7 +171,7 @@ public class LinkedDataControllerTest {
 		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(goodFeature());
 		doNothing().when(streamingDao).stream(anyString(), anyMap(), any());
 
-		controller.getBasin(request, response, "DoesntMatter", "DoesntMatter", true);
+		controller.getBasin(request, response, "DoesntMatter", "DoesntMatter", true, false);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -180,7 +182,7 @@ public class LinkedDataControllerTest {
 		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(goodFeature());
 		doNothing().when(streamingDao).stream(anyString(), anyMap(), any());
 
-		controller.getBasin(request, response, "DoesntMatter", "DoesntMatter", false);
+		controller.getBasin(request, response, "DoesntMatter", "DoesntMatter", false, false);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -188,7 +190,7 @@ public class LinkedDataControllerTest {
 
 	@Test
 	public void getBasinWithNullParamsTest() throws Exception {
-		controller.getBasin(request, response, null, null, true);
+		controller.getBasin(request, response, null, null, true, false);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
 		//this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
@@ -197,7 +199,7 @@ public class LinkedDataControllerTest {
 
 	@Test
 	public void getBasinWithNonexistingComidTest() throws Exception {
-		controller.getBasin(request, response, "NowhereSource", "IDontExist", true);
+		controller.getBasin(request, response, "NowhereSource", "IDontExist", true, false);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());

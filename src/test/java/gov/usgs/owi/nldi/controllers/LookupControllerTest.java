@@ -9,6 +9,7 @@ import java.math.BigInteger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import gov.usgs.owi.nldi.services.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -19,10 +20,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
-import gov.usgs.owi.nldi.services.LogService;
-import gov.usgs.owi.nldi.services.Navigation;
-import gov.usgs.owi.nldi.services.Parameters;
-import gov.usgs.owi.nldi.services.TestConfigurationService;
 
 public class LookupControllerTest {
 
@@ -35,6 +32,10 @@ public class LookupControllerTest {
 	private Parameters parameters;
 	@Mock
 	private LogService logService;
+	@Mock
+	private PyGeoApiService pygeoapiService;
+	@Mock
+	private AttributeService attributeService;
 
 	private TestConfigurationService configurationService;
 	private LookupController controller;
@@ -46,7 +47,7 @@ public class LookupControllerTest {
 		MockitoAnnotations.initMocks(this);
 		configurationService = new TestConfigurationService();
 
-		controller = new LookupController(lookupDao, streamingDao, navigation, parameters, configurationService, logService);
+		controller = new LookupController(lookupDao, streamingDao, navigation, parameters, configurationService, logService, pygeoapiService, attributeService);
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 
