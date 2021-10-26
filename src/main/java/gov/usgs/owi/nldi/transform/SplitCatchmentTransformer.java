@@ -61,7 +61,7 @@ public class SplitCatchmentTransformer implements ITransformer {
 			try {
 				writeSplitCatchmentContent(content);
 			} catch (Exception e) {
-				throw new RuntimeException("Unable to write splitCatchment response to JSON", e);
+				throw new RuntimeException("Unable to write split-catchment response to JSON", e);
 			}
 		}
 
@@ -82,8 +82,8 @@ public class SplitCatchmentTransformer implements ITransformer {
 		JSONObject currentObject;
 		for (int i = features.length() - 1; i >= 0; i--) {
 			currentObject = features.getJSONObject(i);
-			if (currentObject.has(ID) && currentObject.getString(ID).equals("splitCatchment")) {
-				// remove the splitCatchment id as it's not needed and better matches expected output
+			if (currentObject.has(ID) && currentObject.getString(ID).equals("mergedCatchment")) {
+				// remove the mergedCatchment id as it's not needed and better matches expected output
 				currentObject.remove(ID);
 				generator.writeRaw(currentObject.toString());
 				break;

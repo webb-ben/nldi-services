@@ -281,7 +281,7 @@ public class LinkedDataController extends BaseController {
 				}
 
 				// call nldi-splitcatchment
-				JSONObject splitCatchmentResponse = pygeoapiService.nldiSplitCatchment(lat, lon, false);
+				JSONObject splitCatchmentResponse = pygeoapiService.nldiSplitCatchment(lat, lon, true);
 				handleSplitCatchmentResponse(splitCatchmentResponse, response);
 			} else {
 				streamBasin(response, comid, simplified);
