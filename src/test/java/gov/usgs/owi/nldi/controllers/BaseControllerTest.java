@@ -116,6 +116,15 @@ public class BaseControllerTest {
 	}
 
 	@Test
+	public void streamFlowLinesWithMeasureTest() throws Exception {
+		controller.streamFlowLines(response, "123", "navigationMode", "456", "789", "23.85", "2", false);
+		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));
+		verify(navigation, never()).navigate(anyMap());
+		verify(navigation, never()).interpretResult(anyMap(), any(HttpServletResponse.class));
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+
+	@Test
 	public void streamBasinTest() throws Exception {
 		controller.streamBasin(response, "123", true);
 		verify(streamingDao).stream(anyString(), anyMap(), any(ResultHandler.class));

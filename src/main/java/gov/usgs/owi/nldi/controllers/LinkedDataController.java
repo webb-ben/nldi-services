@@ -435,6 +435,8 @@ public class LinkedDataController extends BaseController {
 		@Parameter(description=Parameters.DISTANCE_DESCRIPTION_NEW)
 		@RequestParam(value=Parameters.DISTANCE)
 		@Pattern(message=Parameters.DISTANCE_VALIDATION_MESSAGE, regexp=Parameters.DISTANCE_VALIDATION_REGEX) String distance,
+		@RequestParam(value=Parameters.TRIM_START, required = false) Boolean trimStart,
+		@RequestParam(value=Parameters.TRIM_TOLERANCE, required = false) String trimTolerance,
 		@RequestParam(value=Parameters.LEGACY, required=false) String legacy) throws Exception {
 
 		BigInteger logId = logService.logRequest(request);
@@ -443,6 +445,9 @@ public class LinkedDataController extends BaseController {
 			String comid = attributeService.getComid(featureSource, featureID);
 			if (null == comid) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
+			} else if (null != trimStart && trimStart == true) {
+				String measure = attributeService.getMeasure(featureSource, featureID);
+				streamFlowLines(response, comid, navigationMode, stopComid, distance, measure, trimTolerance, isLegacy(legacy, navigationMode));
 			} else {
 				streamFlowLines(response, comid, navigationMode, stopComid, distance, isLegacy(legacy, navigationMode));
 			}

@@ -2,6 +2,9 @@ package gov.usgs.owi.nldi.services;
 
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
+import org.apache.ibatis.annotations.Param;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +13,7 @@ import java.util.Map;
 
 @Service
 public class AttributeService {
+    private static final Logger LOG = LoggerFactory.getLogger(AttributeService.class);
 
     private final LookupDao lookupDao;
 
@@ -41,6 +45,33 @@ public class AttributeService {
             return null;
         } else {
             return feature.get(Parameters.COMID).toString();
+        }
+    }
+
+    /**
+     * Fetches a measure for non-null featureSource and featureID.
+     * If either parameter is null, an IllegalArgumentException is thrown.
+     *
+     * @param featureSource
+     * @param featureID
+     * @return May return null if the measure is not found.
+     */
+    public String getMeasure(String featureSource, String featureID) {
+
+        if (null == featureSource || null == featureID) {
+            throw new IllegalArgumentException("A featureSource and featureID are required");
+        }
+
+        Map<String, Object> parameterMap = new HashMap<> ();
+        parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+        parameterMap.put(Parameters.FEATURE_ID, featureID);
+        parameterMap.put(LookupDao.GET_MEASURE, true);
+
+        Map<String, Object> feature = lookupDao.getMeasure(BaseDao.FEATURE, parameterMap);
+        if (null == feature || !feature.containsKey(Parameters.MEASURE) || null == feature.get(Parameters.MEASURE)) {
+            return null;
+        } else {
+            return feature.get(Parameters.MEASURE).toString();
         }
     }
 

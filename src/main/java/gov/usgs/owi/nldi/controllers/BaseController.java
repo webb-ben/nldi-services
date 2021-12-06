@@ -17,6 +17,7 @@ import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import gov.usgs.owi.nldi.transform.FlowLineTransformer;
 import gov.usgs.owi.nldi.transform.SplitCatchmentTransformer;
 import gov.usgs.owi.nldi.transform.ITransformer;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.ResultHandler;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -68,12 +69,40 @@ public abstract class BaseController {
 		attributeService = inAttributeService;
 	}
 
-
 	protected void streamFlowLines(HttpServletResponse response,
 			String comid, String navigationMode, String stopComid, String distance, boolean legacy) throws Exception {
 
 		String featureType;
 		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid);
+
+		if (legacy) {
+			String sessionId = getSessionId(parameterMap, response);
+			if (null != sessionId) {
+				parameterMap.put(StreamingDao.SESSION_ID, sessionId);
+				featureType = BaseDao.FLOW_LINES_LEGACY;
+			} else {
+				return;
+			}
+		} else {
+			featureType = BaseDao.FLOW_LINES;
+		}
+
+		//Defer transformer creation to allow error messages to be sent (above) in the response if needed
+		FlowLineTransformer transformer = new FlowLineTransformer(response);
+
+		addContentHeader(response);
+		streamResults(transformer, featureType, parameterMap);
+	}
+
+	protected void streamFlowLines(HttpServletResponse response,
+			String comid, String navigationMode, String stopComid, String distance, String measure, String trimTolerance, boolean legacy) throws Exception {
+
+		String featureType;
+		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid, measure, trimTolerance);
+
+		if (parameterMap.get(Parameters.MEASURE) != null && parameterMap.get(Parameters.TRIM_TOLERANCE) == null) {
+			parameterMap.put(Parameters.TRIM_TOLERANCE, Parameters.TRIM_TOLERANCE_DEFAULT);
+		}
 
 		if (legacy) {
 			String sessionId = getSessionId(parameterMap, response);

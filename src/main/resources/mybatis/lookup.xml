@@ -60,7 +60,7 @@
                   <include refid="lookup.comidFromWhere"/>
             </when>
             <otherwise>
-                select distinct comid
+                select distinct comid <if test="getMeasure == true">, measure</if>
                   <include refid="lookup.featureFromWhere"/>
             </otherwise>
         </choose>

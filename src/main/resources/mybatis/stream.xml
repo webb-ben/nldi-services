@@ -16,11 +16,14 @@
     <select id="flowLines" resultType="java.util.LinkedHashMap" fetchSize="50">
         <include refid="navigate.core"/>
         select count(*) over (partition by 1) total_rows,
-               nhdplus_comid,
-               st_asgeojson(nhdflowline_np21.shape, 9, 0) shape
-          from navigation_results
-               join nhdplus.nhdflowline_np21
-                 on navigation_results.comid = nhdflowline_np21.nhdplus_comid
+            nhdplus_comid,
+            case when nhdplus_comid = #{comid,jdbcType=NUMERIC}
+                    then <include refid="navigate.split"/>
+                else st_asgeojson(nhdflowline_np21.shape, 9, 0)
+            end as shape
+            from navigation_results
+                join nhdplus.nhdflowline_np21
+                on navigation_results.comid = nhdflowline_np21.nhdplus_comid
     </select>
 
     <select id="features" resultType="java.util.LinkedHashMap" fetchSize="50">

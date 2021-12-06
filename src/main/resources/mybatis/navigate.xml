@@ -46,6 +46,30 @@
         </choose>
     </select>
 
+    <sql id="split">
+        <choose>
+            <when test="navigationMode == 'DD' || navigationMode == 'DM'">
+                case when #{measure,jdbcType=NUMERIC} is not NULL and (#{trimTolerance,jdbcType=NUMERIC} is NULL
+                    or 100 - #{measure,jdbcType=NUMERIC} >= #{trimTolerance,jdbcType=NUMERIC})
+                then
+                    st_asgeojson(st_linesubstring(nhdflowline_np21.shape, <include refid="navigate.scaledMeasure"/>, 1), 9, 0)
+            </when>
+            <when test="navigationMode == 'UT' || navigationMode == 'UM'">
+                case when #{measure,jdbcType=NUMERIC} is not NULL and (#{trimTolerance,jdbcType=NUMERIC} is NULL
+                    or #{measure,jdbcType=NUMERIC} >= #{trimTolerance,jdbcType=NUMERIC})
+                then
+                    st_asgeojson(st_linesubstring(nhdflowline_np21.shape, 0, <include refid="navigate.scaledMeasure"/>), 9, 0)
+            </when>
+        </choose>
+        else
+            st_asgeojson(nhdflowline_np21.shape, 9, 0)
+        end
+    </sql>
+
+    <sql id="scaledMeasure">
+        (1 - ((#{measure,jdbcType=NUMERIC} - nhdflowline_np21.fmeasure)/(nhdflowline_np21.tmeasure - nhdflowline_np21.fmeasure)))
+    </sql>
+
     <sql id="core">
         <choose>
             <when test="navigationMode == 'DM'">
