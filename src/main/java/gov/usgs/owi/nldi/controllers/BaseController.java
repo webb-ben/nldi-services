@@ -100,7 +100,7 @@ public abstract class BaseController {
 		String featureType;
 		Map<String, Object> parameterMap = parameters.processParameters(comid, navigationMode, distance, stopComid, measure, trimTolerance);
 
-		if (parameterMap.get(Parameters.MEASURE) != null && parameterMap.get(Parameters.TRIM_TOLERANCE) == null) {
+		if (!parameterMap.isEmpty() && parameterMap.get(Parameters.TRIM_TOLERANCE) == null) {
 			parameterMap.put(Parameters.TRIM_TOLERANCE, Parameters.TRIM_TOLERANCE_DEFAULT);
 		}
 

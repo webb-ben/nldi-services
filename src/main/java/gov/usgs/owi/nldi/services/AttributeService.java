@@ -68,7 +68,16 @@ public class AttributeService {
         parameterMap.put(LookupDao.GET_MEASURE, true);
 
         Map<String, Object> feature = lookupDao.getMeasure(BaseDao.FEATURE, parameterMap);
-        if (null == feature || !feature.containsKey(Parameters.MEASURE) || null == feature.get(Parameters.MEASURE)) {
+
+        // get measure estimate if feature does not have explicit measure
+        if (null != feature && null == feature.get(Parameters.MEASURE)) {
+            parameterMap.remove(LookupDao.GET_MEASURE);
+            feature.clear();
+
+            feature = lookupDao.getMeasure(BaseDao.MEASURE_ESTIMATE, parameterMap);
+        }
+
+        if (null == feature || !feature.containsKey(Parameters.MEASURE)) {
             return null;
         } else {
             return feature.get(Parameters.MEASURE).toString();
