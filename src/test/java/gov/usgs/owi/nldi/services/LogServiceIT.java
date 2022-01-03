@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 		classes={DbTestConfig.class, LogService.class, LogDao.class})
-@DatabaseSetup("classpath:/testData/webServiceLog.xml")
+@DatabaseSetup("classpath:/testData/nldi_data/web_service_log.xml")
 public class LogServiceIT extends BaseIT {
 
 	@Autowired

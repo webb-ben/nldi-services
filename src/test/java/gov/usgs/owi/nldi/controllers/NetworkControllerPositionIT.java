@@ -15,8 +15,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/crawlerSource.xml")
-@DatabaseSetup("classpath:/testData/featureWqp.xml")
+@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
+@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 public class NetworkControllerPositionIT extends BaseIT {
 
 	@Value("${serverContextPath}")
@@ -39,7 +39,7 @@ public class NetworkControllerPositionIT extends BaseIT {
 	@Test
 	public void getCoordinatesTest() throws Exception {
 		assertEntity(restTemplate,
-			"/linked-data/comid/position?coords=POINT(-89.35 43.0864)",
+			"/linked-data/comid/position?coords=POINT(-89.55 43.2)",
 			HttpStatus.OK.value(),
 			null,
 			null,

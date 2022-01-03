@@ -1,16 +1,16 @@
 [
   {
-    "characteristics": "http://localhost:8081/nldi/lookups/local/characteristics",
+    "characteristics": "http://owi-test.usgs.gov:8080/test-url/lookups/local/characteristics",
     "typeName": "Local Catchment Characteristics",
     "type": "local"
   },
   {
-    "characteristics": "http://localhost:8081/nldi/lookups/div/characteristics",
+    "characteristics": "http://owi-test.usgs.gov:8080/test-url/lookups/div/characteristics",
     "typeName": "Divergence Routed Catchment Characteristics",
     "type": "div"
   },
   {
-    "characteristics": "http://localhost:8081/nldi/lookups/tot/characteristics",
+    "characteristics": "http://owi-test.usgs.gov:8080/test-url/lookups/tot/characteristics",
     "typeName": "Total Accumulated Catchment Characteristics",
     "type": "tot"
   }

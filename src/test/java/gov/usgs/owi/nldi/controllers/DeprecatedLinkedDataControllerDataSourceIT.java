@@ -19,7 +19,7 @@ import gov.usgs.owi.nldi.transform.FeatureTransformer;
 
 @EnableWebMvc
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/crawlerSource.xml")
+@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
 
 // This test class contains tests for the deprecated "navigate" endpoints.  Don't add
 // new tests here and delete this class when we drop support for those endpoints.
@@ -48,13 +48,13 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseIT {
 
 	//Navigation Within Datasource Testing
 	@Test
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getWqpUtTest() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/wqp/USGS-05427880/navigate/UT/wqp",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"13",
+				"7",
 				BaseController.MIME_TYPE_GEOJSON,
 				getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_UT_wqp.json"),
 				true,
@@ -62,7 +62,7 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getWqpUtTestDistance1() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=1",
@@ -78,13 +78,13 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseIT {
 
 
 	@Test
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getWqpUtTestDistanceEmpty() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"13",
+				"7",
 				BaseController.MIME_TYPE_GEOJSON,
 				getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_UT_wqp_distance_empty.json"),
 				true,
@@ -92,7 +92,7 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getWqpUtTestDistanceAboveMax() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=10000",
@@ -107,7 +107,7 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseIT {
 
 
 	@Test
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getWqpUtTestDistanceBelowMin() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=-1",
@@ -122,14 +122,14 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseIT {
 
 	//Navigation Different Datasource Testing
 	@Test
-	@DatabaseSetup("classpath:/testData/featureHuc12pp.xml")
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/huc12pp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getWqpDmTest() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/wqp/USGS-05427880/navigate/DM/huc12pp",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"9",
+				"19",
 				BaseController.MIME_TYPE_GEOJSON,
 				getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_DM_huc12pp.json"),
 				true,
@@ -165,7 +165,7 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseIT {
 
 	//Navigation Types Testing
 	@Test
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getNavigationTypesTest() throws Exception {
 		String compareFile = getCompareFile(RESULT_FOLDER, "wqp_USGS-05427880.json");
 		// The compare file is shared between the current test in LinkedDataControllerOtherIT.java

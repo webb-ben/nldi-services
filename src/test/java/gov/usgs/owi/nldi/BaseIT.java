@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
+import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONArrayAs;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.dbunit.dataset.ReplacementDataSet;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -88,12 +90,28 @@ public abstract class BaseIT {
 
 	protected void assertBody(ResponseEntity<String> entity, String expectedBody, boolean isJson, boolean extraFieldsAllowed) throws JSONException {
 		if (isJson) {
-			if (extraFieldsAllowed) {
-				assertThat(new JSONObject(entity.getBody()),
-						sameJSONObjectAs(new JSONObject(expectedBody)).allowingAnyArrayOrdering().allowingExtraUnexpectedFields());
-			} else {
-				assertThat(new JSONObject(entity.getBody()),
-						sameJSONObjectAs(new JSONObject(expectedBody)).allowingAnyArrayOrdering());
+			try {
+				if (extraFieldsAllowed) {
+					assertThat(new JSONObject(entity.getBody()),
+							sameJSONObjectAs(new JSONObject(expectedBody)).allowingAnyArrayOrdering().allowingExtraUnexpectedFields());
+				} else {
+					assertThat(new JSONObject(entity.getBody()),
+							sameJSONObjectAs(new JSONObject(expectedBody)).allowingAnyArrayOrdering());
+				}
+			} catch (JSONException exception) {
+				// several requests return JSON arrays rather than objects
+				// this allows the arrays to be compared using the same syntax
+				if (exception.getMessage().contains("org.json.JSONArray cannot be converted to JSONObject")) {
+					if (extraFieldsAllowed) {
+						assertThat(new JSONArray(entity.getBody()),
+								sameJSONArrayAs(new JSONArray(expectedBody)).allowingAnyArrayOrdering().allowingExtraUnexpectedFields());
+					} else {
+						assertThat(new JSONArray(entity.getBody()),
+								sameJSONArrayAs(new JSONArray(expectedBody)).allowingAnyArrayOrdering());
+					}
+				} else {
+					throw exception;
+				}
 			}
 		} else {
 			assertEquals(expectedBody, entity.getBody());

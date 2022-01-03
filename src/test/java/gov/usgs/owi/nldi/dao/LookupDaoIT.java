@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.NONE,
 		classes={DbTestConfig.class, LookupDao.class, ConfigurationService.class})
-@DatabaseSetup("classpath:/testData/crawlerSource.xml")
-@DatabaseSetup("classpath:/testData/featureWqp.xml")
+@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
+@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 public class LookupDaoIT extends BaseIT {
 
 
@@ -49,10 +49,10 @@ public class LookupDaoIT extends BaseIT {
 	public void getComidTest() throws IOException, JSONException {
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put(LookupDao.FEATURE_SOURCE, "comid");
-		parameterMap.put(Parameters.FEATURE_ID, "13297246");
+		parameterMap.put(Parameters.FEATURE_ID, "937090090");
 		Map<String, Object> results = lookupDao.getComid(BaseDao.FEATURE, parameterMap);
 		assertEquals(1,results.size());
-		assertEquals(13297246, results.get(BaseDao.COMID));
+		assertEquals(937090090, results.get(BaseDao.COMID));
 	}
 
 	@Test
@@ -79,19 +79,22 @@ public class LookupDaoIT extends BaseIT {
 		parameterMap.put(LookupDao.ROOT_URL, configurationService.getLinkedDataUrl());
 		List<Map<String, Object>> results = lookupDao.getList(BaseDao.DATA_SOURCES, parameterMap);
 		assertFalse(results.isEmpty());
-		assertEquals(4, results.size());
+		assertEquals(5, results.size());
 		assertEquals("huc12pp", results.get(0).get(LookupDao.SOURCE));
 		assertEquals("huc12pp", results.get(0).get(LookupDao.SOURCE_NAME));
 		assertEquals(String.join("/", configurationService.getLinkedDataUrl(), "huc12pp"), results.get(0).get(BaseDao.FEATURES));
 		assertEquals("np21_nwis", results.get(1).get(LookupDao.SOURCE));
 		assertEquals("HNDPlusV2_NWIS_Gages", results.get(1).get(LookupDao.SOURCE_NAME));
 		assertEquals(String.join("/", configurationService.getLinkedDataUrl(), "np21_nwis"), results.get(1).get(BaseDao.FEATURES));
-		assertEquals("TEST", results.get(2).get(LookupDao.SOURCE));
-		assertEquals("TEST Source", results.get(2).get(LookupDao.SOURCE_NAME));
-		assertEquals(String.join("/", configurationService.getLinkedDataUrl(), "test"), results.get(2).get(BaseDao.FEATURES));
-		assertEquals("WQP", results.get(3).get(LookupDao.SOURCE));
-		assertEquals("Water Quality Portal", results.get(3).get(LookupDao.SOURCE_NAME));
-		assertEquals(String.join("/", configurationService.getLinkedDataUrl(), "wqp"), results.get(3).get(BaseDao.FEATURES));
+		assertEquals("nwissite", results.get(2).get(LookupDao.SOURCE));
+		assertEquals("NWIS Surface Water Sites", results.get(2).get(LookupDao.SOURCE_NAME));
+		assertEquals(String.join("/", configurationService.getLinkedDataUrl(), "nwissite"), results.get(2).get(BaseDao.FEATURES));
+		assertEquals("TEST", results.get(3).get(LookupDao.SOURCE));
+		assertEquals("TEST Source", results.get(3).get(LookupDao.SOURCE_NAME));
+		assertEquals(String.join("/", configurationService.getLinkedDataUrl(), "test"), results.get(3).get(BaseDao.FEATURES));
+		assertEquals("WQP", results.get(4).get(LookupDao.SOURCE));
+		assertEquals("Water Quality Portal", results.get(4).get(LookupDao.SOURCE_NAME));
+		assertEquals(String.join("/", configurationService.getLinkedDataUrl(), "wqp"), results.get(4).get(BaseDao.FEATURES));
 	}
 
 

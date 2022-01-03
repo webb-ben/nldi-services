@@ -1,148 +1,385 @@
 {
-	"type": "FeatureCollection",
-	"features": [{
-		"type": "Feature",
-		"geometry": {
-			"type": "Point",
-			"coordinates": [-89.4631902424829, 43.1955902879081]
-		},
-		"properties": {
-			"type": "point",
-			"source": "huc12pp",
-			"sourceName": "huc12pp",
-			"identifier": "070900020601",
-			"name": "070900020601",
-			"uri": "070900020601",
-			"comid": "13293480",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020601/navigation"
-		}
-	}, {
-		"type": "Feature",
-		"geometry": {
-			"type": "Point",
-			"coordinates": [-89.4256525802169, 43.1409362817633]
-		},
-		"properties": {
-			"type": "point",
-			"source": "huc12pp",
-			"sourceName": "huc12pp",
-			"identifier": "070900020602",
-			"name": "070900020602",
-			"uri": "070900020602",
-			"comid": "13294300",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020602/navigation"
-		}
-	}, {
-		"type": "Feature",
-		"geometry": {
-			"type": "Point",
-			"coordinates": [-89.3702469111916, 43.0950620130377]
-		},
-		"properties": {
-			"type": "point",
-			"source": "huc12pp",
-			"sourceName": "huc12pp",
-			"identifier": "070900020604",
-			"name": "070900020604",
-			"uri": "070900020604",
-			"comid": "13294312",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020604/navigation"
-		}
-	}, {
-		"type": "Feature",
-		"geometry": {
-			"type": "Point",
-			"coordinates": [-89.3214631320277, 43.0352328710351]
-		},
-		"properties": {
-			"type": "point",
-			"source": "huc12pp",
-			"sourceName": "huc12pp",
-			"identifier": "070900020702",
-			"name": "070900020702",
-			"uri": "070900020702",
-			"comid": "13302592",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020702/navigation"
-		}
-	}, {
-		"type": "Feature",
-		"geometry": {
-			"type": "Point",
-			"coordinates": [-89.3054766528898, 43.0088387761818]
-		},
-		"properties": {
-			"type": "point",
-			"source": "huc12pp",
-			"sourceName": "huc12pp",
-			"identifier": "070900020703",
-			"name": "070900020703",
-			"uri": "070900020703",
-			"comid": "13294360",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020703/navigation"
-		}
-	}, {
-		"type": "Feature",
-		"geometry": {
-			"type": "Point",
-			"coordinates": [-89.2229641208076, 42.9690484353445]
-		},
-		"properties": {
-			"type": "point",
-			"source": "huc12pp",
-			"sourceName": "huc12pp",
-			"identifier": "070900020902",
-			"name": "070900020902",
-			"uri": "070900020902",
-			"comid": "13296606",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020902/navigation"
-		}
-	}, {
-		"type": "Feature",
-		"geometry": {
-			"type": "Point",
-			"coordinates": [-89.2148305143197, 42.9085920935008]
-		},
-		"properties": {
-			"type": "point",
-			"source": "huc12pp",
-			"sourceName": "huc12pp",
-			"identifier": "070900020903",
-			"name": "070900020903",
-			"uri": "070900020903",
-			"comid": "13297196",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020903/navigation"
-		}
-	}, {
-		"type": "Feature",
-		"geometry": {
-			"type": "Point",
-			"coordinates": [-89.1727074964863, 42.8439427439369]
-		},
-		"properties": {
-			"type": "point",
-			"source": "huc12pp",
-			"sourceName": "huc12pp",
-			"identifier": "070900020904",
-			"name": "070900020904",
-			"uri": "070900020904",
-			"comid": "13296756",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020904/navigation"
-		}
-	}, {
-		"type": "Feature",
-		"geometry": {
-			"type": "Point",
-			"coordinates": [-89.1234184320259, 42.7926315636361]
-		},
-		"properties": {
-			"type": "point",
-			"source": "huc12pp",
-			"sourceName": "huc12pp",
-			"identifier": "070900020905",
-			"name": "070900020905",
-			"uri": "070900020905",
-			"comid": "13296798",
-			"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020905/navigation"
-		}
-	}]
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.463190242,
+          43.195590288
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020601",
+        "name": "070900020601",
+        "uri": "070900020601",
+        "comid": "13293480",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020601/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.42565258,
+          43.140936282
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020602",
+        "name": "070900020602",
+        "uri": "070900020602",
+        "comid": "13294300",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020602/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.370246911,
+          43.095062013
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020604",
+        "name": "070900020604",
+        "uri": "070900020604",
+        "comid": "13294312",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020604/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.321463132,
+          43.035232871
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020702",
+        "name": "070900020702",
+        "uri": "070900020702",
+        "comid": "13302592",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020702/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.305476653,
+          43.008838776
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020703",
+        "name": "070900020703",
+        "uri": "070900020703",
+        "comid": "13294360",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020703/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.222964121,
+          42.969048435
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020902",
+        "name": "070900020902",
+        "uri": "070900020902",
+        "comid": "13296606",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020902/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.214830514,
+          42.908592094
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020903",
+        "name": "070900020903",
+        "uri": "070900020903",
+        "comid": "13297196",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020903/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.172707496,
+          42.843942744
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020904",
+        "name": "070900020904",
+        "uri": "070900020904",
+        "comid": "13296756",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020904/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.123418432,
+          42.792631564
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020905",
+        "name": "070900020905",
+        "uri": "070900020905",
+        "comid": "13296798",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020905/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.321463132,
+          43.035232871
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020702",
+        "name": "070900020702",
+        "uri": "070900020702",
+        "comid": "13302592",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020702/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.305476652,
+          43.008838776
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020703",
+        "name": "070900020703",
+        "uri": "070900020703",
+        "comid": "13294360",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020703/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.22296412,
+          42.969048436
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020902",
+        "name": "070900020902",
+        "uri": "070900020902",
+        "comid": "13296606",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020902/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.172707496,
+          42.843942744
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020904",
+        "name": "070900020904",
+        "uri": "070900020904",
+        "comid": "13296756",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020904/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.463190243,
+          43.195590288
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020601",
+        "name": "070900020601",
+        "uri": "070900020601",
+        "comid": "13293480",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020601/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.425652581,
+          43.140936281
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020602",
+        "name": "070900020602",
+        "uri": "070900020602",
+        "comid": "13294300",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020602/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.370246911,
+          43.095062013
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020604",
+        "name": "070900020604",
+        "uri": "070900020604",
+        "comid": "13294312",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020604/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.214830514,
+          42.908592094
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020903",
+        "name": "070900020903",
+        "uri": "070900020903",
+        "comid": "13297196",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020903/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.123418432,
+          42.792631564
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900020905",
+        "name": "070900020905",
+        "uri": "070900020905",
+        "comid": "13296798",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900020905/navigation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.053609626,
+          42.721906041
+        ]
+      },
+      "properties": {
+        "type": "point",
+        "source": "huc12pp",
+        "sourceName": "huc12pp",
+        "identifier": "070900021302",
+        "name": "070900021302",
+        "uri": "070900021302",
+        "comid": "13297264",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/huc12pp/070900021302/navigation"
+      }
+    }
+  ]
 }

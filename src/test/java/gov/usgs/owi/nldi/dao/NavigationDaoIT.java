@@ -41,7 +41,7 @@ public class NavigationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/navigationCacheStatus.xml")
+	@DatabaseSetup("classpath:/testData/nhdplus_navigation/navigation_cache_status.xml")
 	public void getCacheTest() {
 		Map<String, Object> parameterMap = new HashMap<>();
 

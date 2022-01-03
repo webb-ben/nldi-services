@@ -178,7 +178,8 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <environmentVariables>
-                        <nldiDbUrl>jdbc:postgresql://${TESTING_DATABASE_ADDRESS}:${TESTING_DATABASE_PORT}/nldi_db_name</nldiDbUrl>
+                        <!--suppress UnresolvedMavenProperty -->
+                        <nldiDbUrl>jdbc:postgresql://${TESTING_DATABASE_ADDRESS}:${TESTING_DATABASE_PORT}/nldi</nldiDbUrl>
                         <nldiUsername>read_only_user</nldiUsername>
                         <nldiPassword>changeMe</nldiPassword>
                         <dbUnitUsername>nldi</dbUnitUsername>
@@ -223,15 +224,17 @@
                 </executions>
                 <configuration>
 <!--                     Uncomment to see detailed container logs -->
-<!--                    <showLogs>true</showLogs> -->
+                    <showLogs>true</showLogs>
                     <containerNamePattern>%a</containerNamePattern>
                     <images>
                         <image>
-                            <name>usgswma/nldi-db:ci</name>
-                            <alias>nldiDatabase</alias>
+                            <!-- alternatively, this can be the name of a locally built nldi-db image -->
+                            <name>ghcr.io/acwi-sswd/nldi-db:ci-latest</name>
+                            <alias>nldi-database-ci-test</alias>
                             <run>
                                 <network>
                                     <mode>custom</mode>
+                                    <!--suppress UnresolvedMavenProperty -->
                                     <name>${TESTING_DATABASE_NETWORK}</name>
                                 </network>
                                 <ports>
@@ -240,7 +243,7 @@
                                 <env>
                                     <POSTGRES_PASSWORD>changeMe</POSTGRES_PASSWORD>
                                     <NLDI_DATABASE_ADDRESS>127.0.0.1</NLDI_DATABASE_ADDRESS>
-                                    <NLDI_DATABASE_NAME>nldi_db_name</NLDI_DATABASE_NAME>
+                                    <NLDI_DATABASE_NAME>nldi</NLDI_DATABASE_NAME>
                                     <NLDI_DB_OWNER_USERNAME>nldi</NLDI_DB_OWNER_USERNAME>
                                     <NLDI_DB_OWNER_PASSWORD>changeMe</NLDI_DB_OWNER_PASSWORD>
                                     <NLDI_SCHEMA_OWNER_USERNAME>nldi_schema_owner</NLDI_SCHEMA_OWNER_USERNAME>
