@@ -223,7 +223,7 @@
                     </execution>
                 </executions>
                 <configuration>
-<!--                     Uncomment to see detailed container logs -->
+                    <!-- Uncomment to see detailed container logs -->
                     <showLogs>true</showLogs>
                     <containerNamePattern>%a</containerNamePattern>
                     <images>

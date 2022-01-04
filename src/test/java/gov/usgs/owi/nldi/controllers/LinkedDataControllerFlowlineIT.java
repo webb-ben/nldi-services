@@ -36,6 +36,7 @@ public class LinkedDataControllerFlowlineIT extends BaseIT {
 	private static final String RESULT_FOLDER_WQP  = "feature/flowline/wqp/";
 	private static final String RESULT_FOLDER_HUC  = "feature/flowline/huc12pp/";
 	private static final String RESULT_FOLDER_NAVIGATION_NWIS = "navigation/nwissite/";
+	private static final String RESULT_FOLDER_NAVIGATION_WQP = "navigation/wqp/";
 
 	@BeforeEach
 	public void setUp() {
@@ -70,7 +71,6 @@ public class LinkedDataControllerFlowlineIT extends BaseIT {
 				false);
 	}
 
-
 	@Test
 	@DatabaseSetup("classpath:/testData/nldi_data/feature/huc12pp.xml")
 	public void getHuc12ppDM10000TestDistanceAboveMax() throws Exception {
@@ -98,7 +98,6 @@ public class LinkedDataControllerFlowlineIT extends BaseIT {
 				false,
 				false);
 	}
-
 
 	@Test
 	@DatabaseSetup("classpath:/testData/nldi_data/feature/huc12pp.xml")
@@ -130,7 +129,7 @@ public class LinkedDataControllerFlowlineIT extends BaseIT {
 
 	@Test
 	@DatabaseSetup("classpath:/testData/nldi_data/feature/nwissite.xml")
-	public void getNwisUTTrimTest() throws Exception {
+	public void getNwisUpstreamTrimTest() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/nwissite/USGS-05427850/navigation/UT/flowlines?distance=2&trimStart=true&trimTolerance=2",
 				HttpStatus.OK.value(),
@@ -138,6 +137,216 @@ public class LinkedDataControllerFlowlineIT extends BaseIT {
 				"5",
 				BaseController.MIME_TYPE_GEOJSON,
 				getCompareFile(RESULT_FOLDER_NAVIGATION_NWIS, "05427850_UT_dist2_trim2.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/nwissite/USGS-05427850/navigation/UT/flowlines?distance=2&trimStart=true&trimTolerance=3",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"5",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_NWIS, "05427850_UT_dist2_trim3.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/nwissite/USGS-05427850/navigation/UM/flowlines?distance=2&trimStart=true&trimTolerance=2",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"3",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_NWIS, "05427850_UM_dist2_trim2.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/nwissite/USGS-05427850/navigation/UM/flowlines?distance=2&trimStart=true&trimTolerance=3",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"3",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_NWIS, "05427850_UM_dist2_trim3.json"),
+				true,
+				false);
+	}
+
+	@Test
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/nwissite.xml")
+	public void getNwisDownstreamTrimTest() throws Exception {
+		assertEntity(restTemplate,
+				"/linked-data/nwissite/USGS-05427850/navigation/DD/flowlines?distance=2&trimStart=true&trimTolerance=2",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"1",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_NWIS, "05427850_DD_dist2_trim2.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/nwissite/USGS-05427850/navigation/DD/flowlines?distance=2&trimStart=true&trimTolerance=3",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"1",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_NWIS, "05427850_DD_dist2_trim3.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/nwissite/USGS-05427850/navigation/DM/flowlines?distance=2&trimStart=true&trimTolerance=2",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"1",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_NWIS, "05427850_DM_dist2_trim2.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/nwissite/USGS-05427850/navigation/DM/flowlines?distance=2&trimStart=true&trimTolerance=3",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"1",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_NWIS, "05427850_DM_dist2_trim3.json"),
+				true,
+				false);
+	}
+
+	@Test
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/nwissite.xml")
+	public void getNwisNoTrimTest() throws Exception {
+		assertEntity(restTemplate,
+				"/linked-data/nwissite/USGS-05427850/navigation/DM/flowlines?distance=2",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"1",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_NWIS, "05427850_DM_dist2_no_trim.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/nwissite/USGS-05427850/navigation/UM/flowlines?distance=2",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"3",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_NWIS, "05427850_UM_dist2_no_trim.json"),
+				true,
+				false);
+	}
+
+	@Test
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
+	public void getWqpUpstreamTrimTest() throws Exception {
+		assertEntity(restTemplate,
+				"/linked-data/wqp/USGS-05427850/navigation/UT/flowlines?distance=2&trimStart=true&trimTolerance=2",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"5",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_WQP, "05427850_UT_dist2_trim2.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/wqp/USGS-05427850/navigation/UT/flowlines?distance=2&trimStart=true&trimTolerance=3",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"5",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_WQP, "05427850_UT_dist2_trim3.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/wqp/USGS-05427850/navigation/UM/flowlines?distance=2&trimStart=true&trimTolerance=2",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"3",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_WQP, "05427850_UM_dist2_trim2.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/wqp/USGS-05427850/navigation/UM/flowlines?distance=2&trimStart=true&trimTolerance=3",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"3",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_WQP, "05427850_UM_dist2_trim3.json"),
+				true,
+				false);
+	}
+
+	@Test
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
+	public void getWqpDownstreamTrimTest() throws Exception {
+		assertEntity(restTemplate,
+				"/linked-data/wqp/USGS-05427850/navigation/DD/flowlines?distance=2&trimStart=true&trimTolerance=2",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"1",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_WQP, "05427850_DD_dist2_trim2.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/wqp/USGS-05427850/navigation/DD/flowlines?distance=2&trimStart=true&trimTolerance=3",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"1",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_WQP, "05427850_DD_dist2_trim3.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/wqp/USGS-05427850/navigation/DM/flowlines?distance=2&trimStart=true&trimTolerance=2",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"1",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_WQP, "05427850_DM_dist2_trim2.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/wqp/USGS-05427850/navigation/DM/flowlines?distance=2&trimStart=true&trimTolerance=3",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"1",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_WQP, "05427850_DM_dist2_trim3.json"),
+				true,
+				false);
+	}
+
+	@Test
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
+	public void getWqpNoTrimTest() throws Exception {
+		assertEntity(restTemplate,
+				"/linked-data/wqp/USGS-05427850/navigation/DM/flowlines?distance=2",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"1",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_WQP, "05427850_DM_dist2_no_trim.json"),
+				true,
+				false);
+
+		assertEntity(restTemplate,
+				"/linked-data/wqp/USGS-05427850/navigation/UM/flowlines?distance=2",
+				HttpStatus.OK.value(),
+				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
+				"3",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER_NAVIGATION_WQP, "05427850_UM_dist2_no_trim.json"),
 				true,
 				false);
 	}
