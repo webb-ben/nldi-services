@@ -39,6 +39,31 @@ public class ParametersTest {
 	}
 
 	@Test
+	public void processParametersOverloadTest() {
+		assertTrue(parameters.processParameters(null, null, null, null, null,null).isEmpty());
+
+		assertTrue(parameters.processParameters("", "", "", "", "", "").isEmpty());
+
+		assertTrue(parameters.processParameters(" ", " ", " ", " ", " ", " ").isEmpty());
+
+		Map<String, Object> parameterMap = parameters.processParameters("123", "DD", "456", "789", "29.86", "3");
+
+		assertEquals(6, parameterMap.size());
+		assertTrue(parameterMap.containsKey(Parameters.COMID));
+		assertEquals(123, parameterMap.get(Parameters.COMID));
+		assertTrue(parameterMap.containsKey(Parameters.NAVIGATION_MODE));
+		assertEquals("DD", parameterMap.get(Parameters.NAVIGATION_MODE));
+		assertTrue(parameterMap.containsKey(Parameters.DISTANCE));
+		assertEquals(BigDecimal.valueOf(456), parameterMap.get(Parameters.DISTANCE));
+		assertTrue(parameterMap.containsKey(Parameters.STOP_COMID));
+		assertEquals(789, parameterMap.get(Parameters.STOP_COMID));
+		assertTrue(parameterMap.containsKey(Parameters.MEASURE));
+		assertEquals(Float.parseFloat("29.86"), parameterMap.get(Parameters.MEASURE));
+		assertTrue(parameterMap.containsKey(Parameters.TRIM_TOLERANCE));
+		assertEquals(Float.parseFloat("3.0"), parameterMap.get(Parameters.TRIM_TOLERANCE));
+	}
+
+	@Test
 	public void validateComidTest() {
 		assertNull(parameters.validateComid(null, true));
 		assertNull(parameters.validateComid("", true));

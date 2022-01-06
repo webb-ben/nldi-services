@@ -38,8 +38,15 @@ public class RedirectControllerIT  {
 	}
 
 	@Test
-	public void getSwaggerTest(@Autowired TestRestTemplate restTemplate) throws Exception {
+	public void getSwaggerRedirectTest(@Autowired TestRestTemplate restTemplate) throws Exception {
 		ResponseEntity<String> rtn = restTemplate.getForEntity("/swagger", String.class);
+		assertThat(rtn.getStatusCode(), equalTo(HttpStatus.FOUND)); // 302 FOUND redirect
+	}
+
+	@Test
+	public void getSwaggerTest(@Autowired TestRestTemplate restTemplate) throws Exception {
+		final String SWAGGER_FULL_PATH = "/swagger-ui/index.html?configUrl=/api/nldi/v3/api-docs/swagger-config";
+		ResponseEntity<String> rtn = restTemplate.getForEntity(SWAGGER_FULL_PATH, String.class);
 		assertThat(rtn.getStatusCode(), equalTo(HttpStatus.OK));
 		assertTrue(rtn.getBody().contains("Swagger UI"));
 	}

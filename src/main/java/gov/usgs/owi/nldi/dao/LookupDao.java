@@ -22,6 +22,7 @@ public class LookupDao extends BaseDao {
 	public static final String ST_DISTANCE = "distanceFromFlowline";
 	public static final String ST_CLOSEST_POINT = "closestPointOnFlowline";
 	public static final String FEATURE_LOCATION = "featureLocation";
+	public static final String GET_MEASURE = "getMeasure";
 	
 	private static final String NS = "lookup.";
 
@@ -31,6 +32,10 @@ public class LookupDao extends BaseDao {
 	}
 
 	public Map<String, Object> getComid(String objectType, Map<String, Object> parameterMap) {
+		return getSqlSession().selectOne(NS + objectType, parameterMap);
+	}
+
+	public Map<String, Object> getMeasure(String objectType, Map<String, Object> parameterMap) {
 		return getSqlSession().selectOne(NS + objectType, parameterMap);
 	}
 

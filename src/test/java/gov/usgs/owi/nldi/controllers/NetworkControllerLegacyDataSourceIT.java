@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @EnableWebMvc
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/crawlerSource.xml")
-@DatabaseSetup("classpath:/testData/featureWqp.xml")
+@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
+@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 
 	@Value("${serverContextPath}")
@@ -46,7 +46,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 				"/linked-data/comid/13293474/navigation/UT/wqp?distance=9999&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"22",
+				"33",
 				BaseController.MIME_TYPE_GEOJSON,
 				getCompareFile(RESULT_FOLDER, "comid_13293474_UT.json"),
 				true,
@@ -56,12 +56,12 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidUtDistanceTest() throws Exception {
 		assertEntity(restTemplate,
-				"/linked-data/comid/13297246/navigation/UT/wqp?distance=10&legacy=true",
+				"/linked-data/comid/13297246/navigation/UT/wqp?distance=2&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"6",
+				"4",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_10.json"),
+				getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_2.json"),
 				true,
 				false);
 	}
@@ -73,7 +73,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 				"/linked-data/comid/13293474/navigation/UM/wqp?distance=9999&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"17",
+				"25",
 				BaseController.MIME_TYPE_GEOJSON,
 				getCompareFile(RESULT_FOLDER, "comid_13293474_UM.json"),
 				true,
@@ -86,7 +86,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 				"/linked-data/comid/13297246/navigation/UM/wqp?distance=10&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"6",
+				"7",
 				BaseController.MIME_TYPE_GEOJSON,
 				getCompareFile(RESULT_FOLDER, "comid_13297246_UM_distance_10.json"),
 				true,
@@ -100,20 +100,20 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 				"/linked-data/comid/13296790/navigation/DM/wqp?distance=9999&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"6",
+				"15",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13296790_DM.json"),
+				getCompareFile(RESULT_FOLDER, "comid_13296790_DM_legacy.json"),
 				true,
 				false);
 	}
 
 	@Test
 	public void getComidDmDistanceTest() throws Exception {
-		String actualbody = assertEntity(restTemplate,
+		assertEntity(restTemplate,
 				"/linked-data/comid/13293474/navigation/DM/wqp?distance=10&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"31",
+				"51",
 				BaseController.MIME_TYPE_GEOJSON,
 				getCompareFile(RESULT_FOLDER, "comid_13293474_DM_distance_10.json"),
 				true,
@@ -127,9 +127,9 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 				"/linked-data/comid/13294310/navigation/DD/wqp?distance=9999&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"17",
+				"64",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13294310_DD.json"),
+				getCompareFile(RESULT_FOLDER, "comid_13294310_DD_legacy.json"),
 				true,
 				false);
 	}
@@ -137,12 +137,12 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 	@Test
 	public void getComidDdDistanceTest() throws Exception {
 		assertEntity(restTemplate,
-				"/linked-data/comid/13294310/navigation/DD/wqp?distance=11&legacy=true",
+				"/linked-data/comid/13294310/navigation/DD/wqp?distance=1&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"1",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13294310_DD_distance_11.json"),
+				getCompareFile(RESULT_FOLDER, "comid_13294310_DD_distance_1.json"),
 				true,
 				false);
 	}
@@ -168,7 +168,7 @@ public class NetworkControllerLegacyDataSourceIT extends BaseIT {
 				"/linked-data/comid/13297198/navigation/PP/wqp?distance=9999&stopComid=13297246&legacy=true",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"16",
+				"17",
 				BaseController.MIME_TYPE_GEOJSON,
 				getCompareFile(RESULT_FOLDER, "comid_13297198_PP_stop_13297246.json"),
 				true,

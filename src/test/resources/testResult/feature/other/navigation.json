@@ -15,6 +15,11 @@
     "features": "http://owi-test.usgs.gov:8080/test-url/linked-data/wqp/USGS-05427880/navigation/UT/np21_nwis"
   },
   {
+    "source": "nwissite",
+    "sourceName": "NWIS Surface Water Sites",
+    "features": "http://owi-test.usgs.gov:8080/test-url/linked-data/wqp/USGS-05427880/navigation/UT/nwissite"
+  },
+  {
     "source": "TEST",
     "sourceName": "TEST Source",
     "features": "http://owi-test.usgs.gov:8080/test-url/linked-data/wqp/USGS-05427880/navigation/UT/test"

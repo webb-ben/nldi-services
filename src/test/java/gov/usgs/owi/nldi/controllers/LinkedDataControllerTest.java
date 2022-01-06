@@ -266,13 +266,13 @@ public class LinkedDataControllerTest {
 	@SuppressWarnings("unchecked")
 	public void getNavigationFlowlinesTest() throws Exception {
 		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(null, goodFeature());
-		controller.getNavigationFlowlines(request, response, "DoesntMatter", "DoesntMatter", null, null, null, null);
+		controller.getNavigationFlowlines(request, response, "DoesntMatter", "DoesntMatter", null, null, null, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
 		//Mock lookupDao 1st response of null means the comid is not found, thus a 404
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 
-		controller.getNavigationFlowlines(request, response, null, null, null, null, null, null);
+		controller.getNavigationFlowlines(request, response, null, null, null, null, null, null, null, null);
 		verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
 		verify(logService, times(2)).logRequestComplete(any(BigInteger.class), any(int.class));
 		//Mock lookupDao 2nd response doesn't actually exist, thus causes a 500 when we try to get flowlines

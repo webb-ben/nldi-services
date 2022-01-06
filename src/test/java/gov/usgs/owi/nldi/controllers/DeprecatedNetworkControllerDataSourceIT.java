@@ -16,8 +16,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/crawlerSource.xml")
-@DatabaseSetup("classpath:/testData/featureWqp.xml")
+@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
+@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 
 // This test class contains tests for the deprecated "navigate" endpoints.  Don't add
 // new tests here and delete this class when we drop support for those endpoints.
@@ -47,7 +47,7 @@ public class DeprecatedNetworkControllerDataSourceIT extends BaseIT {
 				"/linked-data/comid/13293474/navigate/UT/wqp",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"22",
+				"33",
 				BaseController.MIME_TYPE_GEOJSON,
 				getCompareFile(RESULT_FOLDER, "comid_13293474_UT.json"),
 				true,
@@ -57,12 +57,12 @@ public class DeprecatedNetworkControllerDataSourceIT extends BaseIT {
 	@Test
 	public void getComidUtDistanceTest() throws Exception {
 		assertEntity(restTemplate,
-				"/linked-data/comid/13297246/navigate/UT/wqp?distance=10",
+				"/linked-data/comid/13297246/navigate/UT/wqp?distance=2",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"6",
+				"4",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_10.json"),
+				getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_2.json"),
 				true,
 				false);
 	}
@@ -73,9 +73,9 @@ public class DeprecatedNetworkControllerDataSourceIT extends BaseIT {
 				"/linked-data/comid/13297246/navigate/UT/wqp?distance=",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"91",
+				"68",
 				BaseController.MIME_TYPE_GEOJSON,
-                getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_empty.json"),
+                getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_empty_deprecated.json"),
 				true,
 				false);
 	}
@@ -114,7 +114,7 @@ public class DeprecatedNetworkControllerDataSourceIT extends BaseIT {
 				"/linked-data/comid/13293474/navigate/UM/wqp",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"17",
+				"25",
 				BaseController.MIME_TYPE_GEOJSON,
 				getCompareFile(RESULT_FOLDER, "comid_13293474_UM.json"),
 				true,
@@ -127,7 +127,7 @@ public class DeprecatedNetworkControllerDataSourceIT extends BaseIT {
 				"/linked-data/comid/13297246/navigate/UM/wqp?distance=10",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"6",
+				"7",
 				BaseController.MIME_TYPE_GEOJSON,
 				getCompareFile(RESULT_FOLDER, "comid_13297246_UM_distance_10.json"),
 				true,
@@ -141,9 +141,9 @@ public class DeprecatedNetworkControllerDataSourceIT extends BaseIT {
 				"/linked-data/comid/13296790/navigate/DM/wqp",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"6",
+				"7",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13296790_DM.json"),
+				getCompareFile(RESULT_FOLDER, "comid_13296790_DM_deprecated.json"),
 				true,
 				false);
 	}
@@ -154,9 +154,9 @@ public class DeprecatedNetworkControllerDataSourceIT extends BaseIT {
 				"/linked-data/comid/13293474/navigate/DM/wqp?distance=10",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"31",
-				null,
-				null,
+				"51",
+				BaseController.MIME_TYPE_GEOJSON,
+				getCompareFile(RESULT_FOLDER, "comid_13293474_DM_distance_10.json"),
 				true,
 				false);
 	}
@@ -168,9 +168,9 @@ public class DeprecatedNetworkControllerDataSourceIT extends BaseIT {
 				"/linked-data/comid/13294310/navigate/DD/wqp",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"17",
+				"56",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13294310_DD.json"),
+				getCompareFile(RESULT_FOLDER, "comid_13294310_DD_deprecated.json"),
 				true,
 				false);
 	}
@@ -178,12 +178,12 @@ public class DeprecatedNetworkControllerDataSourceIT extends BaseIT {
 	@Test
 	public void getComidDdDistanceTest() throws Exception {
 		assertEntity(restTemplate,
-				"/linked-data/comid/13294310/navigate/DD/wqp?distance=11",
+				"/linked-data/comid/13294310/navigate/DD/wqp?distance=1",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
 				"1",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13294310_DD_distance_11.json"),
+				getCompareFile(RESULT_FOLDER, "comid_13294310_DD_distance_1.json"),
 				true,
 				false);
 	}
@@ -208,7 +208,7 @@ public class DeprecatedNetworkControllerDataSourceIT extends BaseIT {
 				"/linked-data/comid/13297198/navigate/PP/wqp?stopComid=13297246",
 				HttpStatus.OK.value(),
 				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"16",
+				"17",
 				BaseController.MIME_TYPE_GEOJSON,
 				getCompareFile(RESULT_FOLDER, "comid_13297198_PP_stop_13297246.json"),
 				true,

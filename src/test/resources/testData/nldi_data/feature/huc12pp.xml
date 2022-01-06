@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020601" name="070900020601" uri="070900020601" location="0101000020AD10000092D2AFE8A45D56C080FD401A09994540" comid="13293480"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020602" name="070900020602" uri="070900020602" location="0101000020AD10000056DF51E43D5B56C0267F38330A924540" comid="13294300"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020604" name="070900020604" uri="070900020604" location="0101000020AD100000D7C01920B25756C0618BF6FD2A8C4540" comid="13294312"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020702" name="070900020702" uri="070900020702" location="0101000020AD10000070BB19DA925456C0816BBE8282844540" comid="13302592"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020703" name="070900020703" uri="070900020703" location="0101000020AD1000009876F2ED8C5356C09E5107A121814540" comid="13294360"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020902" name="070900020902" uri="070900020902" location="0101000020AD10000036C34D0B454E56C0B40575C7097C4540" comid="13296606"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020903" name="070900020903" uri="070900020903" location="0101000020AD100000E44B7CC8BF4D56C0BD7EE7BE4C744540" comid="13297196"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020904" name="070900020904" uri="070900020904" location="0101000020AD100000B24BBEA30D4B56C0E373DA50066C4540" comid="13296756"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020905" name="070900020905" uri="070900020905" location="0101000020AD10000097516C16E64756C01CCC79F374654540" comid="13296798"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020702" name="070900020702" uri="070900020702" location="SRID=4269;POINT (-89.32146313218561 43.03523287118314)" comid="13302592" reachcode="[NULL]" measure="[NULL]"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020703" name="070900020703" uri="070900020703" location="SRID=4269;POINT (-89.30547665249681 43.008838776352945)" comid="13294360" reachcode="[NULL]" measure="[NULL]"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020902" name="070900020902" uri="070900020902" location="SRID=4269;POINT (-89.22296412039977 42.96904843557641)" comid="13296606" reachcode="[NULL]" measure="[NULL]"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020904" name="070900020904" uri="070900020904" location="SRID=4269;POINT (-89.1727074961724 42.84394274423017)" comid="13296756" reachcode="[NULL]" measure="[NULL]"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020601" name="070900020601" uri="070900020601" location="SRID=4269;POINT (-89.46319024255436 43.19559028757433)" comid="13293480" reachcode="[NULL]" measure="[NULL]"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020602" name="070900020602" uri="070900020602" location="SRID=4269;POINT (-89.42565258063505 43.140936281430044)" comid="13294300" reachcode="[NULL]" measure="[NULL]"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020604" name="070900020604" uri="070900020604" location="SRID=4269;POINT (-89.37024691103944 43.095062013376186)" comid="13294312" reachcode="[NULL]" measure="[NULL]"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020903" name="070900020903" uri="070900020903" location="SRID=4269;POINT (-89.21483051370495 42.90859209361557)" comid="13297196" reachcode="[NULL]" measure="[NULL]"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900020905" name="070900020905" uri="070900020905" location="SRID=4269;POINT (-89.12341843201771 42.79263156377869)" comid="13296798" reachcode="[NULL]" measure="[NULL]"/>
+    <nldi_data.feature_huc12pp crawler_source_id="4" identifier="070900021302" name="070900021302" uri="070900021302" location="SRID=4269;POINT (-89.05360962636642 42.72190604060615)" comid="13297264" reachcode="[NULL]" measure="[NULL]"/>
+</dataset>

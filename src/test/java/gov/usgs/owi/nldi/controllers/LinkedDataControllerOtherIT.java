@@ -22,7 +22,7 @@ import gov.usgs.owi.nldi.transform.BasinTransformer;
 
 @EnableWebMvc
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/crawlerSource.xml")
+@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
 public class LinkedDataControllerOtherIT extends BaseIT {
 
 	@LocalServerPort
@@ -107,17 +107,15 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 	//DataSources Testing
 	@Test
 	public void getDataSourcesTest() throws Exception {
-		String actualbody = assertEntity(restTemplate,
+		assertEntity(restTemplate,
 				"/linked-data",
 				HttpStatus.OK.value(),
 				null,
 				null,
 				MediaType.APPLICATION_JSON_VALUE,
-				null,
-				false,
+				getCompareFile(RESULT_FOLDER, "dataSources.json"),
+				true,
 				false);
-		assertThat(new JSONArray(actualbody),
-				sameJSONArrayAs(new JSONArray(getCompareFile(RESULT_FOLDER, "dataSources.json"))).allowingAnyArrayOrdering());
 	}
 
 	//Features Testing
@@ -151,19 +149,19 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 	@Test
 	public void getComidTest() throws Exception {
 		assertEntity(restTemplate,
-				"/linked-data/comid/13297246",
+				"/linked-data/comid/13294288",
 				HttpStatus.OK.value(),
 				null,
 				null,
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13297246.json"),
+				getCompareFile(RESULT_FOLDER, "comid_13294288.json"),
 				true,
 				false);
 	}
 
 	//Linked Object Testing WQP
 	@Test
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getWqpTest() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/wqp/USGS-05427880",
@@ -178,7 +176,7 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 
 	//Linked Object Testing huc12pp
 	@Test
-	@DatabaseSetup("classpath:/testData/featureHuc12pp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/huc12pp.xml")
 	public void gethuc12ppTest() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/huc12pp/070900020604",
@@ -193,7 +191,7 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 
 	//Navigation Types Testing
 	@Test
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getNavigationTypesTest() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/wqp/USGS-05427880/navigation",
@@ -232,35 +230,31 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 
 	//Navigation Types Testing
 	@Test
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getNavigationOptionsTest() throws Exception {
-		String actualbody = assertEntity(restTemplate,
-			"/linked-data/wqp/USGS-05427880/navigation/UT?f=json",
-			HttpStatus.OK.value(),
-			null,
-			null,
-			MediaType.APPLICATION_JSON_VALUE,
-			null,
-			true,
-			false);
-		assertThat(new JSONArray(actualbody),
-			sameJSONArrayAs(new JSONArray(getCompareFile(RESULT_FOLDER, "navigation.json"))).allowingAnyArrayOrdering());
-
+		assertEntity(restTemplate,
+				"/linked-data/wqp/USGS-05427880/navigation/UT?f=json",
+				HttpStatus.OK.value(),
+				null,
+				null,
+				MediaType.APPLICATION_JSON_VALUE,
+				getCompareFile(RESULT_FOLDER, "navigation.json"),
+				true,
+				false);
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getNavigationOptionsTestBadRequest() throws Exception {
 		assertEntity(restTemplate,
-			"/linked-data/wqp/USGS-05427880/navigation/XX",
-			HttpStatus.BAD_REQUEST.value(),
-			null,
-			null,
-			null,
-			null,
-			false,
-			false);
-
+				"/linked-data/wqp/USGS-05427880/navigation/XX",
+				HttpStatus.BAD_REQUEST.value(),
+				null,
+				null,
+				null,
+				null,
+				false,
+				false);
 	}
 
 }

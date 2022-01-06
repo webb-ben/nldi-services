@@ -18,7 +18,7 @@ import gov.usgs.owi.nldi.BaseIT;
 
 @EnableWebMvc
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/crawlerSource.xml")
+@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
 public class HtmlControllerIT extends BaseIT {
 
 	@LocalServerPort
@@ -92,7 +92,7 @@ public class HtmlControllerIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getWqpUMTest() throws Exception {
 		String actualbody = assertEntity(restTemplate,
 			"/linked-data/v2/wqp/USGS-05427880/navigate/UM/flowlines?f=html",
@@ -121,7 +121,7 @@ public class HtmlControllerIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/featureWqp.xml")
+	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getNavigationOptionsTest() throws Exception {
 		String actualbody = assertEntity(restTemplate,
 			"/linked-data/v2/wqp/USGS-05427880/navigate/UT?f=html",
