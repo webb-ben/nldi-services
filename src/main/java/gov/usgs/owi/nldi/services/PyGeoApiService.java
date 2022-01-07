@@ -50,8 +50,8 @@ public class PyGeoApiService {
     private static int client_connection_timeout = 15 * 1000;
 
     private String BASE_URL;
-    private final String FLOWTRACE_PATH = "/processes/nldi-flowtrace/jobs";
-    private final String SPLIT_CATCHMENT_PATH = "/processes/nldi-splitcatchment/jobs";
+    private final String FLOWTRACE_PATH = "/processes/nldi-flowtrace/execution";
+    private final String SPLIT_CATCHMENT_PATH = "/processes/nldi-splitcatchment/execution";
 
     // key and value constants for pygeoapi requests
     private final String INPUTS = "inputs";
@@ -64,6 +64,9 @@ public class PyGeoApiService {
     private final String VALUE = "value";
     private final String TEXT_PLAIN = "text/plain";
     private final String DIRECTION = "direction";
+    private final String INTERSECTION_POINT = "intersection_point";
+    private final String PROPERTIES = "properties";
+    private final String FEATURES = "features";
 
     public enum Direction {
         UP,
@@ -162,11 +165,11 @@ public class PyGeoApiService {
     public Map<String, String> getNldiFlowTraceIntersectionPoint(String lat, String lon, Boolean raindroptrace, Direction direction) throws Exception {
         JSONObject flowtraceJson = nldiFlowTrace(lat, lon, raindroptrace, direction);
 
-        if (!flowtraceJson.has("outputs")) {
+        if (!flowtraceJson.has(FEATURES)) {
             throw new Exception("Malformed response from pygeoapi nldi-flowtrace.");
         }
 
-        JSONArray featureArray = flowtraceJson.getJSONObject("outputs").getJSONArray("features");
+        JSONArray featureArray = flowtraceJson.getJSONArray(FEATURES);
 
         Map<String, String> intersection = new HashMap<>();
 
@@ -174,9 +177,9 @@ public class PyGeoApiService {
         // find the feature that contains the intersection point
         for (int i = featureArray.length() - 1; i >= 0; i--) {
             currentObject = featureArray.getJSONObject(i);
-            if (currentObject.has("properties") &&
-                    currentObject.getJSONObject("properties").has("intersectionPoint")) {
-                JSONArray intersectionPoint = currentObject.getJSONObject("properties").getJSONArray("intersectionPoint");
+            if (currentObject.has(PROPERTIES) &&
+                    currentObject.getJSONObject(PROPERTIES).has(INTERSECTION_POINT)) {
+                JSONArray intersectionPoint = currentObject.getJSONObject(PROPERTIES).getJSONArray(INTERSECTION_POINT);
                 intersection.put(LAT, intersectionPoint.getString(0));
                 intersection.put(LON, intersectionPoint.getString(1));
                 break;

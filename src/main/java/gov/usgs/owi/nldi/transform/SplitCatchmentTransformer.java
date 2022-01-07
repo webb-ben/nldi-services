@@ -73,7 +73,7 @@ public class SplitCatchmentTransformer implements ITransformer {
 	}
 
 	private void writeSplitCatchmentContent(JSONObject content) throws IOException, JSONException {
-		JSONArray features = content.getJSONObject(OUTPUTS).getJSONArray(FEATURES);
+		JSONArray features = content.getJSONArray(FEATURES);
 
 		generator.writeStartObject();
 		generator.writeStringField(TYPE, FEATURE_COLLECTION);
