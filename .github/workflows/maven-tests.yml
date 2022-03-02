@@ -12,5 +12,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+      - name: Create docker network
+        run: docker network create --subnet=172.26.0.0/16 nldi
       - name: Verify with Maven
         run: mvn verify -DTESTING_DATABASE_PORT=5445 -DTESTING_DATABASE_ADDRESS=localhost -DTESTING_DATABASE_NETWORK=nldi -f pom.xml
