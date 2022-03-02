@@ -2,7 +2,7 @@ name: Maven Verify
 on: [push]
 
 jobs:
-  build:
+  nldi-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -13,4 +13,4 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Verify with Maven
-        run: verify -DTESTING_DATABASE_PORT=5445 -DTESTING_DATABASE_ADDRESS=localhost -DTESTING_DATABASE_NETWORK=nldi -f pom.xml
+        run: mvn verify -DTESTING_DATABASE_PORT=5445 -DTESTING_DATABASE_ADDRESS=localhost -DTESTING_DATABASE_NETWORK=nldi -f pom.xml
