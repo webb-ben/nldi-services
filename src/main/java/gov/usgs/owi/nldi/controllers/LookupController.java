@@ -11,7 +11,6 @@ import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.PyGeoApiService;
-import gov.usgs.owi.nldi.services.AttributeService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,8 @@ public class LookupController extends BaseController {
     @Autowired
     public LookupController(LookupDao inLookupDao, StreamingDao inStreamingDao,
                             Navigation inNavigation, Parameters inParameters, ConfigurationService configurationService,
-                            LogService inLogService, PyGeoApiService inPygeoapiService, AttributeService inAttributeService) {
-        super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService, inPygeoapiService, inAttributeService);
+                            LogService inLogService, PyGeoApiService inPygeoapiService) {
+        super(inLookupDao, inStreamingDao, inNavigation, inParameters, configurationService, inLogService, inPygeoapiService);
     }
 
     //swagger documentation for /lookups/{characteristicType}/characteristics endpoint

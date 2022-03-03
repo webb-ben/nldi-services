@@ -1,8 +1,10 @@
 package gov.usgs.owi.nldi.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import gov.usgs.owi.nldi.services.Parameters;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,6 +25,7 @@ public class LookupDao extends BaseDao {
 	public static final String ST_CLOSEST_POINT = "closestPointOnFlowline";
 	public static final String FEATURE_LOCATION = "featureLocation";
 	public static final String GET_MEASURE = "getMeasure";
+	public static final String MEASURE_ESTIMATE = "measureEstimate";
 	
 	private static final String NS = "lookup.";
 
@@ -31,12 +34,44 @@ public class LookupDao extends BaseDao {
 		super(sqlSessionFactory);
 	}
 
-	public Map<String, Object> getComid(String objectType, Map<String, Object> parameterMap) {
-		return getSqlSession().selectOne(NS + objectType, parameterMap);
+	public Integer getFeatureComid(String featureSource, String featureID) throws IllegalArgumentException {
+		if (null == featureSource|| null == featureID) {
+			throw new IllegalArgumentException("A featureSource and featureID are required.");
+		}
+
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+		parameterMap.put(Parameters.FEATURE_ID, featureID);
+
+		Map<String, Object> feature = getSqlSession().selectOne(NS + BaseDao.FEATURE, parameterMap);
+		if (null == feature || !feature.containsKey(Parameters.COMID)) {
+			return null;
+		} else {
+			return Integer.parseInt(feature.get(Parameters.COMID).toString());
+		}
 	}
 
-	public Map<String, Object> getMeasure(String objectType, Map<String, Object> parameterMap) {
-		return getSqlSession().selectOne(NS + objectType, parameterMap);
+	public String getMeasure(String featureSource, String featureID, Boolean allowEstimate) {
+		Map<String, Object> parameterMap = new HashMap<> ();
+		parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+		parameterMap.put(Parameters.FEATURE_ID, featureID);
+		parameterMap.put(GET_MEASURE, true);
+
+		Map<String, Object> feature = getSqlSession().selectOne(NS + BaseDao.FEATURE, parameterMap);
+
+		// get measure estimate if feature does not have explicit measure
+		if (allowEstimate && null != feature && null == feature.get(Parameters.MEASURE)) {
+			parameterMap.remove(LookupDao.GET_MEASURE);
+			feature.clear();
+
+			feature = getSqlSession().selectOne(NS + MEASURE_ESTIMATE, parameterMap);
+		}
+
+		if (null == feature || !feature.containsKey(Parameters.MEASURE)) {
+			return null;
+		} else {
+			return feature.get(Parameters.MEASURE).toString();
+		}
 	}
 
 	public Integer getComidByLatitudeAndLongitude(Map<String, Object> parameterMap) {
@@ -47,16 +82,52 @@ public class LookupDao extends BaseDao {
 		return getSqlSession().selectList(NS + objectType, parameterMap);
 	}
 
-	public float getDistanceFromFlowline(Map<String, Object> parameterMap) {
+	public float getDistanceFromFlowline(String featureSource, String featureID) {
+		if (null == featureSource || null == featureID) {
+			throw new IllegalArgumentException("A featureSource and featureID are required");
+		}
+
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+		parameterMap.put(Parameters.FEATURE_ID, featureID);
 		return getSqlSession().selectOne(NS + ST_DISTANCE, parameterMap);
 	}
 
-	public Map<String, Object> closestPointOnFlowline(Map<String, Object> parameterMap) {
-		return getSqlSession().selectOne(NS + ST_CLOSEST_POINT, parameterMap);
+	public Map<String, Object> getClosestPointOnFlowline(String featureSource, String featureID) throws Exception {
+		if (null == featureSource || null == featureID) {
+			throw new IllegalArgumentException("A featureSource and featureID are required");
+		}
+
+		Map<String, Object> parameterMap = new HashMap<> ();
+		parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+		parameterMap.put(Parameters.FEATURE_ID, featureID);
+
+		Map<String, Object> result = getSqlSession().selectOne(NS + ST_CLOSEST_POINT, parameterMap);
+
+		if (!result.containsKey("lat") || !result.containsKey("lon")) {
+			throw new Exception("getClosestPointOnFlowline did not return lat or lon");
+		}
+
+		return result;
 	}
 
-	public Map<String, Object> getFeatureLocation(Map<String, Object> parameterMap) {
-		return getSqlSession().selectOne(NS + FEATURE_LOCATION, parameterMap);
+	public Map<String, Object> getFeatureLocation(String featureSource, String featureID) throws Exception {
+
+		if (null == featureSource || null == featureID) {
+			throw new IllegalArgumentException("A featureSource and featureID are required");
+		}
+
+		Map<String, Object> parameterMap = new HashMap<> ();
+		parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+		parameterMap.put(Parameters.FEATURE_ID, featureID);
+
+		Map<String, Object> result = getSqlSession().selectOne(NS + FEATURE_LOCATION, parameterMap);
+
+		if (!result.containsKey("lat") || !result.containsKey("lon")) {
+			throw new Exception("getFeatureLocation did not return lat or lon");
+		}
+
+		return result;
 	}
 
 }

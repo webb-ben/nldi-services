@@ -11,12 +11,7 @@ import gov.usgs.owi.nldi.services.Navigation;
 import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.services.LogService;
 import gov.usgs.owi.nldi.services.PyGeoApiService;
-import gov.usgs.owi.nldi.services.AttributeService;
-import gov.usgs.owi.nldi.transform.BasinTransformer;
-import gov.usgs.owi.nldi.transform.FeatureTransformer;
-import gov.usgs.owi.nldi.transform.FlowLineTransformer;
-import gov.usgs.owi.nldi.transform.SplitCatchmentTransformer;
-import gov.usgs.owi.nldi.transform.ITransformer;
+import gov.usgs.owi.nldi.transform.*;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.ResultHandler;
 import org.json.JSONObject;
@@ -52,13 +47,12 @@ public abstract class BaseController {
 	protected final ConfigurationService configurationService;
 	protected final LogService logService;
 	protected final PyGeoApiService pygeoapiService;
-	protected final AttributeService attributeService;
 
 	private final KeyLockManager lockManager = KeyLockManagers.newLock();
 
 	public BaseController(LookupDao inLookupDao, StreamingDao inStreamingDao, Navigation inNavigation,
 						  Parameters inParameters, ConfigurationService inConfigurationService,
-						  LogService inLogService, PyGeoApiService inPygeoapiService, AttributeService inAttributeService) {
+						  LogService inLogService, PyGeoApiService inPygeoapiService) {
 		lookupDao = inLookupDao;
 		streamingDao = inStreamingDao;
 		navigation = inNavigation;
@@ -66,7 +60,6 @@ public abstract class BaseController {
 		configurationService = inConfigurationService;
 		logService = inLogService;
 		pygeoapiService = inPygeoapiService;
-		attributeService = inAttributeService;
 	}
 
 	protected void streamFlowLines(HttpServletResponse response,
@@ -149,9 +142,9 @@ public abstract class BaseController {
 		streamResults(transformer, featureType, parameterMap);
 	}
 
-	protected void streamBasin(HttpServletResponse response, String comid, Boolean simplified) throws Exception {
+	protected void streamBasin(HttpServletResponse response, Integer comid, Boolean simplified) throws Exception {
 		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put(Parameters.COMID, NumberUtils.parseNumber(comid, Integer.class));
+		parameterMap.put(Parameters.COMID, comid);
 		parameterMap.put(Parameters.SIMPLIFIED, simplified);
 		BasinTransformer transformer = new BasinTransformer(response);
 		addContentHeader(response);
@@ -170,6 +163,13 @@ public abstract class BaseController {
 		addContentHeader(response);
 		SplitCatchmentTransformer transformer = new SplitCatchmentTransformer(response);
 		transformer.write(splitCatchmentResponse);
+		transformer.end();
+	}
+
+	protected void handleHydrolocationResponse(HttpServletResponse response) {
+		addContentHeader(response);
+		HydrolocationTransformer transformer = new HydrolocationTransformer(response);
+		//transformer.write();
 		transformer.end();
 	}
 

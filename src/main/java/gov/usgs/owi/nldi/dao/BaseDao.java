@@ -16,7 +16,6 @@ public abstract class BaseDao extends SqlSessionDaoSupport {
 	public static final String BASIN = "basin";
 	public static final String CHARACTERISTICS_METADATA = "characteristicMetadata";
 	public static final String CHARACTERISTIC_DATA = "characteristicData";
-	public static final String MEASURE_ESTIMATE = "measureEstimate";
 
 	public static final String COMID = "comid";
 

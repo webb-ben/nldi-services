@@ -40,8 +40,7 @@ public class NetworkController extends BaseController {
       Parameters inParameters,
       ConfigurationService configurationService,
       LogService inLogService,
-      PyGeoApiService inPygeoapiService,
-      AttributeService inAttributeService) {
+      PyGeoApiService inPygeoapiService) {
     super(
         inLookupDao,
         inStreamingDao,
@@ -49,8 +48,7 @@ public class NetworkController extends BaseController {
         inParameters,
         configurationService,
         inLogService,
-        inPygeoapiService,
-        inAttributeService);
+        inPygeoapiService);
   }
 
   // swagger documentation for /linked-data/{featureSource}/{featureID}/navigate/{navigationMode}
@@ -281,6 +279,53 @@ public class NetworkController extends BaseController {
       parameterMap.put(Parameters.FEATURE_ID, comid);
       addContentHeader(response);
       streamResults(transformer, BaseDao.FEATURE, parameterMap);
+    } finally {
+      logService.logRequestComplete(logId, response.getStatus());
+    }
+  }
+
+  @Operation(
+      summary = "getHydrologicLocation",
+      description = "returns the hydrologic location closest to a provided set of coordinates")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = Feature.class))
+            }),
+        @ApiResponse(responseCode = "500", description = "Server error", content = @Content)
+      })
+  @GetMapping(value = "linked-data/hydrolocation", produces = MediaType.APPLICATION_JSON_VALUE)
+  public void getHydrologicLocation(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      @Parameter(description = Parameters.COORDS_DESCRIPTION)
+          @Pattern(
+              message = Parameters.POINT_VALIDATION_MESSAGE,
+              regexp = Parameters.POINT_VALIDATION_REGEX)
+          @RequestParam(value = Parameters.COORDS)
+          String coords)
+      throws Exception {
+    BigInteger logId = logService.logRequest(request);
+    Map<String, Object> providedLatLon = extractLatitudeAndLongitude(coords);
+
+    try {
+      Map<String, String> flowtraceResponse =
+          pygeoapiService.getNldiFlowTraceIntersectionPoint(
+              providedLatLon.get(Parameters.LATITUDE).toString(),
+              providedLatLon.get(Parameters.LONGITUDE).toString(),
+              true,
+              PyGeoApiService.Direction.NONE);
+
+      Map<String, Object> indexedLatLon = new HashMap<>(2);
+      indexedLatLon.put(Parameters.LATITUDE, flowtraceResponse.get(Parameters.LATITUDE));
+      indexedLatLon.put(Parameters.LONGITUDE, flowtraceResponse.get(Parameters.LONGITUDE));
+
+      Integer comid = lookupDao.getComidByLatitudeAndLongitude(indexedLatLon);
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
