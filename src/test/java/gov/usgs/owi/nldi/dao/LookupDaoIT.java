@@ -18,9 +18,7 @@ import gov.usgs.owi.nldi.services.Parameters;
 import gov.usgs.owi.nldi.springinit.DbTestConfig;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.NONE,
 		classes={DbTestConfig.class, LookupDao.class, ConfigurationService.class})
@@ -36,23 +34,37 @@ public class LookupDaoIT extends BaseIT {
 	private ConfigurationService configurationService;
 
 	@Test
-	public void getFeatureTest() throws IOException, JSONException {
-		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put(LookupDao.FEATURE_SOURCE, "wqp");
-		parameterMap.put(Parameters.FEATURE_ID, "USGS-05427880");
-		Map<String, Object> results = lookupDao.getComid(BaseDao.FEATURE, parameterMap);
-		assertEquals(1,results.size());
-		assertEquals(13294132, results.get(BaseDao.COMID));
+	public void getFeatureTest() {
+		String featureSource = "wqp";
+		String featureID = "USGS-05427880";
+		Integer result = lookupDao.getFeatureComid(featureSource, featureID);
+		assertEquals(13294132, result);
+	}
+
+	@Test
+	public void getNullFeatureSourceTest() {
+		String featureSource = null;
+		String featureID = "USGS-05427880";
+		assertThrows(IllegalArgumentException.class, () -> {
+			lookupDao.getFeatureComid(featureSource, featureID);
+		});
+	}
+
+	@Test
+	public void getNullFeatureIDTest() {
+		String featureSource = "wqp";
+		String featureID = null;
+		assertThrows(IllegalArgumentException.class, () -> {
+			lookupDao.getFeatureComid(featureSource, featureID);
+		});
 	}
 
 	@Test
 	public void getComidTest() throws IOException, JSONException {
-		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put(LookupDao.FEATURE_SOURCE, "comid");
-		parameterMap.put(Parameters.FEATURE_ID, "937090090");
-		Map<String, Object> results = lookupDao.getComid(BaseDao.FEATURE, parameterMap);
-		assertEquals(1,results.size());
-		assertEquals(937090090, results.get(BaseDao.COMID));
+		String featureSource = "comid";
+		String featureID = "937090090";
+		Integer result = lookupDao.getFeatureComid(featureSource, featureID);
+		assertEquals(937090090, result);
 	}
 
 	@Test

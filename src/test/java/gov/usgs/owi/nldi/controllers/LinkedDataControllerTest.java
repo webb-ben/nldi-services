@@ -50,8 +50,6 @@ public class LinkedDataControllerTest {
 	private LogService logService;
 	@Mock
 	private PyGeoApiService pygeoapiService;
-	@Mock
-	private AttributeService attributeService;
 
 	private TestConfigurationService configurationService;
 	private LinkedDataController controller;
@@ -67,8 +65,7 @@ public class LinkedDataControllerTest {
 		doCallRealMethod().when(streamingDao).stream(anyString(), anyMap(), any());
 
 		configurationService = new TestConfigurationService();
-		attributeService = new AttributeService(lookupDao);
-		controller = new LinkedDataController(lookupDao, streamingDao, navigation, parameters, configurationService, logService, pygeoapiService, attributeService);
+		controller = new LinkedDataController(lookupDao, streamingDao, navigation, parameters, configurationService, logService, pygeoapiService);
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 
@@ -79,34 +76,19 @@ public class LinkedDataControllerTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void getComidTest() {
-		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(goodFeature(), null, missingFeature());
+		when(lookupDao.getFeatureComid(anyString(), anyString())).thenReturn(goodFeature(), null, missingFeature());
 
-		assertEquals("12345", attributeService.getComid("abc", "def"));
+		assertEquals(12345, lookupDao.getFeatureComid("abc", "def"));
 
-		assertNull(attributeService.getComid("abc", "def"));
+		assertNull(lookupDao.getFeatureComid("abc", "def"));
 
-		assertNull(attributeService.getComid("abc", "def"));
-	}
-
-	@Test
-	public void getComidWithNullFeatureSourceTest() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			controller.attributeService.getComid(null, "def");
-		});
-
-	}
-
-	@Test
-	public void getComidWithNullFeatureIdTest() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			controller.attributeService.getComid("FakeFeatureSource", null);
-		});
+		assertNull(lookupDao.getFeatureComid("abc", "def"));
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void getFlowlinesTest() throws Exception {
-		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(null, goodFeature());
+		when(lookupDao.getFeatureComid(anyString(), anyString())).thenReturn(null, goodFeature());
 		controller.getFlowlines(request, response, "DoesntMatter", "DoesntMatter", null, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
@@ -123,7 +105,7 @@ public class LinkedDataControllerTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void getFeaturesTest() throws Exception {
-		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(null, goodFeature());
+		when(lookupDao.getFeatureComid(anyString(), anyString())).thenReturn(null, goodFeature());
 		controller.getFeatures(request, response, "DoesntMatter", "DoesntMatter", null, null, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
@@ -137,15 +119,12 @@ public class LinkedDataControllerTest {
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
 	}
 
-	public static Map<String, Object> goodFeature() {
-		Map<String, Object> rtn = new LinkedHashMap<>();
-		rtn.put(Parameters.COMID, "12345");
-		return rtn;
+	public static Integer goodFeature() {
+		return 12345;
 	}
 
-	public static Map<String, Object> missingFeature() {
-		Map<String, Object> rtn = new LinkedHashMap<>();
-		return rtn;
+	public static Integer missingFeature() {
+		return null;
 	}
 
 	@Test
@@ -162,13 +141,13 @@ public class LinkedDataControllerTest {
 		controller.getCharacteristicData(request, response, "NowhereSource", "IDontExist", null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
 	}
 
 
 	@Test
 	public void getBasinTest() throws Exception {
-		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(goodFeature());
+		when(lookupDao.getFeatureComid(anyString(), anyString())).thenReturn(goodFeature());
 		doNothing().when(streamingDao).stream(anyString(), anyMap(), any());
 
 		controller.getBasin(request, response, "DoesntMatter", "DoesntMatter", true, false);
@@ -179,7 +158,7 @@ public class LinkedDataControllerTest {
 
 	@Test
 	public void getBasinNonSimplifiedTest() throws Exception {
-		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(goodFeature());
+		when(lookupDao.getFeatureComid(anyString(), anyString())).thenReturn(goodFeature());
 		doNothing().when(streamingDao).stream(anyString(), anyMap(), any());
 
 		controller.getBasin(request, response, "DoesntMatter", "DoesntMatter", false, false);
@@ -202,7 +181,7 @@ public class LinkedDataControllerTest {
 		controller.getBasin(request, response, "NowhereSource", "IDontExist", true, false);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
 	}
 
 	@Test
@@ -265,7 +244,7 @@ public class LinkedDataControllerTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void getNavigationFlowlinesTest() throws Exception {
-		when(lookupDao.getComid(anyString(), anyMap())).thenReturn(null, goodFeature());
+		when(lookupDao.getFeatureComid(anyString(), anyString())).thenReturn(null, goodFeature());
 		controller.getNavigationFlowlines(request, response, "DoesntMatter", "DoesntMatter", null, null, null, null, null, null);
 		verify(logService).logRequest(any(HttpServletRequest.class));
 		verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));

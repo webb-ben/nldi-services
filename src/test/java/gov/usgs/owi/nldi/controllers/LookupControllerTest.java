@@ -34,8 +34,6 @@ public class LookupControllerTest {
 	private LogService logService;
 	@Mock
 	private PyGeoApiService pygeoapiService;
-	@Mock
-	private AttributeService attributeService;
 
 	private TestConfigurationService configurationService;
 	private LookupController controller;
@@ -47,7 +45,7 @@ public class LookupControllerTest {
 		MockitoAnnotations.initMocks(this);
 		configurationService = new TestConfigurationService();
 
-		controller = new LookupController(lookupDao, streamingDao, navigation, parameters, configurationService, logService, pygeoapiService, attributeService);
+		controller = new LookupController(lookupDao, streamingDao, navigation, parameters, configurationService, logService, pygeoapiService);
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 
