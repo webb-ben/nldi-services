@@ -26,6 +26,7 @@ public class LookupDao extends BaseDao {
 	public static final String FEATURE_LOCATION = "featureLocation";
 	public static final String GET_MEASURE = "getMeasure";
 	public static final String MEASURE_ESTIMATE = "measureEstimate";
+	public static final String REACH_CODE = "reachCode";
 	
 	private static final String NS = "lookup.";
 
@@ -72,6 +73,28 @@ public class LookupDao extends BaseDao {
 		} else {
 			return feature.get(Parameters.MEASURE).toString();
 		}
+	}
+
+	public String getMeasure(Integer comid, String lat, String lon) {
+		Map<String, Object> parameterMap = new HashMap<> ();
+		parameterMap.put(Parameters.COMID, comid);
+		parameterMap.put(Parameters.LATITUDE, lat);
+		parameterMap.put(Parameters.LONGITUDE, lon);
+
+		Map<String, Object> feature = getSqlSession().selectOne(NS + MEASURE_ESTIMATE, parameterMap);
+
+		if (null == feature || !feature.containsKey(Parameters.MEASURE)) {
+			return null;
+		} else {
+			return feature.get(Parameters.MEASURE).toString();
+		}
+	}
+
+	public String getReachCode(Integer comid) {
+		Map<String, Object> parameterMap = new HashMap<> ();
+		parameterMap.put(Parameters.COMID, comid);
+
+		return getSqlSession().selectOne(NS + REACH_CODE, parameterMap);
 	}
 
 	public Integer getComidByLatitudeAndLongitude(Map<String, Object> parameterMap) {

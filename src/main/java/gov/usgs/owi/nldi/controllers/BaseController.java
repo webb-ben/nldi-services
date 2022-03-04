@@ -1,26 +1,5 @@
 package gov.usgs.owi.nldi.controllers;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
-import gov.usgs.owi.nldi.services.ConfigurationService;
-import gov.usgs.owi.nldi.services.Navigation;
-import gov.usgs.owi.nldi.services.Parameters;
-import gov.usgs.owi.nldi.services.LogService;
-import gov.usgs.owi.nldi.services.PyGeoApiService;
-import gov.usgs.owi.nldi.transform.*;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.session.ResultHandler;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.NumberUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
-
 import de.jkeylockmanager.manager.KeyLockManager;
 import de.jkeylockmanager.manager.KeyLockManagers;
 import gov.usgs.owi.nldi.NavigationMode;
@@ -28,6 +7,19 @@ import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.dao.StreamingResultHandler;
+import gov.usgs.owi.nldi.services.*;
+import gov.usgs.owi.nldi.transform.*;
+import org.apache.ibatis.session.ResultHandler;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Validated
 public abstract class BaseController {
@@ -163,13 +155,6 @@ public abstract class BaseController {
 		addContentHeader(response);
 		SplitCatchmentTransformer transformer = new SplitCatchmentTransformer(response);
 		transformer.write(splitCatchmentResponse);
-		transformer.end();
-	}
-
-	protected void handleHydrolocationResponse(HttpServletResponse response) {
-		addContentHeader(response);
-		HydrolocationTransformer transformer = new HydrolocationTransformer(response);
-		//transformer.write();
 		transformer.end();
 	}
 

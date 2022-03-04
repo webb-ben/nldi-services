@@ -6,13 +6,17 @@ import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.*;
 import gov.usgs.owi.nldi.swagger.model.Feature;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
+import gov.usgs.owi.nldi.transform.HydrolocationTransformer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import mil.nga.sf.geojson.Position;
 import org.hibernate.validator.constraints.Range;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,6 +35,7 @@ import java.util.Map;
 
 @RestController
 public class NetworkController extends BaseController {
+  private static final Logger LOG = LoggerFactory.getLogger(NetworkController.class);
 
   @Autowired
   public NetworkController(
@@ -286,15 +291,15 @@ public class NetworkController extends BaseController {
 
   @Operation(
       summary = "getHydrologicLocation",
-      description = "returns the hydrologic location closest to a provided set of coordinates")
+      description = "Returns the hydrologic location closest to a provided set of coordinates.")
   @ApiResponses(
       value = {
         @ApiResponse(
             responseCode = "200",
-            description = "OK",
+            description = "Hydrolocation found",
             content = {
               @Content(
-                  mediaType = "application/json",
+                  mediaType = MIME_TYPE_GEOJSON,
                   schema = @Schema(implementation = Feature.class))
             }),
         @ApiResponse(responseCode = "500", description = "Server error", content = @Content)
@@ -326,6 +331,29 @@ public class NetworkController extends BaseController {
       indexedLatLon.put(Parameters.LONGITUDE, flowtraceResponse.get(Parameters.LONGITUDE));
 
       Integer comid = lookupDao.getComidByLatitudeAndLongitude(indexedLatLon);
+      String measure =
+          lookupDao.getMeasure(
+              comid,
+              indexedLatLon.get(Parameters.LATITUDE).toString(),
+              indexedLatLon.get(Parameters.LONGITUDE).toString());
+      String reachcode = lookupDao.getReachCode(comid);
+
+      Position indexedPoint =
+          new Position(
+              Double.parseDouble(indexedLatLon.get(Parameters.LONGITUDE).toString()),
+              Double.parseDouble(indexedLatLon.get(Parameters.LATITUDE).toString()));
+      Position providedPoint =
+          new Position(
+              Double.parseDouble(providedLatLon.get(Parameters.LONGITUDE).toString()),
+              Double.parseDouble(providedLatLon.get(Parameters.LATITUDE).toString()));
+
+      addContentHeader(response);
+      HydrolocationTransformer transformer =
+          new HydrolocationTransformer(response, configurationService);
+      transformer.writeIndexedFeature(indexedPoint, comid.toString(), reachcode, measure);
+      transformer.writeProvidedFeature(providedPoint);
+      transformer.end();
+      response.setStatus(HttpStatus.OK.value());
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
@@ -333,9 +361,7 @@ public class NetworkController extends BaseController {
 
   private Map<String, Object> extractLatitudeAndLongitude(String coords) {
     // Only currently supported format is POINT(x y)
-    String tempCoords = coords;
-    tempCoords = tempCoords.replace("POINT(", "");
-    tempCoords = tempCoords.replace(")", "");
+    String tempCoords = coords.replaceAll("POINT ?\\(|\\)", "");
     String[] coordsArray = tempCoords.split(" ");
     Double longitude = Double.parseDouble(coordsArray[0]);
     Double latitude = Double.parseDouble(coordsArray[1]);
