@@ -166,6 +166,7 @@ public class PyGeoApiService {
         JSONObject flowtraceJson = nldiFlowTrace(lat, lon, raindroptrace, direction);
 
         if (!flowtraceJson.has(FEATURES)) {
+            LOG.error(flowtraceJson.toString());
             throw new Exception("Malformed response from pygeoapi nldi-flowtrace.");
         }
 

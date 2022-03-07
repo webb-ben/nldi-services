@@ -195,7 +195,7 @@
                         <serverContextPath>/nldi</serverContextPath>
                         <springFrameworkLogLevel>INFO</springFrameworkLogLevel>
                         <serverPort>8080</serverPort>
-                        <pygeoapiUrl>https://nhgf.dev-wma.usgs.gov/api/nldi/pygeoapi</pygeoapiUrl>
+                        <pygeoapiUrl>https://labs.waterdata.usgs.gov/api/nldi/pygeoapi</pygeoapiUrl>
                     </environmentVariables>
                 </configuration>
                 <executions>
