@@ -1,9 +1,18 @@
 package gov.usgs.owi.nldi.controllers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.*;
+import java.math.BigInteger;
+import javax.servlet.http.HttpServletRequest;
 import mil.nga.sf.geojson.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,18 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.servlet.http.HttpServletRequest;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class NetworkControllerTest {
 
@@ -99,7 +96,7 @@ public class NetworkControllerTest {
     String lat = "43.743";
     Position pygeoResponse = new Position(-74.7147222, 43.74305556);
 
-	// mock calls to other classes
+    // mock calls to other classes
     when(lookupDao.getComidByLatitudeAndLongitude(any(Position.class))).thenReturn(comid);
     when(lookupDao.getMeasure(eq(comid), eq(pygeoResponse))).thenReturn("measure");
     when(lookupDao.getReachCode(comid)).thenReturn("reachcode");

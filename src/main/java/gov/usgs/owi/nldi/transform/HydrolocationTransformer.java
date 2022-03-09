@@ -2,17 +2,16 @@ package gov.usgs.owi.nldi.transform;
 
 import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.services.ConfigurationService;
-import mil.nga.sf.geojson.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import mil.nga.sf.geojson.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HydrolocationTransformer implements ITransformer {
   private static final Logger LOG = LoggerFactory.getLogger(HydrolocationTransformer.class);

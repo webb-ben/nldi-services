@@ -13,6 +13,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Pattern;
 import mil.nga.sf.geojson.Position;
 import org.hibernate.validator.constraints.Range;
 import org.slf4j.Logger;
@@ -25,13 +31,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Pattern;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 public class NetworkController extends BaseController {
@@ -149,7 +148,8 @@ public class NetworkController extends BaseController {
   @Operation(
       summary = "getFeatures (deprecated)",
       description =
-          "Returns all features found along the specified navigation as points in WGS84 lat/lon GeoJSON")
+          "Returns all features found along the specified navigation as points in WGS84 lat/lon"
+              + " GeoJSON")
   @GetMapping(
       value = "linked-data/comid/{comid}/navigate/{navigationMode}/{dataSource}",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -201,7 +201,8 @@ public class NetworkController extends BaseController {
   @Operation(
       summary = "getFeatures",
       description =
-          "Returns all features found along the specified navigation as points in WGS84 lat/lon GeoJSON")
+          "Returns all features found along the specified navigation as points in WGS84 lat/lon"
+              + " GeoJSON")
   @GetMapping(
       value = "linked-data/comid/{comid}/navigation/{navigationMode}/{dataSource}",
       produces = MediaType.APPLICATION_JSON_VALUE)
