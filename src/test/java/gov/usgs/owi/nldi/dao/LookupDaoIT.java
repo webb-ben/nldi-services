@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mil.nga.sf.geojson.Position;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class LookupDaoIT extends BaseIT {
 	}
 
 	@Test
-	public void getComidTest() throws IOException, JSONException {
+	public void getComidTest() {
 		String featureSource = "comid";
 		String featureID = "937090090";
 		Integer result = lookupDao.getFeatureComid(featureSource, featureID);
@@ -68,20 +69,16 @@ public class LookupDaoIT extends BaseIT {
 	}
 
 	@Test
-	public void getComidLatLonTest() throws IOException, JSONException {
-		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put(Parameters.LONGITUDE, -89.35);
-		parameterMap.put(Parameters.LATITUDE, 43.0864);
-		Integer results = lookupDao.getComidByLatitudeAndLongitude(parameterMap);
+	public void getComidLatLonTest() {
+		Position position = new Position(-89.35, 43.0864);
+		Integer results = lookupDao.getComidByLatitudeAndLongitude(position);
 		assertEquals(13294318, results);
 	}
 
 	@Test
-	public void getComidLatLonTestNotFound() throws IOException, JSONException {
-		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put(Parameters.LONGITUDE, -89.4751);
-		parameterMap.put(Parameters.LATITUDE, -89.4751);
-		Integer results = lookupDao.getComidByLatitudeAndLongitude(parameterMap);
+	public void getComidLatLonTestNotFound() {
+		Position position = new Position(-89.4751, -89.4751);
+		Integer results = lookupDao.getComidByLatitudeAndLongitude(position);
 		assertNull(results);
 	}
 

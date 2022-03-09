@@ -4,6 +4,7 @@ import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.*;
+import mil.nga.sf.geojson.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -96,16 +97,14 @@ public class NetworkControllerTest {
     Integer comid = 15510512;
     String lon = "-74.71";
     String lat = "43.743";
-    Map<String, String> pygeoResponse = new HashMap<>();
-    pygeoResponse.put("lat", "43.74305556");
-    pygeoResponse.put("lon", "-74.7147222");
+    Position pygeoResponse = new Position(-74.7147222, 43.74305556);
 
 	// mock calls to other classes
-    when(lookupDao.getComidByLatitudeAndLongitude(any())).thenReturn(comid);
-    when(lookupDao.getMeasure(comid, lat, lon)).thenReturn("measure");
+    when(lookupDao.getComidByLatitudeAndLongitude(any(Position.class))).thenReturn(comid);
+    when(lookupDao.getMeasure(eq(comid), eq(pygeoResponse))).thenReturn("measure");
     when(lookupDao.getReachCode(comid)).thenReturn("reachcode");
     when(pygeoapiService.getNldiFlowTraceIntersectionPoint(
-            lat, lon, true, PyGeoApiService.Direction.NONE))
+            any(Position.class), eq(true), eq(PyGeoApiService.Direction.NONE)))
         .thenReturn(pygeoResponse);
 
     controller.getHydrologicLocation(request, response, String.format("POINT (%s %s)", lon, lat));
