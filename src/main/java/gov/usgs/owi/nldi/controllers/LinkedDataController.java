@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import mil.nga.sf.geojson.Position;
 import org.hibernate.validator.constraints.Range;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -260,30 +261,26 @@ public class LinkedDataController extends BaseController {
       } else if (splitCatchment) {
         // call st_distance to get distance between feature and flowline
         float distance = lookupDao.getDistanceFromFlowline(featureSource, featureID);
-        String lat, lon;
+
+		Position finalPosition = null;
 
         if (distance <= SPLIT_CATCHMENT_THRESHOLD) {
           // get point on flowline closest to feature
-          Map<String, Object> pointResult =
-              lookupDao.getClosestPointOnFlowline(featureSource, featureID);
-          lat = pointResult.get("lat").toString();
-          lon = pointResult.get("lon").toString();
+          finalPosition = lookupDao.getClosestPointOnFlowline(featureSource, featureID);
         } else {
           // call nldi-flowtrace for a more accurate point on flowline
-          String featureLat, featureLon;
-          Map<String, Object> locationResult =
-              lookupDao.getFeatureLocation(featureSource, featureID);
-          featureLat = locationResult.get("lat").toString();
-          featureLon = locationResult.get("lon").toString();
-          Map<String, String> flowtraceResponse =
+          Position locationResult = lookupDao.getFeatureLocation(featureSource, featureID);
+          finalPosition =
               pygeoapiService.getNldiFlowTraceIntersectionPoint(
-                  featureLat, featureLon, true, PyGeoApiService.Direction.NONE);
-          lat = flowtraceResponse.get("lat");
-          lon = flowtraceResponse.get("lon");
+                  locationResult, true, PyGeoApiService.Direction.NONE);
         }
 
+		if (finalPosition == null) {
+			throw new Exception("Unable to retrieve point on flowline for catchment splitting.");
+		}
+
         // call nldi-splitcatchment
-        JSONObject splitCatchmentResponse = pygeoapiService.nldiSplitCatchment(lat, lon, true);
+        JSONObject splitCatchmentResponse = pygeoapiService.nldiSplitCatchment(finalPosition, true);
         handleSplitCatchmentResponse(splitCatchmentResponse, response);
       } else {
         streamBasin(response, comid, simplified);

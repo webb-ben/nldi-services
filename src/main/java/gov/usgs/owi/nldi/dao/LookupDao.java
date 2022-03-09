@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import gov.usgs.owi.nldi.services.Parameters;
+import mil.nga.sf.geojson.Position;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -75,11 +76,11 @@ public class LookupDao extends BaseDao {
 		}
 	}
 
-	public String getMeasure(Integer comid, String lat, String lon) {
+	public String getMeasure(Integer comid, Position position) {
 		Map<String, Object> parameterMap = new HashMap<> ();
 		parameterMap.put(Parameters.COMID, comid);
-		parameterMap.put(Parameters.LATITUDE, lat);
-		parameterMap.put(Parameters.LONGITUDE, lon);
+		parameterMap.put(Parameters.LATITUDE, position.getY());
+		parameterMap.put(Parameters.LONGITUDE, position.getX());
 
 		Map<String, Object> feature = getSqlSession().selectOne(NS + MEASURE_ESTIMATE, parameterMap);
 
@@ -97,7 +98,10 @@ public class LookupDao extends BaseDao {
 		return getSqlSession().selectOne(NS + REACH_CODE, parameterMap);
 	}
 
-	public Integer getComidByLatitudeAndLongitude(Map<String, Object> parameterMap) {
+	public Integer getComidByLatitudeAndLongitude(Position position) {
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put(Parameters.LONGITUDE, position.getX());
+		parameterMap.put(Parameters.LATITUDE, position.getY());
 		return getSqlSession().selectOne(NS + COMID_LAT_LON, parameterMap);
 	}
 
@@ -116,7 +120,7 @@ public class LookupDao extends BaseDao {
 		return getSqlSession().selectOne(NS + ST_DISTANCE, parameterMap);
 	}
 
-	public Map<String, Object> getClosestPointOnFlowline(String featureSource, String featureID) throws Exception {
+	public Position getClosestPointOnFlowline(String featureSource, String featureID) throws Exception {
 		if (null == featureSource || null == featureID) {
 			throw new IllegalArgumentException("A featureSource and featureID are required");
 		}
@@ -125,16 +129,19 @@ public class LookupDao extends BaseDao {
 		parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
 		parameterMap.put(Parameters.FEATURE_ID, featureID);
 
-		Map<String, Object> result = getSqlSession().selectOne(NS + ST_CLOSEST_POINT, parameterMap);
+		Map<String, Double> result = getSqlSession().selectOne(NS + ST_CLOSEST_POINT, parameterMap);
 
 		if (!result.containsKey("lat") || !result.containsKey("lon")) {
 			throw new Exception("getClosestPointOnFlowline did not return lat or lon");
 		}
 
-		return result;
+		Position position =
+			new Position(result.get(Parameters.LONGITUDE), result.get(Parameters.LATITUDE));
+
+		return position;
 	}
 
-	public Map<String, Object> getFeatureLocation(String featureSource, String featureID) throws Exception {
+	public Position getFeatureLocation(String featureSource, String featureID) throws Exception {
 
 		if (null == featureSource || null == featureID) {
 			throw new IllegalArgumentException("A featureSource and featureID are required");
@@ -150,7 +157,12 @@ public class LookupDao extends BaseDao {
 			throw new Exception("getFeatureLocation did not return lat or lon");
 		}
 
-		return result;
+		Position position = new Position(
+				Double.parseDouble(result.get(Parameters.LONGITUDE).toString()),
+				Double.parseDouble(result.get(Parameters.LATITUDE).toString())
+		);
+
+		return position;
 	}
 
 }

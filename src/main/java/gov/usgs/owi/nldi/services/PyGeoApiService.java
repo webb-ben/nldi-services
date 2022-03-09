@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.json.WriterBasedJsonGenerator;
+import mil.nga.sf.geojson.Position;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -97,7 +98,9 @@ public class PyGeoApiService {
         return httpClient;
     }
 
-    public JSONObject nldiFlowTrace(String lat, String lon, Boolean raindroptrace, Direction direction) throws JSONException, IOException {
+    public JSONObject nldiFlowTrace(Position position, Boolean raindroptrace, Direction direction) throws JSONException, IOException {
+        String lat = position.getY().toString();
+        String lon = position.getX().toString();
 
         // see https://labs.waterdata.usgs.gov/api/nldi/pygeoapi/openapi?f=html#/nldi-splitcatchment/executeNldi-splitcatchmentJob
         // for json request structure
@@ -162,8 +165,8 @@ public class PyGeoApiService {
         return returnJson;
     }
 
-    public Map<String, String> getNldiFlowTraceIntersectionPoint(String lat, String lon, Boolean raindroptrace, Direction direction) throws Exception {
-        JSONObject flowtraceJson = nldiFlowTrace(lat, lon, raindroptrace, direction);
+    public Position getNldiFlowTraceIntersectionPoint(Position position, Boolean raindroptrace, Direction direction) throws Exception {
+        JSONObject flowtraceJson = nldiFlowTrace(position, raindroptrace, direction);
 
         if (!flowtraceJson.has(FEATURES)) {
             LOG.error(flowtraceJson.toString());
@@ -172,25 +175,28 @@ public class PyGeoApiService {
 
         JSONArray featureArray = flowtraceJson.getJSONArray(FEATURES);
 
-        Map<String, String> intersection = new HashMap<>();
-
         JSONObject currentObject;
+        Position resultPosition = null;
         // find the feature that contains the intersection point
         for (int i = featureArray.length() - 1; i >= 0; i--) {
             currentObject = featureArray.getJSONObject(i);
             if (currentObject.has(PROPERTIES) &&
                     currentObject.getJSONObject(PROPERTIES).has(INTERSECTION_POINT)) {
                 JSONArray intersectionPoint = currentObject.getJSONObject(PROPERTIES).getJSONArray(INTERSECTION_POINT);
-                intersection.put(LAT, intersectionPoint.getString(0));
-                intersection.put(LON, intersectionPoint.getString(1));
+        resultPosition =
+            new Position(
+                Double.parseDouble(intersectionPoint.getString(1)), // longitude
+                Double.parseDouble(intersectionPoint.getString(0))); // latitude
                 break;
             }
         }
 
-        return intersection;
+        return resultPosition;
     }
 
-    public JSONObject nldiSplitCatchment(String lat, String lon, Boolean upstream) throws JSONException, IOException {
+    public JSONObject nldiSplitCatchment(Position position, Boolean upstream) throws JSONException, IOException {
+        String lat = position.getY().toString();
+        String lon = position.getX().toString();
 
         // see https://labs.waterdata.usgs.gov/api/nldi/pygeoapi/openapi?f=html#/nldi-splitcatchment/executeNldi-splitcatchmentJob
         // for json request structure

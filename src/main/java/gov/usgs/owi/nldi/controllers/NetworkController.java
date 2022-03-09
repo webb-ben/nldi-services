@@ -274,9 +274,9 @@ public class NetworkController extends BaseController {
           String coords)
       throws Exception {
     BigInteger logId = logService.logRequest(request);
-    Map<String, Object> map = extractLatitudeAndLongitude(coords);
+    Position position = extractLatitudeAndLongitude(coords);
     try {
-      Integer comid = lookupDao.getComidByLatitudeAndLongitude(map);
+      Integer comid = lookupDao.getComidByLatitudeAndLongitude(position);
       FeatureTransformer transformer = new FeatureTransformer(response, configurationService);
 
       Map<String, Object> parameterMap = new HashMap<>();
@@ -316,36 +316,18 @@ public class NetworkController extends BaseController {
           String coords)
       throws Exception {
     BigInteger logId = logService.logRequest(request);
-    Map<String, Object> providedLatLon = extractLatitudeAndLongitude(coords);
+    Position providedPoint = extractLatitudeAndLongitude(coords);
 
     try {
-      Map<String, String> flowtraceResponse =
+      Position flowtraceResponse =
           pygeoapiService.getNldiFlowTraceIntersectionPoint(
-              providedLatLon.get(Parameters.LATITUDE).toString(),
-              providedLatLon.get(Parameters.LONGITUDE).toString(),
-              true,
-              PyGeoApiService.Direction.NONE);
+              providedPoint, true, PyGeoApiService.Direction.NONE);
 
-      Map<String, Object> indexedLatLon = new HashMap<>(2);
-      indexedLatLon.put(Parameters.LATITUDE, flowtraceResponse.get(Parameters.LATITUDE));
-      indexedLatLon.put(Parameters.LONGITUDE, flowtraceResponse.get(Parameters.LONGITUDE));
-
-      Integer comid = lookupDao.getComidByLatitudeAndLongitude(indexedLatLon);
-      String measure =
-          lookupDao.getMeasure(
-              comid,
-              indexedLatLon.get(Parameters.LATITUDE).toString(),
-              indexedLatLon.get(Parameters.LONGITUDE).toString());
+      Integer comid = lookupDao.getComidByLatitudeAndLongitude(providedPoint);
+      String measure = lookupDao.getMeasure(comid, flowtraceResponse);
       String reachcode = lookupDao.getReachCode(comid);
 
-      Position indexedPoint =
-          new Position(
-              Double.parseDouble(indexedLatLon.get(Parameters.LONGITUDE).toString()),
-              Double.parseDouble(indexedLatLon.get(Parameters.LATITUDE).toString()));
-      Position providedPoint =
-          new Position(
-              Double.parseDouble(providedLatLon.get(Parameters.LONGITUDE).toString()),
-              Double.parseDouble(providedLatLon.get(Parameters.LATITUDE).toString()));
+      Position indexedPoint = flowtraceResponse;
 
       addContentHeader(response);
       HydrolocationTransformer transformer =
@@ -359,7 +341,7 @@ public class NetworkController extends BaseController {
     }
   }
 
-  private Map<String, Object> extractLatitudeAndLongitude(String coords) {
+  private Position extractLatitudeAndLongitude(String coords) {
     // Only currently supported format is POINT(x y)
     String tempCoords = coords.replaceAll("POINT ?\\(|\\)", "");
     String[] coordsArray = tempCoords.split(" ");
@@ -371,9 +353,8 @@ public class NetworkController extends BaseController {
     if (latitude < -90 || latitude > 90) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid latitude");
     }
-    Map<String, Object> map = new HashMap<>();
-    map.put(Parameters.LATITUDE, latitude);
-    map.put(Parameters.LONGITUDE, longitude);
-    return map;
+
+    Position position = new Position(longitude, latitude);
+    return position;
   }
 }
