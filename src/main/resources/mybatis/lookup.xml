@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="lookup">
 
@@ -66,16 +66,40 @@
         </choose>
     </select>
 
+    <select id="reachCode" resultType="String">
+        select distinct reachcode
+        from nhdplus.nhdflowline_np21
+        where nhdplus_comid = #{comid}::integer
+    </select>
+
     <select id="measureEstimate" resultType="java.util.LinkedHashMap">
         select distinct
-            fmeasure + (1 - st_linelocatepoint(shape, location)) * (tmeasure - fmeasure) measure
+            fmeasure + (1 - st_linelocatepoint(shape,
+                <choose>
+                    <when test="lon != null and lat != null">
+                        st_geomfromtext('POINT(${lon} ${lat})', 4269)
+                    </when>
+                    <otherwise>
+                        location
+                    </otherwise>
+                </choose>
+                )) * (tmeasure - fmeasure) measure
         from
             nldi_data.feature
+                <if test="comid == null">
                 join nldi_data.crawler_source on feature.crawler_source_id = crawler_source.crawler_source_id
+                </if>
                 join nhdplus.nhdflowline_np21 on nhdflowline_np21.nhdplus_comid = feature.comid
         where
-            identifier = #{featureID}
-          and lower(source_suffix) = lower(#{featureSource})
+            <choose>
+                <when test="comid == null">
+                    identifier = #{featureID}
+                    and lower(source_suffix) = lower(#{featureSource})
+                </when>
+                <otherwise>
+                    comid = #{comid}
+                </otherwise>
+            </choose>
     </select>
 
     <select id="dataSources" resultType="java.util.LinkedHashMap">
