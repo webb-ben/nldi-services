@@ -16,4 +16,4 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Lint with spotless
-        run: mvn spotless:check
+        run: mvn -Dspotless.ratchetFrom=${{ github.event.pull_request.base.sha }} spotless:check

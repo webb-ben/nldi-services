@@ -16,6 +16,7 @@
         <java.version>11</java.version>
         <jackson.version>2.9.6</jackson.version>
         <wma.artifactory.url>https://cida.usgs.gov/artifactory</wma.artifactory.url>
+        <spotless.ratchetFrom>origin/master</spotless.ratchetFrom>
     </properties>
 
     <ciManagement>
@@ -290,7 +291,7 @@
                 <artifactId>spotless-maven-plugin</artifactId>
                 <version>2.21.0</version>
                 <configuration>
-                    <ratchetFrom>origin/master</ratchetFrom>
+                    <ratchetFrom>${spotless.ratchetFrom}</ratchetFrom>
                     <formats>
                         <!-- you can define as many formats as you want, each is independent -->
                         <format>
