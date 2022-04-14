@@ -5,6 +5,7 @@ on:
       - master
     paths:
       - 'src/**'
+      - 'pom.xml'
 
 jobs:
   nldi-tests:

@@ -2,6 +2,7 @@ package gov.usgs.owi.nldi.transform;
 
 import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.services.ConfigurationService;
+import gov.usgs.owi.nldi.services.Parameters;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -93,7 +94,12 @@ public class HydrolocationTransformer implements ITransformer {
     properties.put(MEASURE, measure);
     properties.put(
         NAVIGATION,
-        String.join("/", configurationService.getLinkedDataUrl(), comid, NavigationDao.NAVIGATION));
+        String.join(
+            "/",
+            configurationService.getLinkedDataUrl(),
+            Parameters.COMID,
+            comid,
+            NavigationDao.NAVIGATION));
     feature.setProperties(properties);
     this.featureCollection.addFeature(feature);
   }
