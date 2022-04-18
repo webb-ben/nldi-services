@@ -176,8 +176,8 @@ public class PyGeoApiService {
             currentObject.getJSONObject(PROPERTIES).getJSONArray(INTERSECTION_POINT);
         resultPosition =
             new Position(
-                Double.parseDouble(intersectionPoint.getString(1)), // longitude
-                Double.parseDouble(intersectionPoint.getString(0))); // latitude
+                Double.parseDouble(intersectionPoint.getString(0)), // longitude
+                Double.parseDouble(intersectionPoint.getString(1))); // latitude
         break;
       }
     }
