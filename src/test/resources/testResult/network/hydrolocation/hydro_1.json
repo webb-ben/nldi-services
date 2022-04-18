@@ -1,49 +1,49 @@
 {
-"type": "FeatureCollection",
-"features": [
-	{
-	"type": "Feature",
-	"geometry": {
-		"type": "Point",
-		"coordinates": [
-		-89.539449,
-		43.20068
-		]
-	},
-	"properties": {
-		"identifier": "",
-		"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/comid/13293464/navigation",
-		"measure": "36.5344130139584",
-		"reachcode": "07090002008195",
-		"name": "",
-		"source": "indexed",
-		"sourceName": "Automatically indexed by the NLDI",
-		"comid": "13293464",
-		"type": "hydrolocation",
-		"uri": ""
-	}
-	},
-	{
-	"type": "Feature",
-	"geometry": {
-		"type": "Point",
-		"coordinates": [
-		-89.55,
-		43.2
-		]
-	},
-	"properties": {
-		"identifier": "",
-		"navigation": "",
-		"measure": "",
-		"reachcode": "",
-		"name": "",
-		"source": "provided",
-		"sourceName": "Provided via API call",
-		"comid": "",
-		"type": "point",
-		"uri": ""
-	}
-	}
-]
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.539449,
+          43.20068
+        ]
+      },
+      "properties": {
+        "identifier": "",
+        "navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/comid/13293464/navigation",
+        "measure": "36.5344130139584",
+        "reachcode": "07090002008195",
+        "name": "",
+        "source": "indexed",
+        "sourceName": "Automatically indexed by the NLDI",
+        "comid": "13293464",
+        "type": "hydrolocation",
+        "uri": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.55,
+          43.2
+        ]
+      },
+      "properties": {
+        "identifier": "",
+        "navigation": "",
+        "measure": "",
+        "reachcode": "",
+        "name": "",
+        "source": "provided",
+        "sourceName": "Provided via API call",
+        "comid": "",
+        "type": "point",
+        "uri": ""
+      }
+    }
+  ]
 }
