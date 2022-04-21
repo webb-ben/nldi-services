@@ -1,42 +1,51 @@
-# NLDI REST (like) Services
+# Network Linked Data Index Services
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f0153ed6b07340bda3c04d6f05df6e8c)](https://app.codacy.com/app/usgs_wma_dev/nldi-services?utm_source=github.com&utm_medium=referral&utm_content=ACWI-SSWD/nldi-services&utm_campaign=Badge_Grade_Settings)
-[![codecov](https://codecov.io/gh/ACWI-SSWD/nldi-services/branch/master/graph/badge.svg)](https://codecov.io/gh/ACWI-SSWD/nldi-services)
+[![Spotless Check](https://github.com/internetofwater/nldi-services/actions/workflows/spotless.yml/badge.svg)](https://github.com/internetofwater/nldi-services/actions/workflows/spotless.yml)
+[![codecov](https://codecov.io/gh/internetofwater/nldi-services/branch/master/graph/badge.svg)](https://codecov.io/gh/internetofwater/nldi-services)
+
+This repository houses code behind the Network Linked Data Index (NLDI) API [(Swagger Docs)](https://labs.waterdata.usgs.gov/api/nldi/swagger-ui/index.html). The NLDI is hosted as part of the [USGS Waterdata Labs](https://labs.waterdata.usgs.gov/index.html), a set of new capabilities being developed by the USGS Water Mission Area.
 
 ## Public API
-The services are accessed via an http GET request. All navigation output is generated as GeoJSON ("application/vnd.geo+json")
+The services are accessed via an http GET request. All output is generated as JSON and GeoJSON.
 
-### The root is {host}/nldi
+### The root is {host}/api/nldi
 Both a test and a production are exposed to the public:
-  <https://labs-beta.waterdata.usgs.gov/nldi/linked_data> is the test root.
-  <https://labs.waterdata.usgs.gov/nldi/linked_data> is the production root.
+  <https://labs-beta.waterdata.usgs.gov/api/nldi/linked_data> is the test root.
+  <https://labs.waterdata.usgs.gov/api/nldi/linked_data> is the production root.
+
 This endpoint will give you the valid dataSource names for the other endpoints. There is also a health check at /about/health and version information at /about/info.
 
-### Display Up/Down Stream Flow Lines
-/{featureSource}/{featureSourceId}/navigate/{navigationMode} where:
-*   __{featureSource}__ identifies the source used to start navigation:
-*   __comid__ start the navigation from an NHDPlus comid
-*   any of the network linked feature sources (listed at /)
-*   __{featureSourceId}__ the NHDPlus comid or feature from which to start the navigation
-*   __{navigationMode}__ is the direction and type of navigation:
-*   __DD__ is __D__ownstream navigation with __D__iversions
-*   __DM__ is __D__ownstream navigation on the __M__ain channel
-*   __PP__ is __P__oint to __P__oint navigation (the __stopComid__ query parameter is required and must be downstream of the __{comid}__)
-*   __UM__ is __U__pstream navigation on the __M__ain channel
-*   __UT__ is __U__pstream navigation including all __T__ributaries
+In general, the API uses hypermedia to help discover options from a given endpoint. A summary of these options follows.
 
-### Display Up/Down Stream Events
-/{featureSource}/{featureSourceId}/navigate/{navigationMode}/{dataSource} where:
-*   __{featureSource}__ identifies the source used to start navigation  (same values as for Flow Lines)
-*   __{featureSourceId}__ the NHDPlus comid or other feature from which to start the navigation
-*   __{navigationMode}__ is the direction and type of navigation (same values as for Flow Lines)
-*   __{dataSource}__ is the abbreviation of the data source from which events should be shown
+### Up/Down Stream navigation
+/{featureSource}/{featureSourceId}/navigation/{navigationMode} where:
+*   `{featureSource}` identifies the source used to start navigation:
+    *   The `comid` `{featureSource}` starts the navigation from an NHDPlus comid
+    *   any of the network linked feature sources (listed at /)
+*   `{featureSourceId}` the NHDPlus comid or feature from which to start the navigation
+*   `{navigationMode}` is the direction and type of navigation:
+    *   `DD` is `D`ownstream navigation with `D`iversions
+    *   `DM` is `D`ownstream navigation on the `M`ain channel
+    *   `PP` is `P`oint to `P`oint navigation (the `stopComid` query parameter is required and must be downstream of the `{comid}`)
+    *   `UM` is `U`pstream navigation on the `M`ain channel
+    *   `UT` is `U`pstream navigation including all `T`ributaries
+
+### Up/Down Stream data
+/{featureSource}/{featureSourceId}/navigation/{navigationMode}/{dataSource} where:
+*   `{featureSource}` identifies the source used to start navigation
+*   `{featureSourceId}` the NHDPlus comid or other feature from which to start the navigation
+*   `{navigationMode}` is the direction and type of navigation
+*   `{dataSource}` is the abbreviation of the data source to return
 
 ### Query Parameters
-Both endpoints accept the same query parameters to further refine/restrict the navigation being requested
-*   __distance={dist}__ limit the navigation to __{dist}__ kilometers from the starting point
-*   __stopComid={stopid}__ for use with __PP__ navigation between the __{featureSourceId}__ and __{stopid}__
-*   (only applicable to NHDPlus comid navigation and the __{stopid}__ must be downstream of the __{featureSourceId}__)
+Navigations accept query parameters to further refine/restrict the navigation being requested
+*   `f=json` if an html media type is requested explicitely, a blank html page is returned. `f=json` will override this html accept header.
+*   `distance={dist}` **REQUIRED** limits the navigation to `{dist}` kilometers from the starting point
+*   `stopComid={stopid}` for use with `PP` navigation between the `{featureSourceId}` and `{stopid}`
+    *   (only applicable to NHDPlus comid navigation and the `{stopid}` must be downstream of the `{featureSourceId}`)
+
+### Other Endpoints
+The NLDI includes additional helper endpoints that will be documented here at a later date. See the [swagger documentation](https://labs.waterdata.usgs.gov/api/nldi/swagger-ui/index.html) and [NLDI landing page](https://labs.waterdata.usgs.gov/about-nldi/index.html) for more.
 
 ## Development
 This is a Spring Batch/Boot project.  All of the normal caveats relating to a Spring Batch/Boot application apply.
@@ -45,7 +54,7 @@ Rather, start up the demo db and create an application.yml file as described bel
 
 ### Dependencies
 This application utilizes a PostgreSQL database.
-[nldi-db](https://github.com/ACWI-SSWD/nldi-db) contains everything you need to set up a development database environment. It includes data for the Yahara River in Wisconsin.
+[nldi-db](https://github.com/internetofwater/nldi-db) contains everything you need to set up a development database environment. It includes data for the Yahara River in Wisconsin.
 
 ### Running the Demo DB for local development
 See the nldi-db project for more details, but in short:
