@@ -1,7 +1,7 @@
 # NLDI REST (like) Services
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f0153ed6b07340bda3c04d6f05df6e8c)](https://app.codacy.com/app/usgs_wma_dev/nldi-services?utm_source=github.com&utm_medium=referral&utm_content=ACWI-SSWD/nldi-services&utm_campaign=Badge_Grade_Settings)
-[![codecov](https://codecov.io/gh/ACWI-SSWD/nldi-services/branch/master/graph/badge.svg)](https://codecov.io/gh/ACWI-SSWD/nldi-services)
+[![Spotless Check](https://github.com/internetofwater/nldi-services/actions/workflows/spotless.yml/badge.svg)](https://github.com/internetofwater/nldi-services/actions/workflows/spotless.yml)
+[![codecov](https://codecov.io/gh/internetofwater/nldi-services/branch/master/graph/badge.svg)](https://codecov.io/gh/internetofwater/nldi-services)
 
 ## Public API
 The services are accessed via an http GET request. All navigation output is generated as GeoJSON ("application/vnd.geo+json")
