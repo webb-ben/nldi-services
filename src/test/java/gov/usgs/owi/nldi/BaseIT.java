@@ -90,28 +90,38 @@ public abstract class BaseIT {
 
 	protected void assertBody(ResponseEntity<String> entity, String expectedBody, boolean isJson, boolean extraFieldsAllowed) throws JSONException {
 		if (isJson) {
+			boolean isJsonArray = false;
+			JSONObject objectBody = null;
+			JSONObject objectExpectedBody = null;
+			JSONArray arrayBody = null;
+			JSONArray arrayExpectedBody = null;
 			try {
-				if (extraFieldsAllowed) {
-					assertThat(new JSONObject(entity.getBody()),
-							sameJSONObjectAs(new JSONObject(expectedBody)).allowingAnyArrayOrdering().allowingExtraUnexpectedFields());
-				} else {
-					assertThat(new JSONObject(entity.getBody()),
-							sameJSONObjectAs(new JSONObject(expectedBody)).allowingAnyArrayOrdering());
-				}
+				objectBody = new JSONObject(entity.getBody());
+				objectExpectedBody = new JSONObject(expectedBody);
 			} catch (JSONException exception) {
 				// several requests return JSON arrays rather than objects
 				// this allows the arrays to be compared using the same syntax
 				if (exception.getMessage().contains("org.json.JSONArray cannot be converted to JSONObject")) {
-					if (extraFieldsAllowed) {
-						assertThat(new JSONArray(entity.getBody()),
-								sameJSONArrayAs(new JSONArray(expectedBody)).allowingAnyArrayOrdering().allowingExtraUnexpectedFields());
-					} else {
-						assertThat(new JSONArray(entity.getBody()),
-								sameJSONArrayAs(new JSONArray(expectedBody)).allowingAnyArrayOrdering());
-					}
+					isJsonArray = true;
+					arrayBody = new JSONArray(entity.getBody());
+					arrayExpectedBody = new JSONArray(expectedBody);
 				} else {
 					throw exception;
 				}
+			}
+
+			if (extraFieldsAllowed && !isJsonArray) {
+				assertThat(objectBody,
+						sameJSONObjectAs(objectExpectedBody).allowingAnyArrayOrdering().allowingExtraUnexpectedFields());
+			} else if (!isJsonArray) {
+				assertThat(objectBody,
+						sameJSONObjectAs(objectExpectedBody).allowingAnyArrayOrdering());
+			} else if (extraFieldsAllowed && isJsonArray) {
+				assertThat(arrayBody,
+						sameJSONArrayAs(arrayExpectedBody).allowingAnyArrayOrdering().allowingExtraUnexpectedFields());
+			} else {
+				assertThat(arrayBody,
+						sameJSONArrayAs(arrayExpectedBody).allowingAnyArrayOrdering());
 			}
 		} else {
 			assertEquals(expectedBody, entity.getBody());
