@@ -85,11 +85,18 @@
                 </choose>
                 )) * (tmeasure - fmeasure) measure
         from
-            nldi_data.feature
-                <if test="comid == null">
-                join nldi_data.crawler_source on feature.crawler_source_id = crawler_source.crawler_source_id
-                </if>
-                join nhdplus.nhdflowline_np21 on nhdflowline_np21.nhdplus_comid = feature.comid
+            <choose>
+                <when test="comid == null">
+                    nldi_data.feature
+                    join nldi_data.crawler_source
+                        on feature.crawler_source_id = crawler_source.crawler_source_id
+                    join nhdplus.nhdflowline_np21
+                        on nhdflowline_np21.nhdplus_comid = feature.comid
+                </when>
+                <otherwise>
+                    nhdplus.nhdflowline_np21
+                </otherwise>
+            </choose>
         where
             <choose>
                 <when test="comid == null">
@@ -97,7 +104,7 @@
                     and lower(source_suffix) = lower(#{featureSource})
                 </when>
                 <otherwise>
-                    comid = #{comid}
+                    nhdplus_comid = #{comid}
                 </otherwise>
             </choose>
     </select>
