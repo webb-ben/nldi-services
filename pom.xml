@@ -235,7 +235,7 @@
                     <images>
                         <image>
                             <!-- alternatively, this can be the name of a locally built nldi-db image -->
-                            <name>ghcr.io/acwi-sswd/nldi-db:ci-latest</name>
+                            <name>ghcr.io/internetofwater/nldi-db:ci</name>
                             <alias>nldi-database-ci-test</alias>
                             <run>
                                 <network>
