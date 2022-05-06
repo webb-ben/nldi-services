@@ -23,4 +23,4 @@ jobs:
       - name: Check Maven version
         run: mvn -version
       - name: Verify with Maven
-        run: mvn verify -DTESTING_DATABASE_PORT=5445 -DTESTING_DATABASE_ADDRESS=localhost -DTESTING_DATABASE_NETWORK=nldi -f pom.xml
+        run: mvn verify -f pom.xml

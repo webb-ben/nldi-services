@@ -1,9 +1,10 @@
 package gov.usgs.owi.nldi.controllers;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -12,268 +13,263 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-
-import gov.usgs.owi.nldi.BaseIT;
-import gov.usgs.owi.nldi.transform.FeatureTransformer;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @EnableWebMvc
-@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
-@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
-@DatabaseSetup("classpath:/testData/nhdplus/nhdflowline_np21.xml")
-@DatabaseSetup("classpath:/testData/nhdplus/plusflowlinevaa_np21.xml")
-public class NetworkControllerDataSourceIT extends BaseIT {
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@DatabaseSetup("classpath:/testData/networkController/DataSource.xml")
+public class NetworkControllerDataSourceIT extends BaseControllerIT {
+  private final String RESULT_FOLDER = "networkController/dataSource/";
 
-	@Value("${serverContextPath}")
-	private String context;
+  @LocalServerPort private int port;
 
-	@LocalServerPort
-	private int port;
+  @Autowired private TestRestTemplate restTemplate;
 
-	@Autowired
-	private TestRestTemplate restTemplate;
-	private static final String RESULT_FOLDER  = "network/feature/wqp/";
-	private static final String RESULT_FLOWLINE_FOLDER  = "network/flowline/";
+  @BeforeEach
+  public void setUp() {
+    urlRoot = "http://localhost:" + port + context;
+  }
 
+  // UT Testing
+  @Test
+  public void getComidUtTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13293474/navigation/UT/wqp?distance=9999",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "22",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getComidUtTest.json"),
+        true,
+        false);
+  }
 
-	@BeforeEach
-	public void setUp() {
-		urlRoot = "http://localhost:" + port + context;
-	}
+  @Test
+  public void getComidUtDistanceTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13297246/navigation/UT/wqp?distance=2",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "3",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getComidUtDistanceTest.json"),
+        true,
+        false);
+  }
 
-	//UT Testing
-	@Test
-	public void getComidUtTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13293474/navigation/UT/wqp?distance=9999",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"33",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13293474_UT.json"),
-				true,
-				false);
-	}
+  @Test
+  public void getComidUtDistanceTestEmpty() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13297246/navigation/UT/wqp?distance=",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "3",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getComidUtDistanceTestEmpty.json"),
+        true,
+        false);
+  }
 
-	@Test
-	public void getComidUtDistanceTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13297246/navigation/UT/wqp?distance=2",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"4",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_2.json"),
-				true,
-				false);
-	}
+  @Test
+  public void getComidUtDistanceTestAboveMax() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13297246/navigation/UT/wqp?distance=10000",
+        HttpStatus.BAD_REQUEST.value(),
+        null,
+        null,
+        null,
+        "getFeatures.distance: distance must be between 1 and 9999 kilometers",
+        false,
+        false);
+  }
 
-	@Test
-	public void getComidUtDistanceTestEmpty() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13297246/navigation/UT/wqp?distance=",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"68",
-				BaseController.MIME_TYPE_GEOJSON,
-                getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_empty.json"),
-				true,
-				false);
-	}
+  @Test
+  public void getComidUtDistanceTestBelowMin() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13297246/navigation/UT/wqp?distance=-1",
+        HttpStatus.BAD_REQUEST.value(),
+        null,
+        null,
+        null,
+        "getFeatures.distance: distance must be between 1 and 9999 kilometers",
+        false,
+        false);
+  }
 
-	@Test
-	public void getComidUtDistanceTestAboveMax() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13297246/navigation/UT/wqp?distance=10000",
-				HttpStatus.BAD_REQUEST.value(),
-				null,
-				null,
-				null,
-				"getFeatures.distance: distance must be between 1 and 9999 kilometers",
-				false,
-				false);
-	}
+  // UM Testing
+  @Test
+  public void getComidUmTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13293474/navigation/UM/wqp?distance=9999",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "16",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getComidUmTest.json"),
+        true,
+        false);
+  }
 
+  @Test
+  public void getComidUmDistanceTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13297246/navigation/UM/wqp?distance=10",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "3",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getComidUmDistanceTest.json"),
+        true,
+        false);
+  }
 
-	@Test
-	public void getComidUtDistanceTestBelowMin() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13297246/navigation/UT/wqp?distance=-1",
-				HttpStatus.BAD_REQUEST.value(),
-				null,
-				null,
-				null,
-				"getFeatures.distance: distance must be between 1 and 9999 kilometers",
-				false,
-				false);
-	}
+  // DM Testing
+  @Test
+  public void getComidDmTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13296790/navigation/DM/wqp?distance=9999",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "1",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getComidDmTest.json"),
+        true,
+        false);
+  }
 
-	//UM Testing
-	@Test
-	public void getComidUmTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13293474/navigation/UM/wqp?distance=9999",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"25",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13293474_UM.json"),
-				true,
-				false);
-	}
+  @Test
+  public void getComidDmDistanceTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13293474/navigation/DM/wqp?distance=10",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "10",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getComidDmDistanceTest.json"),
+        true,
+        false);
+  }
 
-	@Test
-	public void getComidUmDistanceTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13297246/navigation/UM/wqp?distance=10",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"7",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13297246_UM_distance_10.json"),
-				true,
-				false);
-	}
+  // DD Testing
+  @Test
+  public void getComidDdTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13294310/navigation/DD/wqp?distance=9999",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "34",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getComidDdTest.json"),
+        true,
+        false);
+  }
 
-	//DM Testing
-	@Test
-	public void getComidDmTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13296790/navigation/DM/wqp?distance=9999",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"7",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13296790_DM.json"),
-				true,
-				false);
-	}
+  @Test
+  public void getComidDdDistanceTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13294310/navigation/DD/wqp?distance=1",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "1",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getComidDdDistanceTest.json"),
+        true,
+        false);
+  }
 
-	@Test
-	public void getComidDmDistanceTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13293474/navigation/DM/wqp?distance=10",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"51",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13293474_DM_distance_10.json"),
-				true,
-				false);
-	}
+  // PP Testing
+  @Test
+  public void getComidPpStopComidInvalidTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13297246/navigation/PP/wqp?distance=9999&stopComid=13297198",
+        HttpStatus.BAD_REQUEST.value(),
+        null,
+        null,
+        null,
+        "400 BAD_REQUEST \"The stopComid must be downstream of the start comid.\"",
+        false,
+        true);
+  }
 
-	//DD Testing
-	@Test
-	public void getComidDdTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13294310/navigation/DD/wqp?distance=9999",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"56",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13294310_DD.json"),
-				true,
-				false);
-	}
+  @Test
+  public void getComidPpStopComidTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13297198/navigation/PP/wqp?distance=9999&stopComid=13297246",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "11",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getComidPpStopComidTest.json"),
+        true,
+        false);
+  }
 
-	@Test
-	public void getComidDdDistanceTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13294310/navigation/DD/wqp?distance=1",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"1",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13294310_DD_distance_1.json"),
-				true,
-				false);
-	}
+  // Parameter Error Testing
+  @Test
+  public void badNavigationModeTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13297198/navigation/XX/wqp?distance=9999",
+        HttpStatus.BAD_REQUEST.value(),
+        null,
+        null,
+        null,
+        "getFeatures.navigationMode: must match \"DD|DM|PP|UT|UM\"",
+        false,
+        false);
+  }
 
-	//PP Testing
-	@Test
-	public void getComidPpStopComidInvalidTest() throws Exception {
-		String actualbody = assertEntity(restTemplate,
-				"/linked-data/comid/13297246/navigation/PP/wqp?distance=9999&stopComid=13297198",
-				HttpStatus.BAD_REQUEST.value(),
-				null,
-				null,
-				null,
-				null,
-				true,
-				true);
-		assertEquals("400 BAD_REQUEST \"The stopComid must be downstream of the start comid.\"", actualbody);
-	}
+  @Test
+  public void getBasinTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13297246/navigation/UT/basin?distance=9999",
+        HttpStatus.OK.value(),
+        null,
+        null,
+        BaseController.MIME_TYPE_GEOJSON,
+        null,
+        false,
+        false);
+  }
 
-	@Test
-	public void getComidPpStopComidTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13297198/navigation/PP/wqp?distance=9999&stopComid=13297246",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"17",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13297198_PP_stop_13297246.json"),
-				true,
-				false);
-	}
+  // Navigation Types Testing
+  @Test
+  public void getNavigationTypesTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/13293474/navigation",
+        HttpStatus.OK.value(),
+        null,
+        null,
+        MediaType.APPLICATION_JSON_VALUE,
+        getCompareFile(RESULT_FOLDER, "getNavigationTypesTest.json"),
+        true,
+        false);
+  }
 
-	//Parameter Error Testing
-	@Test
-	public void badNavigationModeTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13297198/navigation/XX/wqp?distance=9999",
-				HttpStatus.BAD_REQUEST.value(),
-				null,
-				null,
-				null,
-				"getFeatures.navigationMode: must match \"DD|DM|PP|UT|UM\"",
-				false,
-				false);
-	}
-
-	@Test
-	public void getBasinTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/13297246/navigation/UT/basin?distance=9999",
-				HttpStatus.OK.value(),
-				null,
-				null,
-				BaseController.MIME_TYPE_GEOJSON,
-				null,
-				false,
-				false);
-	}
-
-
-	//Navigation Types Testing
-	@Test
-	public void getNavigationTypesTest() throws Exception {
-		assertEntity(restTemplate,
-			"/linked-data/comid/13293474/navigation",
-			HttpStatus.OK.value(),
-			null,
-			null,
-			MediaType.APPLICATION_JSON_VALUE,
-			getCompareFile(RESULT_FLOWLINE_FOLDER, "navigation_types.json"),
-			true,
-			false);
-	}
-
-	@Test
-	public void getNavigationTypesNotFoundTest() throws Exception {
-		assertEntity(restTemplate,
-			"/linked-data/comid/123/navigation",
-			HttpStatus.NOT_FOUND.value(),
-			null,
-			null,
-			MediaType.APPLICATION_JSON_VALUE,
-			null,
-			true,
-			false);
-
-	}
-
+  @Test
+  public void getNavigationTypesNotFoundTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/comid/123/navigation",
+        HttpStatus.NOT_FOUND.value(),
+        null,
+        null,
+        MediaType.APPLICATION_JSON_VALUE,
+        null,
+        true,
+        false);
+  }
 }

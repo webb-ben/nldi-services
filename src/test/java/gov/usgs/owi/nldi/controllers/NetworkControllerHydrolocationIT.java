@@ -1,11 +1,9 @@
 package gov.usgs.owi.nldi.controllers;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import gov.usgs.owi.nldi.BaseIT;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -15,18 +13,13 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
-@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
-@DatabaseSetup("classpath:/testData/nhdplus/nhdflowline_np21.xml")
-public class NetworkControllerHydrolocationIT extends BaseIT {
-
-  @Value("${serverContextPath}")
-  private String context;
+@DatabaseSetup("classpath:/testData/networkController/Hydrolocation.xml")
+public class NetworkControllerHydrolocationIT extends BaseControllerIT {
+  private final String RESULT_FOLDER = "networkController/hydrolocation/";
 
   @LocalServerPort private int port;
 
   @Autowired private TestRestTemplate restTemplate;
-  private static final String RESULT_FOLDER = "network/hydrolocation/";
 
   @BeforeEach
   public void setUp() {
@@ -42,7 +35,7 @@ public class NetworkControllerHydrolocationIT extends BaseIT {
         null,
         null,
         BaseController.MIME_TYPE_GEOJSON,
-        getCompareFile(RESULT_FOLDER, "hydro_1.json"),
+        getCompareFile(RESULT_FOLDER, "getHydrolocationTest.json"),
         true,
         true);
   }

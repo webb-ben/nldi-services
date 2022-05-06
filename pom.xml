@@ -4,12 +4,12 @@
 
     <groupId>gov.usgs.owi</groupId>
     <artifactId>nldi-services</artifactId>
-    <version>1.11.0-SNAPSHOT</version>
+    <version>1.12.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
 
     <name>nldi-services</name>
-    <url>http://owi.usgs.gov</url>
+    <url>https://labs.waterdata.usgs.gov/about-nldi/index.html</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,17 +17,15 @@
         <jackson.version>2.9.6</jackson.version>
         <wma.artifactory.url>https://cida.usgs.gov/artifactory</wma.artifactory.url>
         <spotless.ratchetFrom>origin/master</spotless.ratchetFrom>
+        <test.database.port>5445</test.database.port>
+        <test.database.address>localhost</test.database.address>
+        <test.database.network>nldi</test.database.network>
     </properties>
 
-    <ciManagement>
-        <system>Jenkins</system>
-        <url>https://jenkins.wma.usgs.chs.ead/view/NLDI/job/NLDI-services-build/</url>
-	</ciManagement>
-
     <scm>
-        <connection>scm:git:https://github.com/ACWI-SSWD/nldi-services.git</connection>
-        <developerConnection>scm:git:https://github.com/ACWI-SSWD/nldi-services.git</developerConnection>
-        <url>https://github.com/ACWI-SSWD/nldi-services</url>
+        <connection>scm:git:https://github.com/internetofwater/nldi-services.git</connection>
+        <developerConnection>scm:git:https://github.com/internetofwater/nldi-services.git</developerConnection>
+        <url>https://github.com/internetofwater/nldi-services</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -183,9 +181,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
+                    <runOrder>alphabetical</runOrder>
                     <environmentVariables>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <nldiDbUrl>jdbc:postgresql://${TESTING_DATABASE_ADDRESS}:${TESTING_DATABASE_PORT}/nldi</nldiDbUrl>
+                        <nldiDbUrl>jdbc:postgresql://${test.database.address}:${test.database.port}/nldi</nldiDbUrl>
                         <nldiUsername>read_only_user</nldiUsername>
                         <nldiPassword>changeMe</nldiPassword>
                         <dbUnitUsername>nldi</dbUnitUsername>
@@ -240,8 +238,7 @@
                             <run>
                                 <network>
                                     <mode>custom</mode>
-                                    <!--suppress UnresolvedMavenProperty -->
-                                    <name>${TESTING_DATABASE_NETWORK}</name>
+                                    <name>${test.database.network}</name>
                                 </network>
                                 <ports>
                                     <port>5445:5432</port>

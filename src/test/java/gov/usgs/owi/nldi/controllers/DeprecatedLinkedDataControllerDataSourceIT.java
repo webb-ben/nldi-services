@@ -1,9 +1,10 @@
 package gov.usgs.owi.nldi.controllers;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -12,198 +13,177 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-
-import gov.usgs.owi.nldi.BaseIT;
-import gov.usgs.owi.nldi.transform.FeatureTransformer;
-
 @EnableWebMvc
-@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
-
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@DatabaseSetup("classpath:/testData/deprecated/linkedDataController/DataSource.xml")
 // This test class contains tests for the deprecated "navigate" endpoints.  Don't add
 // new tests here and delete this class when we drop support for those endpoints.
 // The new tests that are tied to the new "navigation" endpoints are in
 // LinkedDataControllerDataSourceIT
-public class DeprecatedLinkedDataControllerDataSourceIT extends BaseIT {
+public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT {
+  private final String RESULT_FOLDER = "deprecated/linkedDataController/dataSource/";
 
-	@Value("${serverContextPath}")
-	private String context;
+  @LocalServerPort private int port;
 
-	@LocalServerPort
-	private int port;
+  @Autowired private TestRestTemplate restTemplate;
 
-	@Autowired
-	private TestRestTemplate restTemplate;
+  @BeforeEach
+  public void setUp() {
+    urlRoot = "http://localhost:" + port + context;
+  }
 
+  // Navigation Within Datasource Testing
+  @Test
+  public void getWqpUtTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/wqp/USGS-05427880/navigate/UT/wqp",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "4",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getWqpUtTest.json"),
+        true,
+        false);
+  }
 
-	private static final String RESULT_FOLDER  = "feature/other/";
+  @Test
+  public void getWqpUtTestDistance1() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=1",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "4",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getWqpUtTestDistance1.json"),
+        true,
+        false);
+  }
 
-	@BeforeEach
-	public void setUp() {
-		urlRoot = "http://localhost:" + port + context;
-	}
+  @Test
+  public void getWqpUtTestDistanceEmpty() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "4",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getWqpUtTestDistanceEmpty.json"),
+        true,
+        false);
+  }
 
+  @Test
+  public void getWqpUtTestDistanceAboveMax() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=10000",
+        HttpStatus.BAD_REQUEST.value(),
+        null,
+        null,
+        null,
+        "getFeaturesDeprecated.distance: distance must be between 1 and 9999 kilometers",
+        false,
+        false);
+  }
 
+  @Test
+  public void getWqpUtTestDistanceBelowMin() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=-1",
+        HttpStatus.BAD_REQUEST.value(),
+        null,
+        null,
+        null,
+        "getFeaturesDeprecated.distance: distance must be between 1 and 9999 kilometers",
+        false,
+        false);
+  }
 
-	//Navigation Within Datasource Testing
-	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
-	public void getWqpUtTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/wqp/USGS-05427880/navigate/UT/wqp",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"7",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_UT_wqp.json"),
-				true,
-				false);
-	}
+  // Navigation Different Datasource Testing
+  @Test
+  public void getWqpDmTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/wqp/USGS-05427880/navigate/DM/huc12pp",
+        HttpStatus.OK.value(),
+        FeatureTransformer.FEATURE_COUNT_HEADER,
+        "1",
+        BaseController.MIME_TYPE_GEOJSON,
+        getCompareFile(RESULT_FOLDER, "getWqpDmTest.json"),
+        true,
+        false);
+  }
 
-	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
-	public void getWqpUtTestDistance1() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=1",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"6",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_UT_wqp_distance_1.json"),
-				true,
-				false);
+  @Test
+  public void badInputTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/wqx/USGS-05427880/navigate/DM/huc12pp",
+        HttpStatus.NOT_FOUND.value(),
+        null,
+        null,
+        null,
+        null,
+        true,
+        false);
+  }
 
-	}
+  // Parameter Error Testing
+  @Test
+  public void badNavigationModeTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/wqp/USGS-05427880/navigate/XX/huc12pp",
+        HttpStatus.BAD_REQUEST.value(),
+        null,
+        null,
+        null,
+        "getFeaturesDeprecated.navigationMode: must match \"DD|DM|PP|UT|UM\"",
+        false,
+        false);
+  }
 
+  // Navigation Types Testing
+  @Test
+  public void getNavigationTypesTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/wqp/USGS-05427880/navigate",
+        HttpStatus.OK.value(),
+        null,
+        null,
+        MediaType.APPLICATION_JSON_VALUE,
+        getCompareFile(RESULT_FOLDER, "getNavigationTypesTest.json"),
+        true,
+        false);
+  }
 
-	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
-	public void getWqpUtTestDistanceEmpty() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"7",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_UT_wqp_distance_empty.json"),
-				true,
-				false);
-	}
+  @Test
+  public void getNavigationTypesNotFoundTest() throws Exception {
+    assertEntity(
+        restTemplate,
+        "/linked-data/wqx/USGS-05427880/navigate",
+        HttpStatus.NOT_FOUND.value(),
+        null,
+        null,
+        MediaType.APPLICATION_JSON_VALUE,
+        null,
+        true,
+        false);
 
-	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
-	public void getWqpUtTestDistanceAboveMax() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=10000",
-				HttpStatus.BAD_REQUEST.value(),
-				null,
-				null,
-				null,
-				"getFeaturesDeprecated.distance: distance must be between 1 and 9999 kilometers",
-				false,
-				false);
-	}
-
-
-	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
-	public void getWqpUtTestDistanceBelowMin() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=-1",
-				HttpStatus.BAD_REQUEST.value(),
-				null,
-				null,
-				null,
-				"getFeaturesDeprecated.distance: distance must be between 1 and 9999 kilometers",
-				false,
-				false);
-	}
-
-	//Navigation Different Datasource Testing
-	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/huc12pp.xml")
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
-	public void getWqpDmTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/wqp/USGS-05427880/navigate/DM/huc12pp",
-				HttpStatus.OK.value(),
-				FeatureTransformer.FEATURE_COUNT_HEADER,
-				"19",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_DM_huc12pp.json"),
-				true,
-				false);
-	}
-
-	@Test
-	public void badInputTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/wqx/USGS-05427880/navigate/DM/huc12pp",
-				HttpStatus.NOT_FOUND.value(),
-				null,
-				null,
-				null,
-				null,
-				true,
-				false);
-	}
-
-	//Parameter Error Testing
-	@Test
-	public void badNavigationModeTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/wqp/USGS-05427880/navigate/XX/huc12pp",
-				HttpStatus.BAD_REQUEST.value(),
-				null,
-				null,
-				null,
-				"getFeaturesDeprecated.navigationMode: must match \"DD|DM|PP|UT|UM\"",
-				false,
-				false);
-	}
-
-	//Navigation Types Testing
-	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
-	public void getNavigationTypesTest() throws Exception {
-		String compareFile = getCompareFile(RESULT_FOLDER, "wqp_USGS-05427880.json");
-		// The compare file is shared between the current test in LinkedDataControllerOtherIT.java
-		// and the deprecated one here, so adjust it.
-		compareFile = compareFile.replace("navigation", "navigate");
-		assertEntity(restTemplate,
-			"/linked-data/wqp/USGS-05427880/navigate",
-			HttpStatus.OK.value(),
-			null,
-			null,
-			MediaType.APPLICATION_JSON_VALUE,
-			compareFile,
-			true,
-			false);
-	}
-
-	@Test
-	public void getNavigationTypesNotFoundTest() throws Exception {
-		assertEntity(restTemplate,
-			"/linked-data/wqx/USGS-05427880/navigate",
-			HttpStatus.NOT_FOUND.value(),
-			null,
-			null,
-			MediaType.APPLICATION_JSON_VALUE,
-			null,
-			true,
-			false);
-
-		assertEntity(restTemplate,
-			"/linked-data/wqp/USGX-05427880/navigate",
-			HttpStatus.NOT_FOUND.value(),
-			null,
-			null,
-			MediaType.APPLICATION_JSON_VALUE,
-			null,
-			true,
-			false);
-	}
-
-
+    assertEntity(
+        restTemplate,
+        "/linked-data/wqp/USGX-05427880/navigate",
+        HttpStatus.NOT_FOUND.value(),
+        null,
+        null,
+        MediaType.APPLICATION_JSON_VALUE,
+        null,
+        true,
+        false);
+  }
 }
