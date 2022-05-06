@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.NONE,
 		classes={DbTestConfig.class, NavigationDao.class})
+@DatabaseSetup("classpath:/testData/dao/NavigationDaoIT.xml")
 public class NavigationDaoIT extends BaseIT {
 
 	@Autowired
@@ -41,7 +42,6 @@ public class NavigationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/nhdplus_navigation/navigation_cache_status.xml")
 	public void getCacheTest() {
 		Map<String, Object> parameterMap = new HashMap<>();
 
@@ -99,5 +99,4 @@ public class NavigationDaoIT extends BaseIT {
 		assertNull(navigationDao.getCache(parameterMap));
 
 	}
-
 }

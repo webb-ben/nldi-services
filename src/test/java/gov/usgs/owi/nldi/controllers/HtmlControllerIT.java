@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -18,8 +19,7 @@ import gov.usgs.owi.nldi.BaseIT;
 
 @EnableWebMvc
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
-public class HtmlControllerIT extends BaseIT {
+public class HtmlControllerIT extends BaseControllerIT {
 
 	@LocalServerPort
 	private int port;
@@ -31,7 +31,6 @@ public class HtmlControllerIT extends BaseIT {
 	public void setUp() {
 		urlRoot = "http://localhost:" + port + context;
 	}
-
 
 	@Test
 	public void getLinkedDataHtmlTest() throws Exception {
@@ -92,7 +91,6 @@ public class HtmlControllerIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getWqpUMTest() throws Exception {
 		String actualbody = assertEntity(restTemplate,
 			"/linked-data/v2/wqp/USGS-05427880/navigate/UM/flowlines?f=html",
@@ -121,7 +119,6 @@ public class HtmlControllerIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getNavigationOptionsTest() throws Exception {
 		String actualbody = assertEntity(restTemplate,
 			"/linked-data/v2/wqp/USGS-05427880/navigate/UT?f=html",

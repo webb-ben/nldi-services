@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 		classes={DbTestConfig.class, LogDao.class})
-@DatabaseSetup("classpath:/testData/nldi_data/web_service_log.xml")
+@DatabaseSetup("classpath:/testData/dao/LogDaoIT.xml")
 public class LogDaoIT extends BaseIT {
 
 	public static final String TEST_QUERY = "select web_service_log_id, to_char(request_timestamp_utc, 'YYYY-MM-DD HH24:MI') request_timestamp_utc,"

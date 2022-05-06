@@ -1,5 +1,7 @@
 package gov.usgs.owi.nldi.controllers;
 
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +21,13 @@ import gov.usgs.owi.nldi.transform.FlowLineTransformer;
 
 @EnableWebMvc
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
-
+@DatabaseSetup("classpath:/testData/deprecated/linkedDataController/Flowline.xml")
 // This test class contains tests for the deprecated "navigate" endpoints.  Don't add
 // new tests here and delete this class when we drop support for those endpoints.
 // The new tests that are tied to the new "navigation" endpoints are in
 // LinkedDataControllerFlowlineIT
-public class DeprecatedLinkedDataControllerFlowlineIT extends BaseIT {
-
-	@Value("${serverContextPath}")
-	private String context;
+public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
+	private final String RESULT_FOLDER  = "deprecated/linkedDataController/flowline/";
 
 	@LocalServerPort
 	private int port;
@@ -36,16 +35,12 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseIT {
 	@Autowired
 	private TestRestTemplate restTemplate;
 
-	private static final String RESULT_FOLDER_WQP  = "feature/flowline/wqp/";
-	private static final String RESULT_FOLDER_HUC  = "feature/flowline/huc12pp/";
-
 	@BeforeEach
 	public void setUp() {
 		urlRoot = "http://localhost:" + port + context;
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getWqpUMTest() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/wqp/USGS-05427880/navigate/UM",
@@ -53,13 +48,12 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"10",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880_UM.json"),
+				getCompareFile(RESULT_FOLDER, "getWqpUMTest.json"),
 				true,
 				false);
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/huc12pp.xml")
 	public void getHuc12ppDM10Test() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/huc12pp/070900020601/navigate/DM?distance=10",
@@ -67,14 +61,13 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"6",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER_HUC, "huc12pp_070900020601_DM_distance_10.json"),
+				getCompareFile(RESULT_FOLDER, "getHuc12ppDM10Test.json"),
 				true,
 				false);
 	}
 
 
 	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/huc12pp.xml")
 	public void getHuc12ppDM10000TestDistanceAboveMax() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/huc12pp/070900020601/navigate/DM?distance=10000",
@@ -88,7 +81,6 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/huc12pp.xml")
 	public void getHuc12ppDM0TestDistanceBelowMin() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/huc12pp/070900020601/navigate/DM?distance=-1",
@@ -103,19 +95,16 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseIT {
 
 
 	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/huc12pp.xml")
 	public void getHuc12ppDMTestEmptyDistance() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/huc12pp/070900020601/navigate/DM?distance=",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
-				"57",
+				"51",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER_HUC, "huc12pp_070900020601_DM_distance_empty_deprecated.json"),
+				getCompareFile(RESULT_FOLDER, "getHuc12ppDMTestEmptyDistance.json"),
 				true,
 				false);
-
-
 	}
 
 	@Test
@@ -144,5 +133,4 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseIT {
 				false,
 				false);
 	}
-
 }

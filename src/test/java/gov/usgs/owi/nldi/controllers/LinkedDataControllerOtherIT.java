@@ -3,10 +3,12 @@ package gov.usgs.owi.nldi.controllers;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONArrayAs;
 
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -22,16 +24,15 @@ import gov.usgs.owi.nldi.transform.BasinTransformer;
 
 @EnableWebMvc
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
-public class LinkedDataControllerOtherIT extends BaseIT {
+@DatabaseSetup("classpath:/testData/linkedDataController/Other.xml")
+public class LinkedDataControllerOtherIT extends BaseControllerIT {
+	private final String RESULT_FOLDER  = "linkedDataController/other/";
 
 	@LocalServerPort
 	private int port;
 
 	@Autowired
 	private TestRestTemplate restTemplate;
-
-	private static final String RESULT_FOLDER  = "feature/other/";
 
 	@BeforeEach
 	public void setUp() {
@@ -46,7 +47,7 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 				null,
 				null,
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "data/comid_13302592_tot.json"),
+				getCompareFile(RESULT_FOLDER, "getCharacteristicDataTest.json"),
 				true,
 				false);
 	}
@@ -72,7 +73,7 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 				null,
 				null,
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "data/comid_13302592_tot_filtered.json"),
+				getCompareFile(RESULT_FOLDER, "getCharacteristicDataFilteredTest.json"),
 				true,
 				false);
 	}
@@ -85,7 +86,7 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 				BasinTransformer.BASIN_COUNT_HEADER,
 				"1",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "basin/comid_13302592.json"),
+				getCompareFile(RESULT_FOLDER, "getBasinTest.json"),
 				true,
 				false);
 	}
@@ -113,7 +114,7 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 				null,
 				null,
 				MediaType.APPLICATION_JSON_VALUE,
-				getCompareFile(RESULT_FOLDER, "dataSources.json"),
+				getCompareFile(RESULT_FOLDER, "getDataSourcesTest.json"),
 				true,
 				false);
 	}
@@ -127,7 +128,7 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 				null,
 				null,
 			 	BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "wqpFeatureCollection.json"),
+				getCompareFile(RESULT_FOLDER, "getFeaturesTest.json"),
 				true,
 				false);
 	}
@@ -154,14 +155,13 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 				null,
 				null,
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13294288.json"),
+				getCompareFile(RESULT_FOLDER, "getComidTest.json"),
 				true,
 				false);
 	}
 
 	//Linked Object Testing WQP
 	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getWqpTest() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/wqp/USGS-05427880",
@@ -169,29 +169,27 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 				null,
 				null,
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER_WQP, "wqp_USGS-05427880.json"),
+				getCompareFile(RESULT_FOLDER, "getWqpTest.json"),
 				true,
 				false);
 	}
 
 	//Linked Object Testing huc12pp
 	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/huc12pp.xml")
-	public void gethuc12ppTest() throws Exception {
+	public void getHuc12ppTest() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/huc12pp/070900020604",
 				HttpStatus.OK.value(),
 				null,
 				null,
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER_HUC, "huc12pp_070900020604.json"),
+				getCompareFile(RESULT_FOLDER, "getHuc12ppTest.json"),
 				true,
 				false);
 	}
 
 	//Navigation Types Testing
 	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getNavigationTypesTest() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/wqp/USGS-05427880/navigation",
@@ -199,7 +197,7 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 				null,
 				null,
 				MediaType.APPLICATION_JSON_VALUE,
-				getCompareFile(RESULT_FOLDER, "wqp_USGS-05427880.json"),
+				getCompareFile(RESULT_FOLDER, "getNavigationTypesTest.json"),
 				true,
 				false);
 	}
@@ -230,7 +228,6 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 
 	//Navigation Types Testing
 	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getNavigationOptionsTest() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/wqp/USGS-05427880/navigation/UT?f=json",
@@ -238,13 +235,12 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 				null,
 				null,
 				MediaType.APPLICATION_JSON_VALUE,
-				getCompareFile(RESULT_FOLDER, "navigation.json"),
+				getCompareFile(RESULT_FOLDER, "getNavigationOptionsTest.json"),
 				true,
 				false);
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
 	public void getNavigationOptionsTestBadRequest() throws Exception {
 		assertEntity(restTemplate,
 				"/linked-data/wqp/USGS-05427880/navigation/XX",
@@ -256,5 +252,4 @@ public class LinkedDataControllerOtherIT extends BaseIT {
 				false,
 				false);
 	}
-
 }

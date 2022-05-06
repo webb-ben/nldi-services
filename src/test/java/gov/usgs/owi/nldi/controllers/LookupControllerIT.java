@@ -1,6 +1,7 @@
 package gov.usgs.owi.nldi.controllers;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import gov.usgs.owi.nldi.BaseIT;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,20 +21,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @EnableWebMvc
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
-@DatabaseSetup("classpath:/testData/characteristic_data/characteristic_metadata.xml")
-public class LookupControllerIT extends BaseIT {
-
-	@Value("${serverContextPath}")
-	private String context;
+@DatabaseSetup("classpath:/testData/LookupController.xml")
+public class LookupControllerIT extends BaseControllerIT {
+	private final String RESULT_FOLDER  = "lookupController/";
 
 	@LocalServerPort
 	private int port;
 
 	@Autowired
 	private TestRestTemplate restTemplate;
-
-	private static final String RESULT_FOLDER  = "lookup/";
 
 	@BeforeEach
 	public void setUp() {
@@ -48,7 +44,7 @@ public class LookupControllerIT extends BaseIT {
 				null,
 				null,
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "meta/tot.json"),
+				getCompareFile(RESULT_FOLDER, "getCharacteristicsTest.json"),
 				true,
 				false);
 	}
@@ -61,7 +57,7 @@ public class LookupControllerIT extends BaseIT {
 				null,
 				null,
 				null,
-				getCompareFile(RESULT_FOLDER, "toc.json"),
+				getCompareFile(RESULT_FOLDER, "getLookupsTest.json"),
 				true,
 				false);
 	}

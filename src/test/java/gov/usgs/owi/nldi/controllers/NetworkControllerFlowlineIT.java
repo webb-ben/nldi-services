@@ -1,6 +1,7 @@
 package gov.usgs.owi.nldi.controllers;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import gov.usgs.owi.nldi.BaseIT;
 import gov.usgs.owi.nldi.transform.FlowLineTransformer;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,22 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @EnableWebMvc
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
-@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
-@DatabaseSetup("classpath:/testData/nhdplus/nhdflowline_np21.xml")
-@DatabaseSetup("classpath:/testData/nhdplus/plusflowlinevaa_np21.xml")
-public class NetworkControllerFlowlineIT extends BaseIT {
-
-	@Value("${serverContextPath}")
-	private String context;
+@DatabaseSetup("classpath:/testData/networkController/Flowline.xml")
+public class NetworkControllerFlowlineIT extends BaseControllerIT {
+	private final String RESULT_FOLDER  = "networkController/flowline/";
 
 	@LocalServerPort
 	private int port;
 
 	@Autowired
 	private TestRestTemplate restTemplate;
-
-	private static final String RESULT_FOLDER  = "network/flowline/";
 
 	@BeforeEach
 	public void setUp() {
@@ -51,7 +45,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"7",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13293474_UT.json"),
+				getCompareFile(RESULT_FOLDER, "getComidUtTest.json"),
 				true,
 				false);
 	}
@@ -64,11 +58,10 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"2",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_1.json"),
+				getCompareFile(RESULT_FOLDER, "getComidUtDistanceTest.json"),
 				true,
 				false);
 	}
-
 
 	@Test
 	public void getComidUtDistanceTestEmpty() throws Exception {
@@ -76,12 +69,11 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				"/linked-data/comid/13297246/navigation/UT/flowlines?distance=",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
-				"62",
+				"61",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_empty.json"),
+				getCompareFile(RESULT_FOLDER, "getComidUtDistanceTestEmpty.json"),
 				true,
 				false);
-
 	}
 
 	@Test
@@ -118,7 +110,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"15",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13294158_UT.json"),
+				getCompareFile(RESULT_FOLDER, "getComidUtDiversionTest.json"),
 				true,
 				false);
 	}
@@ -132,7 +124,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"4",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13293474_UM.json"),
+				getCompareFile(RESULT_FOLDER, "getComidUmTest.json"),
 				true,
 				false);
 	}
@@ -145,7 +137,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"2",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13297246_UM_distance_1.json"),
+				getCompareFile(RESULT_FOLDER, "getComidUmDistanceTest.json"),
 				true,
 				false);
 	}
@@ -159,20 +151,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"112",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_938060153_DM.json"),
-				true,
-				false);
-	}
-
-	@Test
-	public void getComidDmDiversionsNotIncludedTest() throws Exception {
-		assertEntity(restTemplate,
-				"/linked-data/comid/938060153/navigation/DM/flowlines?distance=9999",
-				HttpStatus.OK.value(),
-				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
-				"112",
-				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_938060153_DM.json"),
+				getCompareFile(RESULT_FOLDER, "getComidDmTest.json"),
 				true,
 				false);
 	}
@@ -180,14 +159,13 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	//DD Testing
 	@Test
 	public void getComidDdDistanceTest() throws Exception {
-		//We are going to sacrifice a little accuracy for performance, so this does not match the old way...
 		assertEntity(restTemplate,
 				"/linked-data/comid/938060153/navigation/DD/flowlines?distance=25",
 				HttpStatus.OK.value(),
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"4",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_938060153_DD_distance_25.json"),
+				getCompareFile(RESULT_FOLDER, "getComidDdDistanceTest.json"),
 				true,
 				false);
 	}
@@ -195,17 +173,15 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 	//PP Testing
 	@Test
 	public void getComidPpStopComidInvalidTest() throws Exception {
-		String actualbody = assertEntity(restTemplate,
+		assertEntity(restTemplate,
 				"/linked-data/comid/13297246/navigation/PP/flowlines?distance=9999&stopComid=13297198",
 				HttpStatus.BAD_REQUEST.value(),
 				null,
 				null,
 				null,
-				null,
+				"400 BAD_REQUEST \"The stopComid must be downstream of the start comid.\"",
 				false,
 				true);
-		assertEquals("400 BAD_REQUEST \"The stopComid must be downstream of the start comid.\"", actualbody);
-
 	}
 
 	@Test
@@ -216,7 +192,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"12",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_13297198_PP_stop_13297246.json"),
+				getCompareFile(RESULT_FOLDER, "getComidPpStopComidTest.json"),
 				true,
 				false);
 	}
@@ -230,7 +206,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"9",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_15169615_DM_distance_50.json"),
+				getCompareFile(RESULT_FOLDER, "interestingTest_1.json"),
 				true,
 				false);
 
@@ -240,7 +216,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"20",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_15169615_DD_distance_50.json"),
+				getCompareFile(RESULT_FOLDER, "interestingTest_2.json"),
 				true,
 				false);
 
@@ -250,7 +226,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"28",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_18719534_DM_distance_50.json"),
+				getCompareFile(RESULT_FOLDER, "interestingTest_3.json"),
 				true,
 				false);
 
@@ -260,7 +236,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"281",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_18719534_DD_distance_50.json"),
+				getCompareFile(RESULT_FOLDER, "interestingTest_4.json"),
 				true,
 				false);
 
@@ -270,7 +246,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"31",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_15183789_UM_distance_50.json"),
+				getCompareFile(RESULT_FOLDER, "interestingTest_5.json"),
 				true,
 				false);
 
@@ -280,7 +256,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 				"73",
 				BaseController.MIME_TYPE_GEOJSON,
-				getCompareFile(RESULT_FOLDER, "comid_15183789_UT_distance_50.json"),
+				getCompareFile(RESULT_FOLDER, "interestingTest_6.json"),
 				true,
 				false);
 	}
@@ -299,88 +275,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 				false);
 	}
 
-
-
-	//UT Testing
-	@Test
-	public void getComidUtTestNavigation() throws Exception {
-		assertEntity(restTemplate,
-			"/linked-data/comid/13293474/navigation/UT/flowlines?distance=9999",
-			HttpStatus.OK.value(),
-			FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
-			"7",
-			BaseController.MIME_TYPE_GEOJSON,
-			getCompareFile(RESULT_FOLDER, "comid_13293474_UT.json"),
-			true,
-			false);
-	}
-
-	@Test
-	public void getComidUtDistanceTestNavigation() throws Exception {
-		assertEntity(restTemplate,
-			"/linked-data/comid/13297246/navigation/UT/flowlines?distance=1",
-			HttpStatus.OK.value(),
-			FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
-			"2",
-			BaseController.MIME_TYPE_GEOJSON,
-			getCompareFile(RESULT_FOLDER, "comid_13297246_UT_distance_1.json"),
-			true,
-			false);
-	}
-
-	@Test
-	public void getComidUtDistanceTestAboveMaxNavigation() throws Exception {
-		assertEntity(restTemplate,
-			"/linked-data/comid/13297246/navigation/UT/flowlines?distance=10000",
-			HttpStatus.BAD_REQUEST.value(),
-			null,
-			null,
-			null,
-			"getNavigationFlowlines.distance: distance must be between 1 and 9999 kilometers",
-			false,
-			false);
-	}
-
-	@Test
-	public void getComidUtDistanceTestBelowMinNavigation() throws Exception {
-		assertEntity(restTemplate,
-			"/linked-data/comid/13297246/navigation/UT/flowlines?distance=-1",
-			HttpStatus.BAD_REQUEST.value(),
-			null,
-			null,
-			null,
-			"getNavigationFlowlines.distance: distance must be between 1 and 9999 kilometers",
-			false,
-			false);
-	}
-
-	@Test
-	public void getComidUtDiversionTestNavigation() throws Exception {
-		assertEntity(restTemplate,
-			"/linked-data/comid/13294158/navigation/UT/flowlines?distance=9999",
-			HttpStatus.OK.value(),
-			FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
-			"15",
-			BaseController.MIME_TYPE_GEOJSON,
-			getCompareFile(RESULT_FOLDER, "comid_13294158_UT.json"),
-			true,
-			false);
-	}
-
 	//UM Testing
-	@Test
-	public void getComidUmTestNavigation() throws Exception {
-		assertEntity(restTemplate,
-			"/linked-data/comid/13293474/navigation/UM/flowlines?distance=9999",
-			HttpStatus.OK.value(),
-			FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
-			"4",
-			BaseController.MIME_TYPE_GEOJSON,
-			getCompareFile(RESULT_FOLDER, "comid_13293474_UM.json"),
-			true,
-			false);
-	}
-
 	@Test
 	public void getComidUmDistanceTestNavigation() throws Exception {
 		assertEntity(restTemplate,
@@ -389,34 +284,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 			FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 			"2",
 			BaseController.MIME_TYPE_GEOJSON,
-			getCompareFile(RESULT_FOLDER, "comid_13297246_UM_distance_1.json"),
-			true,
-			false);
-	}
-
-	//DM Testing
-	@Test
-	public void getComidDmTestNavigation() throws Exception {
-		assertEntity(restTemplate,
-			"/linked-data/comid/938060153/navigation/DM/flowlines?distance=9999",
-			HttpStatus.OK.value(),
-			FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
-			"112",
-			BaseController.MIME_TYPE_GEOJSON,
-			getCompareFile(RESULT_FOLDER, "comid_938060153_DM.json"),
-			true,
-			false);
-	}
-
-	@Test
-	public void getComidDmDiversionsNotIncludedTestNavigation() throws Exception {
-		assertEntity(restTemplate,
-			"/linked-data/comid/938060153/navigation/DM/flowlines?distance=9999",
-			HttpStatus.OK.value(),
-			FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
-			"112",
-			BaseController.MIME_TYPE_GEOJSON,
-			getCompareFile(RESULT_FOLDER, "comid_938060153_DM.json"),
+			getCompareFile(RESULT_FOLDER, "getComidUmDistanceTestNavigation.json"),
 			true,
 			false);
 	}
@@ -429,7 +297,7 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 			FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 			"4",
 			BaseController.MIME_TYPE_GEOJSON,
-			getCompareFile(RESULT_FOLDER, "comid_938060153_DM_distance_20.json"),
+			getCompareFile(RESULT_FOLDER, "getComidDmDistanceTestNavigation.json"),
 			true,
 			false);
 	}
@@ -443,37 +311,9 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 			FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
 			"837",
 			BaseController.MIME_TYPE_GEOJSON,
-			getCompareFile(RESULT_FOLDER, "comid_938060153_DD.json"),
+			getCompareFile(RESULT_FOLDER, "getComidDdTestNavigation.json"),
 			true,
 			false);
-	}
-
-	@Test
-	public void getComidDdDistanceTestNavigation() throws Exception {
-		//We are going to sacrifice a little accuracy for performance, so this does not match the old way...
-		assertEntity(restTemplate,
-			"/linked-data/comid/938060153/navigation/DD/flowlines?distance=25",
-			HttpStatus.OK.value(),
-			FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
-			"4",
-			BaseController.MIME_TYPE_GEOJSON,
-			getCompareFile(RESULT_FOLDER, "comid_938060153_DD_distance_25.json"),
-			true,
-			false);
-	}
-
-	//PP Testing
-	@Test
-	public void getComidPpStopComidInvalidTestNavigation() throws Exception {
-		assertEntity(restTemplate,
-			"/linked-data/comid/13297246/navigation/PP/flowlines?distance=9999&stopComid=13297198",
-			HttpStatus.BAD_REQUEST.value(),
-			null,
-			null,
-			null,
-			"400 BAD_REQUEST \"The stopComid must be downstream of the start comid.\"",
-			false,
-			true);
 	}
 
 	//Parameter Error Testing
@@ -489,5 +329,4 @@ public class NetworkControllerFlowlineIT extends BaseIT {
 			false,
 			false);
 	}
-
 }

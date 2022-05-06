@@ -1,32 +1,26 @@
 package gov.usgs.owi.nldi;
 
-import java.io.InputStream;
 import java.sql.Date;
 import java.time.Instant;
 
+import com.github.springtestdbunit.dataset.FlatXmlDataSetLoader;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ReplacementDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.springframework.core.io.Resource;
 
-import com.github.springtestdbunit.dataset.AbstractDataSetLoader;
-
-public class ColumnSensingFlatXMLDataSetLoader extends AbstractDataSetLoader {
+public class ColumnSensingFlatXMLDataSetLoader extends FlatXmlDataSetLoader {
 
 	@Override
 	protected IDataSet createDataSet(Resource resource) throws Exception {
-		FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
-		builder.setColumnSensing(true);
-		try (InputStream inputStream = resource.getInputStream()) {
-			return createReplacementDataSet(builder.build(inputStream));
-		}
+		return createReplacementDataSet(super.createDataSet(resource));
 	}
 
-	private ReplacementDataSet createReplacementDataSet(FlatXmlDataSet dataSet) {
+	private ReplacementDataSet createReplacementDataSet(IDataSet dataSet) {
 		ReplacementDataSet replacementDataSet = new ReplacementDataSet(dataSet);
+
 		replacementDataSet.addReplacementObject("[today]", Date.from(Instant.now()));
 		replacementDataSet.addReplacementObject("[NULL]", null);
+
 		return replacementDataSet;
 	}
 

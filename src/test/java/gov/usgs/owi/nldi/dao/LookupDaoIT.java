@@ -17,8 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.NONE,
     classes = {DbTestConfig.class, LookupDao.class, ConfigurationService.class})
-@DatabaseSetup("classpath:/testData/nldi_data/crawler_source.xml")
-@DatabaseSetup("classpath:/testData/nldi_data/feature/wqp.xml")
+@DatabaseSetup("classpath:/testData/dao/LookupDaoIT.xml")
 public class LookupDaoIT extends BaseIT {
 
   @Autowired private LookupDao lookupDao;
