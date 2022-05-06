@@ -1,12 +1,9 @@
 package gov.usgs.owi.nldi.controllers;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
-import gov.usgs.owi.nldi.BaseIT;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -20,11 +17,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class NetworkControllerHydrolocationIT extends BaseControllerIT {
   private final String RESULT_FOLDER = "networkController/hydrolocation/";
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
-  @Autowired
-  private TestRestTemplate restTemplate;
+  @Autowired private TestRestTemplate restTemplate;
 
   @BeforeEach
   public void setUp() {
