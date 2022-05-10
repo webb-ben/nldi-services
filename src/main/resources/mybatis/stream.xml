@@ -4,8 +4,7 @@
 <mapper namespace="stream">
 
     <select id="flowLinesLegacy" resultType="java.util.LinkedHashMap" fetchSize="50">
-        select count(*) over (partition by 1) total_rows,
-               tmp_navigation_results.nhdplus_comid,
+        select tmp_navigation_results.nhdplus_comid,
                st_asgeojson(nhdflowline_np21.shape, 9, 0) shape
           from nhdplus_navigation.tmp_navigation_results
                join nhdplus.nhdflowline_np21
@@ -15,8 +14,7 @@
 
     <select id="flowLines" resultType="java.util.LinkedHashMap" fetchSize="50">
         <include refid="navigate.core"/>
-        select count(*) over (partition by 1) total_rows,
-            nhdplus_comid,
+        select nhdplus_comid,
             case when nhdplus_comid = #{comid,jdbcType=NUMERIC}
                     then <include refid="navigate.split"/>
                 else st_asgeojson(nhdflowline_np21.shape, 9, 0)
@@ -28,8 +26,7 @@
 
     <select id="features" resultType="java.util.LinkedHashMap" fetchSize="50">
         <include refid="navigate.core"/>
-        select count(*) over (partition by 1) total_rows,
-               <include refid="lookup.featureProperties"/>
+        select <include refid="lookup.featureProperties"/>
           from navigation_results
                join nldi_data.feature
                  on navigation_results.comid = feature.comid
@@ -39,8 +36,7 @@
     </select>
 
     <select id="featuresLegacy" resultType="java.util.LinkedHashMap" fetchSize="50">
-        select count(*) over (partition by 1) total_rows,
-               <include refid="lookup.featureProperties"/>
+        select <include refid="lookup.featureProperties"/>
           from nhdplus_navigation.tmp_navigation_results
                join nldi_data.feature
                  on tmp_navigation_results.nhdplus_comid = feature.comid
@@ -69,8 +65,7 @@
                             (x.dnminorhyd != 0 and
                              x.dnminorhyd = navigation_results.hydroseq))
                    )
-        select 1 total_rows,
-                <choose>
+        select <choose>
                     <when test="simplified == true">
                         st_asgeojson(st_simplify(st_union(catchmentsp.the_geom), .001), 9, 0) shape
                     </when>
