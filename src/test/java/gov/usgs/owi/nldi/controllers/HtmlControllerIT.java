@@ -34,8 +34,6 @@ public class HtmlControllerIT extends BaseControllerIT {
             HttpStatus.OK.value(),
             null,
             null,
-            null,
-            null,
             false,
             false);
 
@@ -49,8 +47,6 @@ public class HtmlControllerIT extends BaseControllerIT {
             restTemplate,
             "/linked-data/comid/position?coords=POINT(-89.35 48.064)&f=html",
             HttpStatus.OK.value(),
-            null,
-            null,
             null,
             null,
             false,
@@ -69,8 +65,6 @@ public class HtmlControllerIT extends BaseControllerIT {
             HttpStatus.OK.value(),
             null,
             null,
-            null,
-            null,
             false,
             false);
     assertTrue(
@@ -82,15 +76,7 @@ public class HtmlControllerIT extends BaseControllerIT {
   public void getLinkedDataDataSourcesTest() throws Exception {
     String actualbody =
         assertEntity(
-            restTemplate,
-            "/linked-data?f=html",
-            HttpStatus.OK.value(),
-            null,
-            null,
-            null,
-            null,
-            false,
-            false);
+            restTemplate, "/linked-data?f=html", HttpStatus.OK.value(), null, null, false, false);
     assertTrue(checkRedirectHtml(actualbody, "/linked-data?f=json"));
   }
 
@@ -101,8 +87,6 @@ public class HtmlControllerIT extends BaseControllerIT {
             restTemplate,
             "/linked-data/v2/wqp/USGS-05427880/navigate/UM/flowlines?f=html",
             HttpStatus.OK.value(),
-            null,
-            null,
             null,
             null,
             true,
@@ -121,8 +105,6 @@ public class HtmlControllerIT extends BaseControllerIT {
             HttpStatus.OK.value(),
             null,
             null,
-            null,
-            null,
             false,
             false);
     assertTrue(
@@ -137,8 +119,6 @@ public class HtmlControllerIT extends BaseControllerIT {
             restTemplate,
             "/linked-data/v2/wqp/USGS-05427880/navigate/UT?f=html",
             HttpStatus.OK.value(),
-            null,
-            null,
             null,
             null,
             false,
@@ -156,8 +136,6 @@ public class HtmlControllerIT extends BaseControllerIT {
             HttpStatus.OK.value(),
             null,
             null,
-            null,
-            null,
             false,
             false);
 
@@ -168,15 +146,7 @@ public class HtmlControllerIT extends BaseControllerIT {
   public void getLookupsHtmlTest() throws Exception {
     String actualbody =
         assertEntity(
-            restTemplate,
-            "/lookups/x?f=html",
-            HttpStatus.OK.value(),
-            null,
-            null,
-            null,
-            null,
-            false,
-            false);
+            restTemplate, "/lookups/x?f=html", HttpStatus.OK.value(), null, null, false, false);
     assertTrue(checkRedirectHtml(actualbody, "/lookups/x?f=json"));
   }
 

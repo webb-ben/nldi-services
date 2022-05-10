@@ -1,7 +1,6 @@
 package gov.usgs.owi.nldi.controllers;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import gov.usgs.owi.nldi.transform.BasinTransformer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +33,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13302592/tot",
         HttpStatus.OK.value(),
-        null,
-        null,
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getCharacteristicDataTest.json"),
         true,
@@ -50,8 +47,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         HttpStatus.NOT_FOUND.value(),
         null,
         null,
-        null,
-        null,
         true,
         true);
   }
@@ -62,8 +57,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13302592/tot?characteristicId=TOT_N97&characteristicId=TOT_ET",
         HttpStatus.OK.value(),
-        null,
-        null,
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getCharacteristicDataFilteredTest.json"),
         true,
@@ -76,8 +69,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13302592/basin",
         HttpStatus.OK.value(),
-        BasinTransformer.BASIN_COUNT_HEADER,
-        "1",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getBasinTest.json"),
         true,
@@ -92,8 +83,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         HttpStatus.NOT_FOUND.value(),
         null,
         null,
-        null,
-        null,
         true,
         true);
   }
@@ -105,8 +94,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data",
         HttpStatus.OK.value(),
-        null,
-        null,
         MediaType.APPLICATION_JSON_VALUE,
         getCompareFile(RESULT_FOLDER, "getDataSourcesTest.json"),
         true,
@@ -120,8 +107,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/wqp",
         HttpStatus.OK.value(),
-        null,
-        null,
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getFeaturesTest.json"),
         true,
@@ -130,16 +115,7 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
 
   @Test
   public void getFeaturesTestInvalid() throws Exception {
-    assertEntity(
-        restTemplate,
-        "/linked-data/wqx",
-        HttpStatus.OK.value(),
-        null,
-        null,
-        null,
-        null,
-        false,
-        false);
+    assertEntity(restTemplate, "/linked-data/wqx", HttpStatus.OK.value(), null, null, false, false);
   }
 
   // Object Testing Catchment
@@ -149,8 +125,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13294288",
         HttpStatus.OK.value(),
-        null,
-        null,
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getComidTest.json"),
         true,
@@ -164,8 +138,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/wqp/USGS-05427880",
         HttpStatus.OK.value(),
-        null,
-        null,
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getWqpTest.json"),
         true,
@@ -179,8 +151,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/huc12pp/070900020604",
         HttpStatus.OK.value(),
-        null,
-        null,
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getHuc12ppTest.json"),
         true,
@@ -194,8 +164,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigation",
         HttpStatus.OK.value(),
-        null,
-        null,
         MediaType.APPLICATION_JSON_VALUE,
         getCompareFile(RESULT_FOLDER, "getNavigationTypesTest.json"),
         true,
@@ -208,8 +176,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/wqx/USGS-05427880/navigation",
         HttpStatus.NOT_FOUND.value(),
-        null,
-        null,
         MediaType.APPLICATION_JSON_VALUE,
         null,
         true,
@@ -219,8 +185,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/wqp/USGX-05427880/navigation",
         HttpStatus.NOT_FOUND.value(),
-        null,
-        null,
         MediaType.APPLICATION_JSON_VALUE,
         null,
         true,
@@ -234,8 +198,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigation/UT?f=json",
         HttpStatus.OK.value(),
-        null,
-        null,
         MediaType.APPLICATION_JSON_VALUE,
         getCompareFile(RESULT_FOLDER, "getNavigationOptionsTest.json"),
         true,
@@ -248,8 +210,6 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigation/XX",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        null,
         null,
         null,
         false,

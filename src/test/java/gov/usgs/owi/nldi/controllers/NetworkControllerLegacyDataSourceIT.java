@@ -1,7 +1,6 @@
 package gov.usgs.owi.nldi.controllers;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +33,6 @@ public class NetworkControllerLegacyDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13293474/navigation/UT/wqp?distance=9999&legacy=true",
         HttpStatus.OK.value(),
-        FeatureTransformer.FEATURE_COUNT_HEADER,
-        "16",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getComidUtTest.json"),
         true,
@@ -48,8 +45,6 @@ public class NetworkControllerLegacyDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13297246/navigation/UT/wqp?distance=2&legacy=true",
         HttpStatus.OK.value(),
-        FeatureTransformer.FEATURE_COUNT_HEADER,
-        "3",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getComidUtDistanceTest.json"),
         true,
@@ -63,8 +58,6 @@ public class NetworkControllerLegacyDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13293474/navigation/UM/wqp?distance=9999&legacy=true",
         HttpStatus.OK.value(),
-        FeatureTransformer.FEATURE_COUNT_HEADER,
-        "16",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getComidUmTest.json"),
         true,
@@ -77,8 +70,6 @@ public class NetworkControllerLegacyDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13297246/navigation/UM/wqp?distance=10&legacy=true",
         HttpStatus.OK.value(),
-        FeatureTransformer.FEATURE_COUNT_HEADER,
-        "4",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getComidUmDistanceTest.json"),
         true,
@@ -92,8 +83,6 @@ public class NetworkControllerLegacyDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13296790/navigation/DM/wqp?distance=9999&legacy=true",
         HttpStatus.OK.value(),
-        FeatureTransformer.FEATURE_COUNT_HEADER,
-        "4",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getComidDmTest.json"),
         true,
@@ -106,8 +95,6 @@ public class NetworkControllerLegacyDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13293474/navigation/DM/wqp?distance=10&legacy=true",
         HttpStatus.OK.value(),
-        FeatureTransformer.FEATURE_COUNT_HEADER,
-        "38",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getComidDmDistanceTest.json"),
         true,
@@ -121,8 +108,6 @@ public class NetworkControllerLegacyDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13294310/navigation/DD/wqp?distance=9999&legacy=true",
         HttpStatus.OK.value(),
-        FeatureTransformer.FEATURE_COUNT_HEADER,
-        "46",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getComidDdTest.json"),
         true,
@@ -135,8 +120,6 @@ public class NetworkControllerLegacyDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13294310/navigation/DD/wqp?distance=1&legacy=true",
         HttpStatus.OK.value(),
-        FeatureTransformer.FEATURE_COUNT_HEADER,
-        "1",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getComidDdDistanceTest.json"),
         true,
@@ -151,8 +134,6 @@ public class NetworkControllerLegacyDataSourceIT extends BaseControllerIT {
         "/linked-data/comid/13297246/navigation/PP/wqp?distance=9999&stopComid=13297198&legacy=true",
         HttpStatus.BAD_REQUEST.value(),
         null,
-        null,
-        null,
         "400 BAD_REQUEST \"The stopComid must be downstream of the start comid.\"",
         false,
         true);
@@ -164,8 +145,6 @@ public class NetworkControllerLegacyDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13297198/navigation/PP/wqp?distance=9999&stopComid=13297246&legacy=true",
         HttpStatus.OK.value(),
-        FeatureTransformer.FEATURE_COUNT_HEADER,
-        "11",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getComidPpStopComidTest.json"),
         true,

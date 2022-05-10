@@ -1,7 +1,6 @@
 package gov.usgs.owi.nldi.controllers;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import gov.usgs.owi.nldi.transform.FlowLineTransformer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +36,6 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigate/UM",
         HttpStatus.OK.value(),
-        FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
-        "10",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getWqpUMTest.json"),
         true,
@@ -51,8 +48,6 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/huc12pp/070900020601/navigate/DM?distance=10",
         HttpStatus.OK.value(),
-        FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
-        "6",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getHuc12ppDM10Test.json"),
         true,
@@ -66,8 +61,6 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/huc12pp/070900020601/navigate/DM?distance=10000",
         HttpStatus.BAD_REQUEST.value(),
         null,
-        null,
-        null,
         "getFlowlines.distance: distance must be between 1 and 9999 kilometers",
         false,
         false);
@@ -80,8 +73,6 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/huc12pp/070900020601/navigate/DM?distance=-1",
         HttpStatus.BAD_REQUEST.value(),
         null,
-        null,
-        null,
         "getFlowlines.distance: distance must be between 1 and 9999 kilometers",
         false,
         false);
@@ -93,8 +84,6 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/huc12pp/070900020601/navigate/DM?distance=",
         HttpStatus.OK.value(),
-        FlowLineTransformer.FLOW_LINES_COUNT_HEADER,
-        "51",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getHuc12ppDMTestEmptyDistance.json"),
         true,
@@ -109,8 +98,6 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
         HttpStatus.NOT_FOUND.value(),
         null,
         null,
-        null,
-        null,
         true,
         false);
   }
@@ -122,8 +109,6 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigate/XX",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        null,
         null,
         "getFlowlines.navigationMode: must match \"DD|DM|PP|UT|UM\"",
         false,

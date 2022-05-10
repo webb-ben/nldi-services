@@ -32,8 +32,6 @@ public class NetworkControllerHydrolocationIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/hydrolocation?coords=POINT(-89.55 43.2)",
         HttpStatus.OK.value(),
-        null,
-        null,
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getHydrolocationTest.json"),
         true,
@@ -48,8 +46,6 @@ public class NetworkControllerHydrolocationIT extends BaseControllerIT {
         HttpStatus.BAD_REQUEST.value(),
         null,
         null,
-        null,
-        null,
         false,
         false);
   }
@@ -61,8 +57,6 @@ public class NetworkControllerHydrolocationIT extends BaseControllerIT {
         "/linked-data/hydrolocation?coords=POINT(-181 0)",
         HttpStatus.BAD_REQUEST.value(),
         null,
-        null,
-        null,
         "400 BAD_REQUEST \"Invalid longitude\"",
         false,
         false);
@@ -71,8 +65,6 @@ public class NetworkControllerHydrolocationIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/hydrolocation?coords=POINT(181 0)",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        null,
         null,
         "400 BAD_REQUEST \"Invalid longitude\"",
         false,
@@ -83,8 +75,6 @@ public class NetworkControllerHydrolocationIT extends BaseControllerIT {
         "/linked-data/hydrolocation?coords=POINT(0 -91)",
         HttpStatus.BAD_REQUEST.value(),
         null,
-        null,
-        null,
         "400 BAD_REQUEST \"Invalid latitude\"",
         false,
         false);
@@ -93,8 +83,6 @@ public class NetworkControllerHydrolocationIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/hydrolocation?coords=POINT(0 91)",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        null,
         null,
         "400 BAD_REQUEST \"Invalid latitude\"",
         false,
@@ -109,8 +97,6 @@ public class NetworkControllerHydrolocationIT extends BaseControllerIT {
         HttpStatus.BAD_REQUEST.value(),
         null,
         null,
-        null,
-        null,
         false,
         false);
   }
@@ -121,8 +107,6 @@ public class NetworkControllerHydrolocationIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/hydrolocation",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        null,
         null,
         null,
         false,

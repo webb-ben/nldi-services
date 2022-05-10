@@ -33,8 +33,6 @@ public class NetworkControllerPositionIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/position?coords=POINT(-89.55 43.2)",
         HttpStatus.OK.value(),
-        null,
-        null,
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getCoordinatesTest.json"),
         true,
@@ -49,8 +47,6 @@ public class NetworkControllerPositionIT extends BaseControllerIT {
         HttpStatus.BAD_REQUEST.value(),
         null,
         null,
-        null,
-        null,
         false,
         false);
   }
@@ -62,8 +58,6 @@ public class NetworkControllerPositionIT extends BaseControllerIT {
         "/linked-data/comid/position?coords=POINT(-181 0)",
         HttpStatus.BAD_REQUEST.value(),
         null,
-        null,
-        null,
         "400 BAD_REQUEST \"Invalid longitude\"",
         false,
         false);
@@ -72,8 +66,6 @@ public class NetworkControllerPositionIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/position?coords=POINT(181 0)",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        null,
         null,
         "400 BAD_REQUEST \"Invalid longitude\"",
         false,
@@ -84,8 +76,6 @@ public class NetworkControllerPositionIT extends BaseControllerIT {
         "/linked-data/comid/position?coords=POINT(0 -91)",
         HttpStatus.BAD_REQUEST.value(),
         null,
-        null,
-        null,
         "400 BAD_REQUEST \"Invalid latitude\"",
         false,
         false);
@@ -94,8 +84,6 @@ public class NetworkControllerPositionIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/position?coords=POINT(0 91)",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        null,
         null,
         "400 BAD_REQUEST \"Invalid latitude\"",
         false,
@@ -110,8 +98,6 @@ public class NetworkControllerPositionIT extends BaseControllerIT {
         HttpStatus.OK.value(),
         null,
         null,
-        null,
-        null,
         false,
         false);
 
@@ -119,8 +105,6 @@ public class NetworkControllerPositionIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/position?coords=POINT(180 0)",
         HttpStatus.OK.value(),
-        null,
-        null,
         null,
         null,
         false,
@@ -132,8 +116,6 @@ public class NetworkControllerPositionIT extends BaseControllerIT {
         HttpStatus.OK.value(),
         null,
         null,
-        null,
-        null,
         false,
         false);
 
@@ -141,8 +123,6 @@ public class NetworkControllerPositionIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/position?coords=POINT(0 90)",
         HttpStatus.OK.value(),
-        null,
-        null,
         null,
         null,
         false,
@@ -157,8 +137,6 @@ public class NetworkControllerPositionIT extends BaseControllerIT {
         HttpStatus.BAD_REQUEST.value(),
         null,
         null,
-        null,
-        null,
         false,
         false);
   }
@@ -169,8 +147,6 @@ public class NetworkControllerPositionIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/position",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        null,
         null,
         null,
         false,

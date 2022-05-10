@@ -52,8 +52,6 @@ public abstract class BaseControllerIT {
       TestRestTemplate restTemplate,
       String url,
       int httpStatus,
-      String countHeader,
-      String countValue,
       String contentType,
       String expectedBody,
       boolean isJson,
@@ -61,9 +59,6 @@ public abstract class BaseControllerIT {
       throws JSONException {
     ResponseEntity<String> entity = restTemplate.getForEntity(urlRoot + url, String.class);
     assertEquals(httpStatus, entity.getStatusCodeValue());
-    if (null != countHeader) {
-      assertEquals(countValue, entity.getHeaders().get(countHeader).get(0).toString());
-    }
     if (null != contentType) {
       assertEquals(contentType, entity.getHeaders().getContentType().toString());
     }
