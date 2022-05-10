@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/internetofwater/nldi-services/compare/nldi-services-1.11.0...master)
 ### Changed
+* Improved navigation query speed
+* Removed feature count headers from response
 * Fixed issues with data pollution in tests
 
 ## [1.11.0](https://github.com/internetofwater/nldi-services/compare/nldi-services-1.10.0...nldi-services-1.11.0)

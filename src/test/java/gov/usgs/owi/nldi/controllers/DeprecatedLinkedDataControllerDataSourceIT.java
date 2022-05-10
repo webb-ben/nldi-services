@@ -1,7 +1,6 @@
 package gov.usgs.owi.nldi.controllers;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +38,6 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigate/UT/wqp",
         HttpStatus.OK.value(),
-        FeatureTransformer.FEATURE_COUNT_HEADER,
-        "4",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getWqpUtTest.json"),
         true,
@@ -53,8 +50,6 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=1",
         HttpStatus.OK.value(),
-        FeatureTransformer.FEATURE_COUNT_HEADER,
-        "4",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getWqpUtTestDistance1.json"),
         true,
@@ -67,8 +62,6 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=",
         HttpStatus.OK.value(),
-        FeatureTransformer.FEATURE_COUNT_HEADER,
-        "4",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getWqpUtTestDistanceEmpty.json"),
         true,
@@ -82,8 +75,6 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         "/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=10000",
         HttpStatus.BAD_REQUEST.value(),
         null,
-        null,
-        null,
         "getFeaturesDeprecated.distance: distance must be between 1 and 9999 kilometers",
         false,
         false);
@@ -95,8 +86,6 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=-1",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        null,
         null,
         "getFeaturesDeprecated.distance: distance must be between 1 and 9999 kilometers",
         false,
@@ -110,8 +99,6 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigate/DM/huc12pp",
         HttpStatus.OK.value(),
-        FeatureTransformer.FEATURE_COUNT_HEADER,
-        "1",
         BaseController.MIME_TYPE_GEOJSON,
         getCompareFile(RESULT_FOLDER, "getWqpDmTest.json"),
         true,
@@ -126,8 +113,6 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         HttpStatus.NOT_FOUND.value(),
         null,
         null,
-        null,
-        null,
         true,
         false);
   }
@@ -139,8 +124,6 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigate/XX/huc12pp",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        null,
         null,
         "getFeaturesDeprecated.navigationMode: must match \"DD|DM|PP|UT|UM\"",
         false,
@@ -154,8 +137,6 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigate",
         HttpStatus.OK.value(),
-        null,
-        null,
         MediaType.APPLICATION_JSON_VALUE,
         getCompareFile(RESULT_FOLDER, "getNavigationTypesTest.json"),
         true,
@@ -168,8 +149,6 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         restTemplate,
         "/linked-data/wqx/USGS-05427880/navigate",
         HttpStatus.NOT_FOUND.value(),
-        null,
-        null,
         MediaType.APPLICATION_JSON_VALUE,
         null,
         true,
@@ -179,8 +158,6 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         restTemplate,
         "/linked-data/wqp/USGX-05427880/navigate",
         HttpStatus.NOT_FOUND.value(),
-        null,
-        null,
         MediaType.APPLICATION_JSON_VALUE,
         null,
         true,
