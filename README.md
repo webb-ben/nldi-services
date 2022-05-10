@@ -60,7 +60,7 @@ This application utilizes a PostgreSQL database.
 See the nldi-db project for more details, but in short:
 ```shell
 docker network create --subnet=172.26.0.0/16 nldi
-docker run -it --env-file ./.env -p 127.0.0.1:5437:5432/tcp usgswma/nldi-db:demo
+docker run -it --env-file ./.env -p 127.0.0.1:5437:5432/tcp ghcr.io/internetofwater/nldi-db:demo
 ```
 Note the _5437_ port mapping, which is used in the environmental variables below.
 
@@ -75,6 +75,7 @@ nldiDbName: [dbName] #See nldi-db project .env file 'NLDI_DATABASE_NAME'
 nldiProtocol: http
 nldiHost: owi-test.usgs.gov:8080
 nldiPath: /test-url
+pygeoapiUrl: https://labs-beta.waterdata.usgs.gov/api/nldi/pygeoapi/
 
 serverContextPath: /nldi
 springFrameworkLogLevel: INFO
@@ -89,11 +90,11 @@ This project contains JUnit tests. Maven can be used to run them (in addition to
 To run the unit tests of the application use:
 
 ```shell
-mvn package
+mvn test
 ```
 
 To additionally start up a Docker database and run the integration tests of the application use:
 
 ```shell
-mvn verify -DTESTING_DATABASE_PORT=5445 -DTESTING_DATABASE_ADDRESS=localhost -DTESTING_DATABASE_NETWORK=nldi
+mvn verify
 ```
