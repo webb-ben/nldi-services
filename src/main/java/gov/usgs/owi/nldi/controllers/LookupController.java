@@ -11,6 +11,7 @@ import gov.usgs.owi.nldi.services.PyGeoApiService;
 import gov.usgs.owi.nldi.transform.CharacteristicMetadataTransformer;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigInteger;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
@@ -91,7 +92,8 @@ public class LookupController extends BaseController {
   public void getCharacteristics(
       HttpServletRequest request,
       HttpServletResponse response,
-      @PathVariable(Parameters.CHARACTERISTIC_TYPE) String characteristicType)
+      @PathVariable(Parameters.CHARACTERISTIC_TYPE) @Schema(example = "local")
+          String characteristicType)
       throws Exception {
     BigInteger logId = logService.logRequest(request);
     try (CharacteristicMetadataTransformer transformer =
