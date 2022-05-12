@@ -124,7 +124,7 @@ public class LinkedDataController extends BaseController {
   public void getFeatures(
       HttpServletRequest request,
       HttpServletResponse response,
-      @PathVariable(LookupDao.FEATURE_SOURCE) String featureSource)
+      @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "vigil") String featureSource)
       throws Exception {
     BigInteger logId = logService.logRequest(request);
     try {
@@ -154,8 +154,8 @@ public class LinkedDataController extends BaseController {
   public void getRegisteredFeature(
       HttpServletRequest request,
       HttpServletResponse response,
-      @PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
-      @PathVariable(Parameters.FEATURE_ID) String featureID)
+      @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "wqp") String featureSource,
+      @PathVariable(Parameters.FEATURE_ID) @Schema(example = "USGS-054279485") String featureID)
       throws Exception {
     BigInteger logId = logService.logRequest(request);
     try (FeatureTransformer transformer = new FeatureTransformer(response, configurationService)) {
@@ -182,8 +182,8 @@ public class LinkedDataController extends BaseController {
   public Map<String, Object> getNavigateTypes(
       HttpServletRequest request,
       HttpServletResponse response,
-      @PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
-      @PathVariable(Parameters.FEATURE_ID) String featureID)
+      @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "wqp") String featureSource,
+      @PathVariable(Parameters.FEATURE_ID) @Schema(example = "USGS-054279485") String featureID)
       throws UnsupportedEncodingException {
     BigInteger logId = logService.logRequest(request);
     Map<String, Object> rtn = new LinkedHashMap<>();
@@ -248,8 +248,8 @@ public class LinkedDataController extends BaseController {
   public Map<String, Object> getNavigationTypes(
       HttpServletRequest request,
       HttpServletResponse response,
-      @PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
-      @PathVariable(Parameters.FEATURE_ID) String featureID)
+      @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "wqp") String featureSource,
+      @PathVariable(Parameters.FEATURE_ID) @Schema(example = "USGS-054279485") String featureID)
       throws UnsupportedEncodingException {
     BigInteger logId = logService.logRequest(request);
     Map<String, Object> rtn = new LinkedHashMap<>();
@@ -318,10 +318,12 @@ public class LinkedDataController extends BaseController {
   public void getCharacteristicData(
       HttpServletRequest request,
       HttpServletResponse response,
-      @PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
-      @PathVariable(Parameters.FEATURE_ID) String featureID,
-      @PathVariable(Parameters.CHARACTERISTIC_TYPE) String characteristicType,
+      @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "wqp") String featureSource,
+      @PathVariable(Parameters.FEATURE_ID) @Schema(example = "USGS-054279485") String featureID,
+      @PathVariable(Parameters.CHARACTERISTIC_TYPE) @Schema(example = "tot")
+          String characteristicType,
       @RequestParam(value = Parameters.CHARACTERISTIC_ID, required = false)
+          @Schema(example = "[\"TOT_BFI\",\"TOT_PET\",\"TOT_CONTACT\"]")
           String[] characteristicIds)
       throws IOException {
     BigInteger logId = logService.logRequest(request);
@@ -358,8 +360,8 @@ public class LinkedDataController extends BaseController {
   public void getBasin(
       HttpServletRequest request,
       HttpServletResponse response,
-      @PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
-      @PathVariable(Parameters.FEATURE_ID) String featureID,
+      @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "wqp") String featureSource,
+      @PathVariable(Parameters.FEATURE_ID) @Schema(example = "USGS-054279485") String featureID,
       @RequestParam(value = Parameters.SIMPLIFIED, required = false, defaultValue = "true")
           Boolean simplified,
       @RequestParam(value = Parameters.SPLIT_CATCHMENT, required = false, defaultValue = "false")
@@ -528,11 +530,15 @@ public class LinkedDataController extends BaseController {
   public void getFeatures(
       HttpServletRequest request,
       HttpServletResponse response,
-      @PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
-      @PathVariable(Parameters.FEATURE_ID) String featureID,
-      @PathVariable(Parameters.NAVIGATION_MODE) @Pattern(regexp = REGEX_NAVIGATION_MODE)
+      @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "wqp") String featureSource,
+      @PathVariable(Parameters.FEATURE_ID) @Schema(example = "USGS-054279485") String featureID,
+      @PathVariable(Parameters.NAVIGATION_MODE)
+          @Pattern(regexp = REGEX_NAVIGATION_MODE)
+          @Schema(
+              example = "UM",
+              allowableValues = {"UM", "UT", "DM", "DD"})
           String navigationMode,
-      @PathVariable(value = DATA_SOURCE) String dataSource,
+      @PathVariable(value = DATA_SOURCE) @Schema(example = "nwissite") String dataSource,
       @RequestParam(value = Parameters.STOP_COMID, required = false)
           @Range(min = 1, max = Integer.MAX_VALUE)
           String stopComid,
@@ -541,6 +547,7 @@ public class LinkedDataController extends BaseController {
           @Pattern(
               message = Parameters.DISTANCE_VALIDATION_MESSAGE,
               regexp = Parameters.DISTANCE_VALIDATION_REGEX)
+          @Schema(example = "50")
           String distance,
       @RequestParam(value = Parameters.LEGACY, required = false) String legacy)
       throws Exception {
@@ -576,9 +583,13 @@ public class LinkedDataController extends BaseController {
   public List<Map<String, Object>> getNavigation(
       HttpServletRequest request,
       HttpServletResponse response,
-      @PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
-      @PathVariable(Parameters.FEATURE_ID) String featureID,
-      @PathVariable(Parameters.NAVIGATION_MODE) @Pattern(regexp = REGEX_NAVIGATION_MODE)
+      @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "wqp") String featureSource,
+      @PathVariable(Parameters.FEATURE_ID) @Schema(example = "USGS-054279485") String featureID,
+      @PathVariable(Parameters.NAVIGATION_MODE)
+          @Pattern(regexp = REGEX_NAVIGATION_MODE)
+          @Schema(
+              example = "UM",
+              allowableValues = {"UM", "UT", "DM", "DD"})
           String navigationMode) {
 
     BigInteger logId = logService.logRequest(request);
@@ -621,9 +632,13 @@ public class LinkedDataController extends BaseController {
   public void getNavigationFlowlines(
       HttpServletRequest request,
       HttpServletResponse response,
-      @PathVariable(LookupDao.FEATURE_SOURCE) String featureSource,
-      @PathVariable(Parameters.FEATURE_ID) String featureID,
-      @PathVariable(Parameters.NAVIGATION_MODE) @Pattern(regexp = REGEX_NAVIGATION_MODE)
+      @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "wqp") String featureSource,
+      @PathVariable(Parameters.FEATURE_ID) @Schema(example = "USGS-054279485") String featureID,
+      @PathVariable(Parameters.NAVIGATION_MODE)
+          @Pattern(regexp = REGEX_NAVIGATION_MODE)
+          @Schema(
+              example = "UM",
+              allowableValues = {"UM", "UT", "DM", "DD"})
           String navigationMode,
       @RequestParam(value = Parameters.STOP_COMID, required = false)
           @Range(min = 1, max = Integer.MAX_VALUE)
@@ -633,9 +648,12 @@ public class LinkedDataController extends BaseController {
           @Pattern(
               message = Parameters.DISTANCE_VALIDATION_MESSAGE,
               regexp = Parameters.DISTANCE_VALIDATION_REGEX)
+          @Schema(example = "5")
           String distance,
-      @RequestParam(value = Parameters.TRIM_START, required = false) Boolean trimStart,
-      @RequestParam(value = Parameters.TRIM_TOLERANCE, required = false) String trimTolerance,
+      @RequestParam(value = Parameters.TRIM_START, required = false) @Schema(example = "false")
+          Boolean trimStart,
+      @RequestParam(value = Parameters.TRIM_TOLERANCE, required = false) @Schema(example = "0.1")
+          String trimTolerance,
       @RequestParam(value = Parameters.LEGACY, required = false) String legacy)
       throws Exception {
 

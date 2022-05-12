@@ -113,8 +113,15 @@ public class NetworkController extends BaseController {
   public void getNavigationFlowlines(
       HttpServletRequest request,
       HttpServletResponse response,
-      @PathVariable(Parameters.COMID) @Range(min = 1, max = Integer.MAX_VALUE) String comid,
-      @PathVariable(Parameters.NAVIGATION_MODE) @Pattern(regexp = REGEX_NAVIGATION_MODE)
+      @PathVariable(Parameters.COMID)
+          @Range(min = 1, max = Integer.MAX_VALUE)
+          @Schema(example = "13294314")
+          String comid,
+      @PathVariable(Parameters.NAVIGATION_MODE)
+          @Pattern(regexp = REGEX_NAVIGATION_MODE)
+          @Schema(
+              example = "UM",
+              allowableValues = {"UM", "UT", "DM", "DD"})
           String navigationMode,
       @RequestParam(value = Parameters.STOP_COMID, required = false)
           @Range(min = 1, max = Integer.MAX_VALUE)
@@ -124,6 +131,7 @@ public class NetworkController extends BaseController {
           @Pattern(
               message = Parameters.DISTANCE_VALIDATION_MESSAGE,
               regexp = Parameters.DISTANCE_VALIDATION_REGEX)
+          @Schema(example = "50")
           String distance,
       @RequestParam(value = Parameters.LEGACY, required = false) String legacy)
       throws Exception {
@@ -209,10 +217,17 @@ public class NetworkController extends BaseController {
   public void getFeatures(
       HttpServletRequest request,
       HttpServletResponse response,
-      @PathVariable(Parameters.COMID) @Range(min = 1, max = Integer.MAX_VALUE) String comid,
-      @PathVariable(Parameters.NAVIGATION_MODE) @Pattern(regexp = REGEX_NAVIGATION_MODE)
+      @PathVariable(Parameters.COMID)
+          @Range(min = 1, max = Integer.MAX_VALUE)
+          @Schema(example = "13294314")
+          String comid,
+      @PathVariable(Parameters.NAVIGATION_MODE)
+          @Pattern(regexp = REGEX_NAVIGATION_MODE)
+          @Schema(
+              example = "UM",
+              allowableValues = {"UM", "UT", "DM", "DD"})
           String navigationMode,
-      @PathVariable(value = DATA_SOURCE) String dataSource,
+      @PathVariable(value = DATA_SOURCE) @Schema(example = "wqp") String dataSource,
       @RequestParam(value = Parameters.STOP_COMID, required = false)
           @Range(min = 1, max = Integer.MAX_VALUE)
           String stopComid,
@@ -221,6 +236,7 @@ public class NetworkController extends BaseController {
           @Pattern(
               message = Parameters.DISTANCE_VALIDATION_MESSAGE,
               regexp = Parameters.DISTANCE_VALIDATION_REGEX)
+          @Schema(example = "50")
           String distance,
       @RequestParam(value = Parameters.LEGACY, required = false) String legacy)
       throws Exception {
@@ -272,6 +288,7 @@ public class NetworkController extends BaseController {
               message = Parameters.POINT_VALIDATION_MESSAGE,
               regexp = Parameters.POINT_VALIDATION_REGEX)
           @RequestParam(value = Parameters.COORDS)
+          @Schema(example = "POINT(-89.509 43.087)")
           String coords)
       throws Exception {
     BigInteger logId = logService.logRequest(request);
@@ -314,6 +331,7 @@ public class NetworkController extends BaseController {
               message = Parameters.POINT_VALIDATION_MESSAGE,
               regexp = Parameters.POINT_VALIDATION_REGEX)
           @RequestParam(value = Parameters.COORDS)
+          @Schema(example = "POINT(-89.509 43.087)")
           String coords)
       throws Exception {
     BigInteger logId = logService.logRequest(request);
