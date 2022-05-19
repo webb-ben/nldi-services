@@ -17,7 +17,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.io.IOException;
+
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URLEncoder;
@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -127,18 +128,16 @@ public class LinkedDataController extends BaseController {
       @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "vigil") String featureSource)
       throws Exception {
     BigInteger logId = logService.logRequest(request);
-    try {
+    try (FeatureCollectionTransformer transformer =
+                 new FeatureCollectionTransformer(response, configurationService)) {
+      lookupDao.validateFeatureSource(featureSource);
 
       Map<String, Object> parameterMap = new HashMap<>();
       parameterMap.put(LookupDao.ROOT_URL, configurationService.getLinkedDataUrl());
       parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
-      FeatureCollectionTransformer transformer =
-          new FeatureCollectionTransformer(response, configurationService);
       addContentHeader(response);
       streamResults(transformer, BaseDao.FEATURES_COLLECTION, parameterMap);
 
-    } catch (Exception e) {
-      GlobalDefaultExceptionHandler.handleError(e, response);
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
@@ -159,13 +158,14 @@ public class LinkedDataController extends BaseController {
       throws Exception {
     BigInteger logId = logService.logRequest(request);
     try (FeatureTransformer transformer = new FeatureTransformer(response, configurationService)) {
+      lookupDao.validateFeatureSource(featureSource);
+      lookupDao.validateFeatureSourceAndId(featureSource, featureID);
+
       Map<String, Object> parameterMap = new HashMap<>();
       parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
       parameterMap.put(Parameters.FEATURE_ID, featureID);
       addContentHeader(response);
       streamResults(transformer, BaseDao.FEATURE, parameterMap);
-    } catch (Exception e) {
-      GlobalDefaultExceptionHandler.handleError(e, response);
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
@@ -254,6 +254,9 @@ public class LinkedDataController extends BaseController {
     BigInteger logId = logService.logRequest(request);
     Map<String, Object> rtn = new LinkedHashMap<>();
     try {
+      lookupDao.validateFeatureSource(featureSource);
+      lookupDao.validateFeatureSourceAndId(featureSource, featureID);
+
       // Verify that the feature source and identifier are valid
       Map<String, Object> parameterMap = new HashMap<>();
       parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
@@ -325,9 +328,11 @@ public class LinkedDataController extends BaseController {
       @RequestParam(value = Parameters.CHARACTERISTIC_ID, required = false)
           @Schema(example = "[\"TOT_BFI\",\"TOT_PET\",\"TOT_CONTACT\"]")
           String[] characteristicIds)
-      throws IOException {
+      throws Exception {
     BigInteger logId = logService.logRequest(request);
     try (CharacteristicDataTransformer transformer = new CharacteristicDataTransformer(response)) {
+      lookupDao.validateFeatureSource(featureSource);
+      lookupDao.validateFeatureSourceAndId(featureSource, featureID);
 
       Integer comid = lookupDao.getFeatureComid(featureSource, featureID);
 
@@ -342,8 +347,6 @@ public class LinkedDataController extends BaseController {
         streamResults(transformer, BaseDao.CHARACTERISTIC_DATA, parameterMap);
       }
 
-    } catch (Exception e) {
-      GlobalDefaultExceptionHandler.handleError(e, response);
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
@@ -371,6 +374,9 @@ public class LinkedDataController extends BaseController {
     BigInteger logId = logService.logRequest(request);
 
     try {
+      lookupDao.validateFeatureSource(featureSource);
+      lookupDao.validateFeatureSourceAndId(featureSource, featureID);
+
       Integer comid = lookupDao.getFeatureComid(featureSource, featureID);
 
       if (comid == null) {
@@ -402,9 +408,6 @@ public class LinkedDataController extends BaseController {
       } else {
         streamBasin(response, comid, simplified);
       }
-
-    } catch (Exception e) {
-      GlobalDefaultExceptionHandler.handleError(e, response);
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
@@ -456,8 +459,6 @@ public class LinkedDataController extends BaseController {
             distance,
             isLegacy(legacy, navigationMode));
       }
-    } catch (Exception e) {
-      GlobalDefaultExceptionHandler.handleError(e, response);
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
@@ -536,7 +537,7 @@ public class LinkedDataController extends BaseController {
           @Pattern(regexp = REGEX_NAVIGATION_MODE)
           @Schema(
               example = "UM",
-              allowableValues = {"UM", "UT", "DM", "DD"})
+              allowableValues = {"UM", "UT", "PP", "DM", "DD"})
           String navigationMode,
       @PathVariable(value = DATA_SOURCE) @Schema(example = "nwissite") String dataSource,
       @RequestParam(value = Parameters.STOP_COMID, required = false)
@@ -554,6 +555,10 @@ public class LinkedDataController extends BaseController {
 
     BigInteger logId = logService.logRequest(request);
     try {
+      lookupDao.validateFeatureSource(featureSource);
+      lookupDao.validateFeatureSourceAndId(featureSource, featureID);
+      lookupDao.validateDataSource(dataSource);
+
       Integer comid = lookupDao.getFeatureComid(featureSource, featureID);
       if (null == comid) {
         response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -567,8 +572,6 @@ public class LinkedDataController extends BaseController {
             dataSource,
             isLegacy(legacy, navigationMode));
       }
-    } catch (Exception e) {
-      GlobalDefaultExceptionHandler.handleError(e, response);
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
@@ -589,12 +592,15 @@ public class LinkedDataController extends BaseController {
           @Pattern(regexp = REGEX_NAVIGATION_MODE)
           @Schema(
               example = "UM",
-              allowableValues = {"UM", "UT", "DM", "DD"})
+              allowableValues = {"UM", "UT", "PP", "DM", "DD"})
           String navigationMode) {
 
     BigInteger logId = logService.logRequest(request);
 
     try {
+      lookupDao.validateFeatureSource(featureSource);
+      lookupDao.validateFeatureSourceAndId(featureSource, featureID);
+
       List<Map<String, Object>> dataSources = getDataSources(request, response);
       List<Map<String, Object>> newDataSources = new ArrayList<>();
       String newNavigationUrl = createNewNavigationUrl(request);
@@ -613,12 +619,9 @@ public class LinkedDataController extends BaseController {
       }
       return newDataSources;
 
-    } catch (Exception e) {
-      GlobalDefaultExceptionHandler.handleError(e, response);
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
-    return null;
   }
 
   // swagger documentation for /linked-data/{featureSource}/{featureID}/navigate/{navigationMode}
@@ -660,6 +663,9 @@ public class LinkedDataController extends BaseController {
     BigInteger logId = logService.logRequest(request);
 
     try {
+      lookupDao.validateFeatureSource(featureSource);
+      lookupDao.validateFeatureSourceAndId(featureSource, featureID);
+
       Integer comid = lookupDao.getFeatureComid(featureSource, featureID);
       if (null == comid) {
         response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -683,8 +689,6 @@ public class LinkedDataController extends BaseController {
             distance,
             isLegacy(legacy, navigationMode));
       }
-    } catch (Exception e) {
-      GlobalDefaultExceptionHandler.handleError(e, response);
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }

@@ -95,8 +95,6 @@ public class NetworkController extends BaseController {
     try {
       streamFlowLines(
           response, comid, navigationMode, stopComid, distance, isLegacy(legacy, navigationMode));
-    } catch (Exception e) {
-      GlobalDefaultExceptionHandler.handleError(e, response);
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
@@ -248,6 +246,8 @@ public class NetworkController extends BaseController {
           HttpStatus.BAD_REQUEST, BaseController.COMID_MISMATCH_ERROR);
     }
     try {
+        lookupDao.validateDataSource(dataSource);
+
       streamFeatures(
           response,
           comid,
@@ -256,8 +256,6 @@ public class NetworkController extends BaseController {
           distance,
           dataSource,
           isLegacy(legacy, navigationMode));
-    } catch (Exception e) {
-      GlobalDefaultExceptionHandler.handleError(e, response);
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }

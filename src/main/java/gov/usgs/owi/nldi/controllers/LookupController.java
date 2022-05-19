@@ -102,8 +102,6 @@ public class LookupController extends BaseController {
       parameterMap.put(Parameters.CHARACTERISTIC_TYPE, characteristicType.toLowerCase());
       addContentHeader(response);
       streamResults(transformer, BaseDao.CHARACTERISTICS_METADATA, parameterMap);
-    } catch (Exception e) {
-      GlobalDefaultExceptionHandler.handleError(e, response);
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
