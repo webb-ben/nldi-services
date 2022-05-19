@@ -3,8 +3,9 @@ package gov.usgs.owi.nldi.controllers;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.exceptions.DataSourceNotFoundException;
@@ -23,8 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(NetworkController.class)
 public class NetworkControllerTest {
 
-  @Autowired
-  private MockMvc mvc;
+  @Autowired private MockMvc mvc;
 
   @MockBean private LookupDao lookupDao;
   @MockBean private StreamingDao streamingDao;
@@ -34,42 +34,47 @@ public class NetworkControllerTest {
   @MockBean private LogService logService;
   @MockBean private PyGeoApiService pygeoapiService;
 
-
   @BeforeEach
   public void setUp() {
     when(logService.logRequest(any(HttpServletRequest.class))).thenReturn(BigInteger.ONE);
-    doThrow(new DataSourceNotFoundException("invalid-source")).when(lookupDao).validateDataSource(eq("invalid-source"));
+    doThrow(new DataSourceNotFoundException("invalid-source"))
+        .when(lookupDao)
+        .validateDataSource(eq("invalid-source"));
   }
 
   @Test
   public void getFlowlinesTest() throws Exception {
     // missing required parameter
     mvc.perform(get("/linked-data/comid/13297246/navigation/PP/flowlines"))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().string("Required String parameter 'distance' is not present"));
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string("Required String parameter 'distance' is not present"));
 
     verify(logService, times(0)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(0)).logRequestComplete(any(BigInteger.class), any(int.class));
 
     // valid example
-    mvc.perform(get("/linked-data/comid/13297246/navigation/PP/flowlines?stopComid=13297247&distance=1"))
-            .andExpect(status().isOk());
+    mvc.perform(
+            get(
+                "/linked-data/comid/13297246/navigation/PP/flowlines?stopComid=13297247&distance=1"))
+        .andExpect(status().isOk());
 
     verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
-    verify(logService, times(1)).logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+    verify(logService, times(1))
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
   }
 
   @Test
   public void getFeaturesTest() throws Exception {
     mvc.perform(get("/linked-data/comid/13294314/navigation/UT/wqp?distance=1"))
-                    .andExpect(status().isOk());
+        .andExpect(status().isOk());
 
     verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
-    verify(logService, times(1)).logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+    verify(logService, times(1))
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
 
     mvc.perform(get("/linked-data/comid/13294314/navigation/UT/invalid-source?distance=1"))
-            .andExpect(status().isNotFound())
-            .andExpect(content().string("The data source \"invalid-source\" does not exist."));
+        .andExpect(status().isNotFound())
+        .andExpect(content().string("The data source \"invalid-source\" does not exist."));
 
     verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(2)).logRequestComplete(any(BigInteger.class), anyInt());
@@ -78,11 +83,15 @@ public class NetworkControllerTest {
   @Test
   public void invalidStopComidTest() throws Exception {
     mvc.perform(get("/linked-data/comid/13294314/navigation/UT/wqp?stopComid=13294313&distance=1"))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().string("400 BAD_REQUEST \"The stopComid must be downstream of the start comid.\""));
+        .andExpect(status().isBadRequest())
+        .andExpect(
+            content()
+                .string(
+                    "400 BAD_REQUEST \"The stopComid must be downstream of the start comid.\""));
 
     verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
-    verify(logService, times(1)).logRequestComplete(any(BigInteger.class), eq(HttpStatus.BAD_REQUEST.value()));
+    verify(logService, times(1))
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.BAD_REQUEST.value()));
   }
 
   @Test
@@ -98,12 +107,13 @@ public class NetworkControllerTest {
     when(lookupDao.getReachCode(eq(comid))).thenReturn("reachcode");
     when(pygeoapiService.getNldiFlowTraceIntersectionPoint(
             any(Position.class), eq(true), eq(PyGeoApiService.Direction.NONE)))
-            .thenReturn(pygeoResponse);
+        .thenReturn(pygeoResponse);
 
     mvc.perform(get(String.format("/linked-data/hydrolocation?coords=POINT(%s %s)", lon, lat)))
-            .andExpect(status().isOk());
+        .andExpect(status().isOk());
 
     verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
-    verify(logService, times(1)).logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+    verify(logService, times(1))
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
   }
 }

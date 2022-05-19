@@ -246,7 +246,7 @@ public class NetworkController extends BaseController {
           HttpStatus.BAD_REQUEST, BaseController.COMID_MISMATCH_ERROR);
     }
     try {
-        lookupDao.validateDataSource(dataSource);
+      lookupDao.validateDataSource(dataSource);
 
       streamFeatures(
           response,

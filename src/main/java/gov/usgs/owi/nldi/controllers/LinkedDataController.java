@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URLEncoder;
@@ -31,7 +30,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -129,7 +127,7 @@ public class LinkedDataController extends BaseController {
       throws Exception {
     BigInteger logId = logService.logRequest(request);
     try (FeatureCollectionTransformer transformer =
-                 new FeatureCollectionTransformer(response, configurationService)) {
+        new FeatureCollectionTransformer(response, configurationService)) {
       lookupDao.validateFeatureSource(featureSource);
 
       Map<String, Object> parameterMap = new HashMap<>();

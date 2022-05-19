@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.*;
@@ -21,18 +22,15 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(LookupController.class)
 public class LookupControllerTest {
 
-  @Autowired
-  private MockMvc mvc;
+  @Autowired private MockMvc mvc;
 
-  @MockBean
-  private LookupDao lookupDao;
+  @MockBean private LookupDao lookupDao;
   @MockBean private StreamingDao streamingDao;
   @MockBean private Navigation navigation;
   @MockBean private Parameters parameters;
   @MockBean private ConfigurationService configurationService;
   @MockBean private LogService logService;
   @MockBean private PyGeoApiService pygeoapiService;
-
 
   @BeforeEach
   public void setUp() {
@@ -43,8 +41,7 @@ public class LookupControllerTest {
   @Test
   public void getLookupsTest() throws Exception {
     // missing required parameter
-    mvc.perform(get("/lookups"))
-            .andExpect(status().isOk());
+    mvc.perform(get("/lookups")).andExpect(status().isOk());
 
     verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(1))
@@ -55,22 +52,23 @@ public class LookupControllerTest {
   public void getLookupsRedirectTest() throws Exception {
     // missing required parameter
     mvc.perform(get("/lookups/char-type"))
-            .andExpect(status().isFound())
-            .andExpect(redirectedUrl("http://owi-test.usgs.gov:8080/test-url/lookups/char-type/characteristics?f=json"));
+        .andExpect(status().isFound())
+        .andExpect(
+            redirectedUrl(
+                "http://owi-test.usgs.gov:8080/test-url/lookups/char-type/characteristics?f=json"));
 
     verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(1))
-            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.FOUND.value()));
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.FOUND.value()));
   }
 
   @Test
   public void getCharacteristicsTest() throws Exception {
     // missing required parameter
-    mvc.perform(get("/lookups/char-type/characteristics"))
-            .andExpect(status().isOk());
+    mvc.perform(get("/lookups/char-type/characteristics")).andExpect(status().isOk());
 
     verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(1))
-            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
   }
 }

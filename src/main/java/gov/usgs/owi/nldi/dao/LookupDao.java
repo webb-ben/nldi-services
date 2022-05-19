@@ -62,7 +62,8 @@ public class LookupDao extends BaseDao {
     }
   }
 
-  public void validateFeatureSourceAndId(String featureSource, String featureID) throws FeatureIdNotFoundException {
+  public void validateFeatureSourceAndId(String featureSource, String featureID)
+      throws FeatureIdNotFoundException {
     if (featureSource.equals(COMID)) {
       return;
     }
