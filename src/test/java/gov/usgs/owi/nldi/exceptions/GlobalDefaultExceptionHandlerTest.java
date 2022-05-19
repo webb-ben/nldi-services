@@ -18,7 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.server.ResponseStatusException;
 
-@WebMvcTest(LinkedDataController.class)
+@WebMvcTest(
+    value = LinkedDataController.class,
+    properties = {"springFrameworkLogLevel=INFO", "serverPort=8080"})
 public class GlobalDefaultExceptionHandlerTest {
 
   @MockBean LinkedDataController controller;

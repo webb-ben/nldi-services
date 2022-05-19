@@ -21,7 +21,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(NetworkController.class)
+@WebMvcTest(
+    value = NetworkController.class,
+    properties = {"springFrameworkLogLevel=INFO", "serverPort=8080"})
 public class NetworkControllerTest {
 
   @Autowired private MockMvc mvc;

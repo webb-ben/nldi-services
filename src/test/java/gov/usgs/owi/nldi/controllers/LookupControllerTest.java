@@ -19,7 +19,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(LookupController.class)
+@WebMvcTest(
+    value = LookupController.class,
+    properties = {"springFrameworkLogLevel=INFO", "serverPort=8080"})
 public class LookupControllerTest {
 
   @Autowired private MockMvc mvc;
