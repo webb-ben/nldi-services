@@ -1,22 +1,16 @@
 package gov.usgs.owi.nldi.controllers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.exceptions.DataSourceNotFoundException;
+import gov.usgs.owi.nldi.exceptions.FeatureIdNotFoundException;
+import gov.usgs.owi.nldi.exceptions.FeatureSourceNotFoundException;
 import gov.usgs.owi.nldi.services.*;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,262 +19,379 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
 
+@WebMvcTest(LinkedDataController.class)
 public class LinkedDataControllerTest {
-  @Mock private StreamingDao streamingDao;
-  @Mock private LookupDao lookupDao;
-  @Mock private Navigation navigation;
-  @Mock private Parameters parameters;
-  @Mock private LogService logService;
-  @Mock private PyGeoApiService pygeoapiService;
 
-  private TestConfigurationService configurationService;
-  private LinkedDataController controller;
-  private MockHttpServletResponse response;
-  private MockHttpServletRequest request;
+  @Autowired
+  private MockMvc mvc;
+
+  @MockBean
+  private LookupDao lookupDao;
+  @MockBean private StreamingDao streamingDao;
+  @MockBean private Navigation navigation;
+  @MockBean private Parameters parameters;
+  @MockBean private ConfigurationService configurationService;
+  @MockBean private LogService logService;
+  @MockBean private PyGeoApiService pygeoapiService;
+
 
   @BeforeEach
-  @SuppressWarnings("unchecked")
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
-
-    // Need to mock this for only a few tests
-    doCallRealMethod().when(streamingDao).stream(anyString(), anyMap(), any());
-
-    configurationService = new TestConfigurationService();
-    controller =
-        new LinkedDataController(
-            lookupDao,
-            streamingDao,
-            navigation,
-            parameters,
-            configurationService,
-            logService,
-            pygeoapiService);
-    response = new MockHttpServletResponse();
-    request = new MockHttpServletRequest();
-
+    when(configurationService.getLinkedDataUrl()).thenReturn("http://owi-test.usgs.gov:8080/test-url/linked-data");
     when(logService.logRequest(any(HttpServletRequest.class))).thenReturn(BigInteger.ONE);
-    when(lookupDao.getList(any(String.class), anyMap()))
-        .thenReturn(new ArrayList<Map<String, Object>>(), null, getTestList());
+    when(lookupDao.getList(any(String.class), anyMap())).thenReturn(getTestList());
+    doThrow(new FeatureSourceNotFoundException("invalid-source")).when(lookupDao).validateFeatureSource(eq("invalid-source"));
+    doThrow(new FeatureIdNotFoundException("source", "invalid-id")).when(lookupDao).validateFeatureSourceAndId(anyString(), eq("invalid-id"));
+    doThrow(new DataSourceNotFoundException("invalid-source")).when(lookupDao).validateDataSource(eq("invalid-source"));
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  public void getComidTest() {
-    when(lookupDao.getFeatureComid(anyString(), anyString()))
-        .thenReturn(goodFeature(), null, missingFeature());
+  public void getDataSourcesTest() throws Exception {
+    mvc.perform(get("/linked-data"))
+        .andExpect(status().isOk())
+        .andExpect(
+            content()
+                .string(
+                    "[{\"source\":\"comid\",\"sourceName\":\"NHDPlus comid\","
+                        + "\"features\":\"http://owi-test.usgs.gov:8080/test-url/linked-data/comid\"},{\"features\":\"features-url\",\"source\":\"source\",\"sourceName\":\"source name\"}]"));
 
-    assertEquals(12345, lookupDao.getFeatureComid("abc", "def"));
-
-    assertNull(lookupDao.getFeatureComid("abc", "def"));
-
-    assertNull(lookupDao.getFeatureComid("abc", "def"));
-  }
-
-  @Test
-  @SuppressWarnings("unchecked")
-  public void getFlowlinesTest() throws Exception {
-    when(lookupDao.getFeatureComid(anyString(), anyString())).thenReturn(null, goodFeature());
-    controller.getFlowlines(
-        request, response, "DoesntMatter", "DoesntMatter", null, null, null, null);
     verify(logService).logRequest(any(HttpServletRequest.class));
     verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    // Mock lookupDao 1st response of null means the comid is not found, thus a 404
-    assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
-
-    controller.getFlowlines(request, response, null, null, null, null, null, null);
-    verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
-    verify(logService, times(2)).logRequestComplete(any(BigInteger.class), any(int.class));
-    // Mock lookupDao 2nd response doesn't actually exist, thus causes a 500 when we try to get
-    // flowlines
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void getFeaturesTest() throws Exception {
-    when(lookupDao.getFeatureComid(anyString(), anyString())).thenReturn(null, goodFeature());
-    controller.getFeatures(
-        request, response, "DoesntMatter", "DoesntMatter", null, null, null, null, null);
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    // Mock lookupDao 1st response of null means the comid is not found, thus a 404
-    assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+    mvc.perform(get("/linked-data/nwissite"))
+            .andExpect(status().isOk());
 
-    controller.getFeatures(request, response, null, null, null, null, null, null, null);
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+  }
+
+  @Test
+  public void getRegisteredFeatureTest() throws Exception {
+    mvc.perform(get("/linked-data/valid-source/valid-id"))
+            .andExpect(status().isOk());
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+            .logRequestComplete(any(BigInteger.class), anyInt());
+
+    mvc.perform(get("/linked-data/valid-source/invalid-id"))
+        .andExpect(status().isNotFound())
+        .andExpect(
+            content()
+                .string(
+                    "The feature ID \"invalid-id\" does not exist in feature source \"source\"."));
+
     verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
-    verify(logService, times(2)).logRequestComplete(any(BigInteger.class), any(int.class));
-    // Mock lookupDao 2nd response doesn't actually exist, thus causes a 500 when we try to get
-    // features
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
-  }
+    verify(logService, times(2))
+            .logRequestComplete(any(BigInteger.class), anyInt());
 
-  public static Integer goodFeature() {
-    return 12345;
-  }
+    mvc.perform(get("/linked-data/invalid-source/valid-id"))
+        .andExpect(status().isNotFound())
+        .andExpect(content().string("The feature source \"invalid-source\" does not exist."));
 
-  public static Integer missingFeature() {
-    return null;
-  }
-
-  @Test
-  public void getCharacteristicDataWithNullParamsTest() throws IOException {
-    controller.getCharacteristicData(request, response, null, null, null, null);
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    // this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
+    verify(logService, times(3)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(3))
+            .logRequestComplete(any(BigInteger.class), anyInt());
   }
 
   @Test
-  public void getCharacteristicDataWithNonexistingComidTest() throws IOException {
-    controller.getCharacteristicData(request, response, "NowhereSource", "IDontExist", null, null);
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
+  public void getNavigateTypesTest() throws Exception {
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigate"))
+            .andExpect(status().isOk())
+            .andExpect(
+                    content()
+                            .string(
+                                    "{\"upstreamMain\":\"http://owi-test.usgs.gov:8080/test-url/linked-data/valid-source/valid-id/navigate/UM\",\"upstreamTributaries\":\"http://owi-test.usgs.gov:8080/test-url/linked-data/valid-source/valid-id/navigate/UT\",\"downstreamMain\":\"http://owi-test.usgs.gov:8080/test-url/linked-data/valid-source/valid-id/navigate/DM\",\"downstreamDiversions\":\"http://owi-test.usgs.gov:8080/test-url/linked-data/valid-source/valid-id/navigate/DD\"}"));
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+  }
+
+  @Test
+  public void getNavigationTypesTest() throws Exception {
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation"))
+        .andExpect(status().isOk())
+        .andExpect(
+            content()
+                .string(
+                    "{\"upstreamMain\":\"http://owi-test.usgs.gov:8080/test-url/linked-data/valid-source/valid-id/navigation/UM\",\"upstreamTributaries\":\"http://owi-test.usgs.gov:8080/test-url/linked-data/valid-source/valid-id/navigation/UT\",\"downstreamMain\":\"http://owi-test.usgs.gov:8080/test-url/linked-data/valid-source/valid-id/navigation/DM\",\"downstreamDiversions\":\"http://owi-test.usgs.gov:8080/test-url/linked-data/valid-source/valid-id/navigation/DD\"}"));
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+  }
+
+  @Test
+  public void getCharacteristicDataTest() throws Exception {
+    mvc.perform(get("/linked-data/valid-source/valid-id/char-type"))
+            .andExpect(status().isOk());
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/char-type?characteristicId=val1,val2"))
+            .andExpect(status().isOk());
+
+    verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(2))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
   }
 
   @Test
   public void getBasinTest() throws Exception {
-    when(lookupDao.getFeatureComid(anyString(), anyString())).thenReturn(goodFeature());
-    doNothing().when(streamingDao).stream(anyString(), anyMap(), any());
+    mvc.perform(get("/linked-data/valid-source/valid-id/basin"))
+            .andExpect(status().isOk());
 
-    controller.getBasin(request, response, "DoesntMatter", "DoesntMatter", true, false);
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    assertEquals(HttpStatus.OK.value(), response.getStatus());
-  }
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
 
-  @Test
-  public void getBasinNonSimplifiedTest() throws Exception {
-    when(lookupDao.getFeatureComid(anyString(), anyString())).thenReturn(goodFeature());
-    doNothing().when(streamingDao).stream(anyString(), anyMap(), any());
+    mvc.perform(get("/linked-data/valid-source/valid-id/basin?simplified=true&splitCatchment=false"))
+            .andExpect(status().isOk());
 
-    controller.getBasin(request, response, "DoesntMatter", "DoesntMatter", false, false);
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    assertEquals(HttpStatus.OK.value(), response.getStatus());
-  }
-
-  @Test
-  public void getBasinWithNullParamsTest() throws Exception {
-    controller.getBasin(request, response, null, null, true, false);
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    // this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
-  }
-
-  @Test
-  public void getBasinWithNonexistingComidTest() throws Exception {
-    controller.getBasin(request, response, "NowhereSource", "IDontExist", true, false);
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
-  }
-
-  @Test
-  public void getDataSourcesTest() throws UnsupportedEncodingException {
-    List<Map<String, Object>> out = controller.getDataSources(request, response);
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    assertEquals(HttpStatus.OK.value(), response.getStatus());
-    assertEquals(
-        "[{source=comid, sourceName=NHDPlus comid,"
-            + " features=http://owi-test.usgs.gov:8080/test-url/linked-data/comid}]",
-        out.toString());
-  }
-
-  @Test
-  public void getFeaturestest() {
-    try {
-      controller.getFeatures(request, response, null);
-    } catch (Exception e) {
-      assertTrue(e instanceof NullPointerException);
-    }
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    // this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
-  }
-
-  @Test
-  public void getRegisteredFeatureTest() {
-    try {
-      controller.getRegisteredFeature(request, response, null, null);
-    } catch (Exception e) {
-      assertTrue(e instanceof NullPointerException);
-    }
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    // this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
-  }
-
-  @Test
-  public void getNavigationTypesTest() throws UnsupportedEncodingException {
-    controller.getNavigationTypes(request, response, null, null);
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
-
-    response = new MockHttpServletResponse();
-    controller.getNavigationTypes(request, response, null, null);
     verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
-    verify(logService, times(2)).logRequestComplete(any(BigInteger.class), any(int.class));
-    assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+    verify(logService, times(2))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
 
-    response = new MockHttpServletResponse();
-    Map<String, Object> out = controller.getNavigationTypes(request, response, "test", "test123");
+    mvc.perform(get("/linked-data/valid-source/valid-id/basin?simplified=true&splitCatchment=invalid"))
+            .andExpect(status().isBadRequest());
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/basin?simplified=invalid&splitCatchment=false"))
+            .andExpect(status().isBadRequest());
+
+    mvc.perform(get("/linked-data/invalid-source/valid-id/basin"))
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("The feature source \"invalid-source\" does not exist."));
+
     verify(logService, times(3)).logRequest(any(HttpServletRequest.class));
-    verify(logService, times(3)).logRequestComplete(any(BigInteger.class), any(int.class));
-    assertEquals(HttpStatus.OK.value(), response.getStatus());
-    assertEquals(
-        "{upstreamMain=http://owi-test.usgs.gov:8080/test-url/linked-data/test/test123/navigation/UM,"
-            + " upstreamTributaries=http://owi-test.usgs.gov:8080/test-url/linked-data/test/test123/navigation/UT,"
-            + " downstreamMain=http://owi-test.usgs.gov:8080/test-url/linked-data/test/test123/navigation/DM,"
-            + " downstreamDiversions=http://owi-test.usgs.gov:8080/test-url/linked-data/test/test123/navigation/DD}",
-        out.toString());
+    verify(logService, times(3))
+            .logRequestComplete(any(BigInteger.class), anyInt());
+
+    mvc.perform(get("/linked-data/valid-source/invalid-id/basin"))
+            .andExpect(status().isNotFound())
+            .andExpect(
+                    content()
+                            .string(
+                                    "The feature ID \"invalid-id\" does not exist in feature source \"source\"."));
+
+    verify(logService, times(4)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(4))
+            .logRequestComplete(any(BigInteger.class), anyInt());
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  public void getFlowlinesTest() throws Exception {
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigate/UM"))
+            .andExpect(status().isOk());
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigate/UM?stopComid=-1"))
+            .andExpect(status().isBadRequest());
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigate/UM?stopComid=12345"))
+            .andExpect(status().isOk());
+
+    verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(2))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigate/UM?distance=bad-input"))
+            .andExpect(status().isBadRequest());
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigate/UM?distance=5.678"))
+            .andExpect(status().isOk());
+
+    verify(logService, times(3)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(3))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigate/UM?legacy=true"))
+            .andExpect(status().isOk());
+
+    verify(logService, times(4)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(4))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigate/wrong"))
+            .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void getFeaturesNavigationTest() throws Exception {
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/UM/valid-source"))
+            .andExpect(status().isBadRequest());
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/WRONG/valid-source?distance=1"))
+            .andExpect(status().isBadRequest());
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/UM/valid-source?distance=1"))
+            .andExpect(status().isOk());
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/UM/valid-source?distance=1&stopComid=-1"))
+            .andExpect(status().isBadRequest());
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/UM/valid-source?distance=1&stopComid=12345"))
+            .andExpect(status().isOk());
+
+    verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(2))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/UM/invalid-source?distance=1"))
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("The data source \"invalid-source\" does not exist."));
+
+    verify(logService, times(3)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(3))
+            .logRequestComplete(any(BigInteger.class), anyInt());
+
+    mvc.perform(get("/linked-data/invalid-source/valid-id/navigation/UM/valid-source?distance=1"))
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("The feature source \"invalid-source\" does not exist."));
+
+    verify(logService, times(4)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(4))
+            .logRequestComplete(any(BigInteger.class), anyInt());
+
+    mvc.perform(get("/linked-data/valid-source/invalid-id/navigation/UM/valid-source?distance=1"))
+            .andExpect(status().isNotFound())
+            .andExpect(
+                    content()
+                            .string(
+                                    "The feature ID \"invalid-id\" does not exist in feature source \"source\"."));
+
+    verify(logService, times(5)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(5))
+            .logRequestComplete(any(BigInteger.class), anyInt());
+  }
+
+  @Test
+  public void getNavigationTest() throws Exception {
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/WRONG"))
+            .andExpect(status().isBadRequest());
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/UM"))
+            .andExpect(status().isOk());
+
+    // logging gets called twice for this request because it calls another controller function
+    verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(2))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/invalid-source/valid-id/navigation/UM"))
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("The feature source \"invalid-source\" does not exist."));
+
+    verify(logService, times(3)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(3))
+            .logRequestComplete(any(BigInteger.class), anyInt());
+
+    mvc.perform(get("/linked-data/valid-source/invalid-id/navigation/UM"))
+            .andExpect(status().isNotFound())
+            .andExpect(
+                    content()
+                            .string(
+                                    "The feature ID \"invalid-id\" does not exist in feature source \"source\"."));
+
+    verify(logService, times(4)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(4))
+            .logRequestComplete(any(BigInteger.class), anyInt());
+  }
+
+  @Test
   public void getNavigationFlowlinesTest() throws Exception {
-    when(lookupDao.getFeatureComid(anyString(), anyString())).thenReturn(null, goodFeature());
-    controller.getNavigationFlowlines(
-        request, response, "DoesntMatter", "DoesntMatter", null, null, null, null, null, null);
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    // Mock lookupDao 1st response of null means the comid is not found, thus a 404
-    assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/WRONG/flowlines?distance=1"))
+            .andExpect(status().isBadRequest());
 
-    controller.getNavigationFlowlines(
-        request, response, null, null, null, null, null, null, null, null);
-    verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
-    verify(logService, times(2)).logRequestComplete(any(BigInteger.class), any(int.class));
-    // Mock lookupDao 2nd response doesn't actually exist, thus causes a 500 when we try to get
-    // flowlines
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
-  }
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/WRONG/flowlines?distance=-1"))
+            .andExpect(status().isBadRequest());
 
-  @Test
-  public void getNavigationOptionsTestBad() throws UnsupportedEncodingException {
-    controller.getNavigation(request, response, null, "DoesntMatter", "UT");
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/UM/flowlines?distance=1"))
+            .andExpect(status().isOk());
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/DM/flowlines?distance=1&trimStart=invalid"))
+            .andExpect(status().isBadRequest());
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/DM/flowlines?distance=1&trimStart=false"))
+            .andExpect(status().isOk());
+
     verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
-    verify(logService, times(2)).logRequestComplete(any(BigInteger.class), any(int.class));
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
+    verify(logService, times(2))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/DD/flowlines?distance=1&trimStart=true&trimTolerance=0.1"))
+            .andExpect(status().isOk());
+
+    verify(logService, times(3)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(3))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/UM/flowlines?distance=1&stopComid=-1"))
+            .andExpect(status().isBadRequest());
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/UM/flowlines?distance=1&stopComid=12345"))
+            .andExpect(status().isOk());
+
+    verify(logService, times(4)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(4))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/valid-source/valid-id/navigation/UM/flowlines?distance=1&legacy=true"))
+            .andExpect(status().isOk());
+
+    verify(logService, times(5)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(5))
+            .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/invalid-source/valid-id/navigation/UM/flowlines?distance=1"))
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("The feature source \"invalid-source\" does not exist."));
+
+    verify(logService, times(6)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(6))
+            .logRequestComplete(any(BigInteger.class), anyInt());
+
+    mvc.perform(get("/linked-data/valid-source/invalid-id/navigation/UM/flowlines?distance=1"))
+            .andExpect(status().isNotFound())
+            .andExpect(
+                    content()
+                            .string(
+                                    "The feature ID \"invalid-id\" does not exist in feature source \"source\"."));
+
+    verify(logService, times(7)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(7))
+            .logRequestComplete(any(BigInteger.class), anyInt());
   }
 
   public static List<Map<String, Object>> getTestList() {
     List<Map<String, Object>> rtn = new ArrayList<>();
     Map<String, Object> entry = new HashMap<>();
-    entry.put("key", "value");
+    entry.put("source", "source");
+    entry.put("sourceName", "source name");
+    entry.put("features", "features-url");
     rtn.add(entry);
     return rtn;
   }
