@@ -1,5 +1,8 @@
 package gov.usgs.owi.nldi.dao;
 
+import gov.usgs.owi.nldi.exceptions.DataSourceNotFoundException;
+import gov.usgs.owi.nldi.exceptions.FeatureIdNotFoundException;
+import gov.usgs.owi.nldi.exceptions.FeatureSourceNotFoundException;
 import gov.usgs.owi.nldi.services.Parameters;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +36,46 @@ public class LookupDao extends BaseDao {
   @Autowired
   public LookupDao(SqlSessionFactory sqlSessionFactory) {
     super(sqlSessionFactory);
+  }
+
+  public void validateDataSource(String dataSource) throws DataSourceNotFoundException {
+    Map<String, Object> parameterMap = new HashMap<>();
+    parameterMap.put(LookupDao.FEATURE_SOURCE, dataSource);
+
+    Map<String, Object> feature = getSqlSession().selectOne(NS + FEATURE_SOURCE, parameterMap);
+    if (null == feature) {
+      throw new DataSourceNotFoundException(dataSource);
+    }
+  }
+
+  public void validateFeatureSource(String featureSource) throws FeatureSourceNotFoundException {
+    if (featureSource.equals(COMID)) {
+      return;
+    }
+
+    Map<String, Object> parameterMap = new HashMap<>();
+    parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+
+    Map<String, Object> feature = getSqlSession().selectOne(NS + FEATURE_SOURCE, parameterMap);
+    if (null == feature) {
+      throw new FeatureSourceNotFoundException(featureSource);
+    }
+  }
+
+  public void validateFeatureSourceAndId(String featureSource, String featureID)
+      throws FeatureIdNotFoundException {
+    if (featureSource.equals(COMID)) {
+      return;
+    }
+
+    Map<String, Object> parameterMap = new HashMap<>();
+    parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+    parameterMap.put(Parameters.FEATURE_ID, featureID);
+
+    Map<String, Object> feature = getSqlSession().selectOne(NS + BaseDao.FEATURE, parameterMap);
+    if (null == feature) {
+      throw new FeatureIdNotFoundException(featureSource, featureID);
+    }
   }
 
   public Integer getFeatureComid(String featureSource, String featureID)

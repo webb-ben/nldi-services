@@ -205,9 +205,9 @@ public class NetworkControllerDataSourceIT extends BaseControllerIT {
   public void getBasinTest() throws Exception {
     assertEntity(
         restTemplate,
-        "/linked-data/comid/13297246/navigation/UT/basin?distance=9999",
-        HttpStatus.OK.value(),
-        BaseController.MIME_TYPE_GEOJSON,
+        "/linked-data/comid/13297246/navigation/UT/invalid?distance=9999",
+        HttpStatus.NOT_FOUND.value(),
+        null,
         null,
         false,
         false);

@@ -1,9 +1,10 @@
 package gov.usgs.owi.nldi.controllers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
@@ -12,52 +13,64 @@ import java.math.BigInteger;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
 
+@WebMvcTest(
+    value = LookupController.class,
+    properties = {"springFrameworkLogLevel=INFO", "serverPort=8080"})
 public class LookupControllerTest {
 
-  private StreamingDao streamingDao;
-  @Mock private LookupDao lookupDao;
-  @Mock private Navigation navigation;
-  @Mock private Parameters parameters;
-  @Mock private LogService logService;
-  @Mock private PyGeoApiService pygeoapiService;
+  @Autowired private MockMvc mvc;
 
-  private TestConfigurationService configurationService;
-  private LookupController controller;
-  private MockHttpServletResponse response;
-  private MockHttpServletRequest request;
+  @MockBean private LookupDao lookupDao;
+  @MockBean private StreamingDao streamingDao;
+  @MockBean private Navigation navigation;
+  @MockBean private Parameters parameters;
+  @MockBean private ConfigurationService configurationService;
+  @MockBean private LogService logService;
+  @MockBean private PyGeoApiService pygeoapiService;
 
   @BeforeEach
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
-    configurationService = new TestConfigurationService();
-
-    controller =
-        new LookupController(
-            lookupDao,
-            streamingDao,
-            navigation,
-            parameters,
-            configurationService,
-            logService,
-            pygeoapiService);
-    response = new MockHttpServletResponse();
-    request = new MockHttpServletRequest();
-
+    when(configurationService.getRootUrl()).thenReturn("http://owi-test.usgs.gov:8080/test-url");
     when(logService.logRequest(any(HttpServletRequest.class))).thenReturn(BigInteger.ONE);
   }
 
   @Test
+  public void getLookupsTest() throws Exception {
+    // missing required parameter
+    mvc.perform(get("/lookups")).andExpect(status().isOk());
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+  }
+
+  @Test
+  public void getLookupsRedirectTest() throws Exception {
+    // missing required parameter
+    mvc.perform(get("/lookups/char-type"))
+        .andExpect(status().isFound())
+        .andExpect(
+            redirectedUrl(
+                "http://owi-test.usgs.gov:8080/test-url/lookups/char-type/characteristics?f=json"));
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.FOUND.value()));
+  }
+
+  @Test
   public void getCharacteristicsTest() throws Exception {
-    controller.getCharacteristics(request, response, null);
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    // this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
+    // missing required parameter
+    mvc.perform(get("/lookups/char-type/characteristics")).andExpect(status().isOk());
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
   }
 }

@@ -39,6 +39,11 @@
         </choose>
     </sql>
 
+    <select id="featureSource" resultType="java.util.LinkedHashMap">
+        select *
+        from nldi_data.crawler_source
+        where lower(source_suffix) = lower(#{featureSource})
+    </select>
 
     <sql id="featureFromWhere">
          from nldi_data.feature

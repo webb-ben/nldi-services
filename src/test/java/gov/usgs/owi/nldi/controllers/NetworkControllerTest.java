@@ -1,92 +1,99 @@
 package gov.usgs.owi.nldi.controllers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.exceptions.DataSourceNotFoundException;
 import gov.usgs.owi.nldi.services.*;
 import java.math.BigInteger;
 import javax.servlet.http.HttpServletRequest;
 import mil.nga.sf.geojson.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.test.web.servlet.MockMvc;
 
+@WebMvcTest(
+    value = NetworkController.class,
+    properties = {"springFrameworkLogLevel=INFO", "serverPort=8080"})
 public class NetworkControllerTest {
 
-  private StreamingDao streamingDao;
-  @Mock private LookupDao lookupDao;
-  @Mock private Navigation navigation;
-  @Mock private Parameters parameters;
-  @Mock private LogService logService;
-  @Mock private PyGeoApiService pygeoapiService;
+  @Autowired private MockMvc mvc;
 
-  private TestConfigurationService configurationService;
-  private NetworkController controller;
-  private MockHttpServletResponse response;
-  private MockHttpServletRequest request;
+  @MockBean private LookupDao lookupDao;
+  @MockBean private StreamingDao streamingDao;
+  @MockBean private Navigation navigation;
+  @MockBean private Parameters parameters;
+  @MockBean private ConfigurationService configurationService;
+  @MockBean private LogService logService;
+  @MockBean private PyGeoApiService pygeoapiService;
 
   @BeforeEach
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
-    configurationService = new TestConfigurationService();
-    controller =
-        new NetworkController(
-            lookupDao,
-            streamingDao,
-            navigation,
-            parameters,
-            configurationService,
-            logService,
-            pygeoapiService);
-    response = new MockHttpServletResponse();
-    request = new MockHttpServletRequest();
-
     when(logService.logRequest(any(HttpServletRequest.class))).thenReturn(BigInteger.ONE);
+    doThrow(new DataSourceNotFoundException("invalid-source"))
+        .when(lookupDao)
+        .validateDataSource(eq("invalid-source"));
   }
 
   @Test
   public void getFlowlinesTest() throws Exception {
-    try {
-      controller.getFlowlines(request, response, "13297246", "PP", "13297198", null, null);
-      fail("should have failed");
-    } catch (ResponseStatusException rse) {
-      // good
-    } catch (Throwable t) {
-      fail(t);
-    }
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService)
-        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.BAD_REQUEST.value()));
+    // missing required parameter
+    mvc.perform(get("/linked-data/comid/13297246/navigation/PP/flowlines"))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string("Required String parameter 'distance' is not present"));
+
+    verify(logService, times(0)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(0)).logRequestComplete(any(BigInteger.class), any(int.class));
+
+    // valid example
+    mvc.perform(
+            get(
+                "/linked-data/comid/13297246/navigation/PP/flowlines?stopComid=13297247&distance=1"))
+        .andExpect(status().isOk());
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
   }
 
   @Test
   public void getFeaturesTest() throws Exception {
-    controller.getFeatures(request, response, null, null, null, null, null, null);
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    // this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
+    mvc.perform(get("/linked-data/comid/13294314/navigation/UT/wqp?distance=1"))
+        .andExpect(status().isOk());
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
+
+    mvc.perform(get("/linked-data/comid/13294314/navigation/UT/invalid-source?distance=1"))
+        .andExpect(status().isNotFound())
+        .andExpect(content().string("The data source \"invalid-source\" does not exist."));
+
+    verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(2)).logRequestComplete(any(BigInteger.class), anyInt());
   }
 
   @Test
-  public void getBasinTest() throws Exception {
-    controller.getFeatures(request, response, null, null, BaseDao.BASIN, null, null, null);
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    // this is a INTERNAL_SERVER_ERROR because of NPEs that shouldn't happen in real life.
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
+  public void invalidStopComidTest() throws Exception {
+    mvc.perform(get("/linked-data/comid/13294314/navigation/UT/wqp?stopComid=13294313&distance=1"))
+        .andExpect(status().isBadRequest())
+        .andExpect(
+            content()
+                .string(
+                    "400 BAD_REQUEST \"The stopComid must be downstream of the start comid.\""));
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.BAD_REQUEST.value()));
   }
 
   @Test
@@ -99,14 +106,16 @@ public class NetworkControllerTest {
     // mock calls to other classes
     when(lookupDao.getComidByLatitudeAndLongitude(any(Position.class))).thenReturn(comid);
     when(lookupDao.getMeasure(eq(comid), eq(pygeoResponse))).thenReturn("measure");
-    when(lookupDao.getReachCode(comid)).thenReturn("reachcode");
+    when(lookupDao.getReachCode(eq(comid))).thenReturn("reachcode");
     when(pygeoapiService.getNldiFlowTraceIntersectionPoint(
             any(Position.class), eq(true), eq(PyGeoApiService.Direction.NONE)))
         .thenReturn(pygeoResponse);
 
-    controller.getHydrologicLocation(request, response, String.format("POINT (%s %s)", lon, lat));
-    verify(logService).logRequest(any(HttpServletRequest.class));
-    verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
-    assertEquals(HttpStatus.OK.value(), response.getStatus());
+    mvc.perform(get(String.format("/linked-data/hydrolocation?coords=POINT(%s %s)", lon, lat)))
+        .andExpect(status().isOk());
+
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
+        .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
   }
 }

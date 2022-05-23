@@ -115,7 +115,14 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
 
   @Test
   public void getFeaturesTestInvalid() throws Exception {
-    assertEntity(restTemplate, "/linked-data/wqx", HttpStatus.OK.value(), null, null, false, false);
+    assertEntity(
+        restTemplate,
+        "/linked-data/wqx",
+        HttpStatus.NOT_FOUND.value(),
+        null,
+        "The feature source \"wqx\" does not exist.",
+        false,
+        false);
   }
 
   // Object Testing Catchment
