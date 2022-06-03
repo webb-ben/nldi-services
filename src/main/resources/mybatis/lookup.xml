@@ -79,7 +79,7 @@
 
     <select id="measureEstimate" resultType="java.util.LinkedHashMap">
         select distinct
-            fmeasure + (1 - st_linelocatepoint(shape,
+            fmeasure + (1 - st_linelocatepoint(nhdplus.nhdflowline_np21.shape,
                 <choose>
                     <when test="lon != null and lat != null">
                         st_geomfromtext('POINT(${lon} ${lat})', 4269)
