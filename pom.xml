@@ -257,6 +257,11 @@
                                     <LOCAL_NETWORK_NAME>nldi</LOCAL_NETWORK_NAME>
                                 </env>
                                 <wait>
+                                    <!--
+                                      Stops waiting once the logs print this line (regex match).
+                                      Otherwise, fails at end of <time> duration.
+                                    -->
+                                    <log>^PostgreSQL init process complete; ready for start up\.$</log>
                                     <time>45000</time>
                                 </wait>
                             </run>
