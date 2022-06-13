@@ -6,11 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/internetofwater/nldi-services/compare/nldi-services-1.11.0...master)
 ### Changed
+* Enabled content negotiation for all endpoints
 * Improved navigation query speed
 * Removed feature count headers from response
 * Fixed issues with data pollution in tests
 
 ### Added
+* `/linked-data/{featureSource}/{featureID}` will return JSON-LD when `f=jsonld` is specified
 * Swagger now contains example values for required parameters
 * Invalid feature sources and IDs now return an error message
 
