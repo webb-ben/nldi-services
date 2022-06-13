@@ -11,8 +11,7 @@
 				"@id": "schema:geoWithin",
 				"@type": "@id"
 			},
-			"mainstem": {
-				"@id": "hyf:linearElement",
+			"hyf:linearElement": {
 				"@type": "@id"
 			}
 		}
@@ -29,7 +28,7 @@
 	"hyf:referencedPosition": [
 		{
 			"hyf:HY_IndirectPosition": {
-				"mainstem": "https://geoconnex.us/ref/mainstems/467897"
+				"hyf:linearElement": "https://geoconnex.us/ref/mainstems/467897"
 			}
 		}
 	],

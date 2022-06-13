@@ -72,8 +72,7 @@ public class FeatureMessageConverter extends AbstractHttpMessageConverter<Featur
       generator.writeStringField("@type", "@id");
       generator.writeEndObject();
 
-      generator.writeObjectFieldStart("mainstem");
-      generator.writeStringField("@id", "hyf:linearElement");
+      generator.writeObjectFieldStart("hyf:linearElement");
       generator.writeStringField("@type", "@id");
       generator.writeEndObject();
 
@@ -103,7 +102,7 @@ public class FeatureMessageConverter extends AbstractHttpMessageConverter<Featur
       if (!feature.getMainstemUri().equalsIgnoreCase("NA")) {
         generator.writeStartObject();
         generator.writeObjectFieldStart("hyf:HY_IndirectPosition");
-        generator.writeStringField("mainstem", feature.getMainstemUri());
+        generator.writeStringField("hyf:linearElement", feature.getMainstemUri());
         generator.writeEndObject();
         generator.writeEndObject();
       }
