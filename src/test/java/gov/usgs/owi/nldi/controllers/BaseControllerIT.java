@@ -11,11 +11,9 @@ import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import gov.usgs.owi.nldi.ColumnSensingFlatXMLDataSetLoader;
 import java.io.IOException;
 import java.util.Collections;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
@@ -66,7 +64,8 @@ public abstract class BaseControllerIT {
       headers.setAccept(Collections.singletonList(MediaType.ALL));
     }
     HttpEntity<String> requestEntity = new HttpEntity(headers);
-    ResponseEntity<String> entity = restTemplate.exchange(urlRoot + url, HttpMethod.GET, requestEntity, String.class);
+    ResponseEntity<String> entity =
+        restTemplate.exchange(urlRoot + url, HttpMethod.GET, requestEntity, String.class);
 
     assertEquals(httpStatus, entity.getStatusCodeValue());
     if (null != contentType) {

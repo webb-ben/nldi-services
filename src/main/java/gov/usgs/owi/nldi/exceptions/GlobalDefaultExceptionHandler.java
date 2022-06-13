@@ -31,9 +31,9 @@ public class GlobalDefaultExceptionHandler {
   }
 
   @ExceptionHandler({
-          ConstraintViolationException.class,
-          ResponseStatusException.class,
-          MissingServletRequestParameterException.class
+    ConstraintViolationException.class,
+    ResponseStatusException.class,
+    MissingServletRequestParameterException.class
   })
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   @ResponseBody
@@ -44,15 +44,14 @@ public class GlobalDefaultExceptionHandler {
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   @ResponseBody
-  public Error handleMethodArgumentTypeMistmatchException(MethodArgumentTypeMismatchException exception) {
+  public Error handleMethodArgumentTypeMistmatchException(
+      MethodArgumentTypeMismatchException exception) {
     // simplifies the message and avoids listing the nested exceptions
     String finalMessage = exception.getMessage().split("IllegalArgumentException: ")[1];
     return new Error(finalMessage);
   }
 
-  @ExceptionHandler({
-          HttpMessageNotReadableException.class
-  })
+  @ExceptionHandler({HttpMessageNotReadableException.class})
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   @ResponseBody
   public Error handleBadRequestTrimmedException(Exception exception) {
@@ -73,7 +72,8 @@ public class GlobalDefaultExceptionHandler {
   @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
   @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
   @ResponseBody
-  public Error handleHttpMediaTypeNotAcceptableExeption(HttpMediaTypeNotAcceptableException exception) {
+  public Error handleHttpMediaTypeNotAcceptableExeption(
+      HttpMediaTypeNotAcceptableException exception) {
     return new Error(exception.getMessage());
   }
 

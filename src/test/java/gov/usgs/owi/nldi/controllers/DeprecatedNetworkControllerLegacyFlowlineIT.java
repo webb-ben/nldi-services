@@ -152,8 +152,9 @@ public class DeprecatedNetworkControllerLegacyFlowlineIT extends BaseControllerI
         restTemplate,
         "/linked-data/comid/13297246/navigate/PP?stopComid=13297198&legacy=true",
         HttpStatus.BAD_REQUEST.value(),
-            MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"400 BAD_REQUEST 'The stopComid must be downstream of the start comid.'\",\"type\":\"error\"}",
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"400 BAD_REQUEST 'The stopComid must be downstream of the start"
+            + " comid.'\",\"type\":\"error\"}",
         true,
         true);
   }

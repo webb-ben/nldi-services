@@ -148,7 +148,8 @@ public class NetworkControllerLegacyFlowlineIT extends BaseControllerIT {
         "/linked-data/comid/13297246/navigation/PP/flowlines?distance=9999&stopComid=13297198&legacy=true",
         HttpStatus.BAD_REQUEST.value(),
         null,
-        "{\"description\":\"400 BAD_REQUEST 'The stopComid must be downstream of the start comid.'\",\"type\":\"error\"}",
+        "{\"description\":\"400 BAD_REQUEST 'The stopComid must be downstream of the start"
+            + " comid.'\",\"type\":\"error\"}",
         true,
         true);
   }

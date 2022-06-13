@@ -1,12 +1,10 @@
 package gov.usgs.owi.nldi.controllers;
 
-import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.model.Comid;
 import gov.usgs.owi.nldi.services.*;
 import gov.usgs.owi.nldi.swagger.model.Feature;
-import gov.usgs.owi.nldi.transform.FeatureTransformer;
 import gov.usgs.owi.nldi.transform.HydrolocationTransformer;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,8 +14,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Pattern;
@@ -54,31 +50,30 @@ public class NetworkController extends BaseController {
         inPygeoapiService);
   }
 
+  // swagger documentation for /linked-data/comid/{comid} endpoint
+  @Operation(
+      summary = "getComid",
+      description = "returns comid as WGS84 lat/lon GeoJSON if it exists")
+  @GetMapping(
+      value = "linked-data/comid/{comid}",
+      produces = {MIME_TYPE_GEOJSON, MediaType.APPLICATION_JSON_VALUE})
+  public @ResponseBody Comid getComid(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      @PathVariable(Parameters.COMID) @Schema(example = "13294288") Integer comid) {
 
-    // swagger documentation for /linked-data/comid/{comid} endpoint
-    @Operation(
-            summary = "getComid",
-            description = "returns comid as WGS84 lat/lon GeoJSON if it exists")
-    @GetMapping(
-            value = "linked-data/comid/{comid}",
-            produces = { MIME_TYPE_GEOJSON, MediaType.APPLICATION_JSON_VALUE })
-    public @ResponseBody Comid getComid(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            @PathVariable(Parameters.COMID) @Schema(example = "13294288") Integer comid) {
+    BigInteger logId = logService.logRequest(request);
+    Comid result = null;
 
-        BigInteger logId = logService.logRequest(request);
-        Comid result = null;
-
-        try {
-            result = lookupDao.getComid(comid);
-            result.setNavigation(createNavigationUrl(request.getRequestURI()));
-        } finally {
-            logService.logRequestComplete(logId, response.getStatus());
-        }
-
-        return result;
+    try {
+      result = lookupDao.getComid(comid);
+      result.setNavigation(createNavigationUrl(request.getRequestURI()));
+    } finally {
+      logService.logRequestComplete(logId, response.getStatus());
     }
+
+    return result;
+  }
 
   // swagger documentation for /linked-data/{featureSource}/{featureID}/navigate/{navigationMode}
   // endpoint
@@ -88,7 +83,8 @@ public class NetworkController extends BaseController {
   @GetMapping(
       value = "linked-data/comid/{comid}/navigate/{navigationMode}",
       produces = {MediaType.APPLICATION_JSON_VALUE, BaseController.MIME_TYPE_GEOJSON})
-  @Deprecated @Hidden
+  @Deprecated
+  @Hidden
   public void getFlowlines(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -184,7 +180,8 @@ public class NetworkController extends BaseController {
   @GetMapping(
       value = "linked-data/comid/{comid}/navigate/{navigationMode}/{dataSource}",
       produces = {MediaType.APPLICATION_JSON_VALUE, BaseController.MIME_TYPE_GEOJSON})
-  @Deprecated @Hidden
+  @Deprecated
+  @Hidden
   public void getFeaturesDeprecated(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -303,8 +300,8 @@ public class NetworkController extends BaseController {
         @ApiResponse(responseCode = "500", description = "Server error", content = @Content)
       })
   @GetMapping(
-          value = "linked-data/comid/position",
-          produces = {MediaType.APPLICATION_JSON_VALUE, BaseController.MIME_TYPE_GEOJSON})
+      value = "linked-data/comid/position",
+      produces = {MediaType.APPLICATION_JSON_VALUE, BaseController.MIME_TYPE_GEOJSON})
   public @ResponseBody Comid getFeatureByCoordinates(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -346,8 +343,8 @@ public class NetworkController extends BaseController {
         @ApiResponse(responseCode = "500", description = "Server error", content = @Content)
       })
   @GetMapping(
-          value = "linked-data/hydrolocation",
-          produces = {MediaType.APPLICATION_JSON_VALUE, BaseController.MIME_TYPE_GEOJSON})
+      value = "linked-data/hydrolocation",
+      produces = {MediaType.APPLICATION_JSON_VALUE, BaseController.MIME_TYPE_GEOJSON})
   public void getHydrologicLocation(
       HttpServletRequest request,
       HttpServletResponse response,

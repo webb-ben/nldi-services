@@ -12,7 +12,6 @@ import gov.usgs.owi.nldi.model.Comid;
 import gov.usgs.owi.nldi.services.*;
 import java.math.BigInteger;
 import javax.servlet.http.HttpServletRequest;
-
 import mil.nga.sf.geojson.Point;
 import mil.nga.sf.geojson.Position;
 import org.hamcrest.Matchers;
@@ -52,7 +51,11 @@ public class NetworkControllerTest {
     // missing required parameter
     mvc.perform(get("/linked-data/comid/13297246/navigation/PP/flowlines"))
         .andExpect(status().isBadRequest())
-        .andExpect(content().string(Matchers.containsString("Required String parameter 'distance' is not present")));
+        .andExpect(
+            content()
+                .string(
+                    Matchers.containsString(
+                        "Required String parameter 'distance' is not present")));
 
     verify(logService, times(0)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(0)).logRequestComplete(any(BigInteger.class), any(int.class));
@@ -79,7 +82,10 @@ public class NetworkControllerTest {
 
     mvc.perform(get("/linked-data/comid/13294314/navigation/UT/invalid-source?distance=1"))
         .andExpect(status().isNotFound())
-        .andExpect(content().string(Matchers.containsString("The data source 'invalid-source' does not exist.")));
+        .andExpect(
+            content()
+                .string(
+                    Matchers.containsString("The data source 'invalid-source' does not exist.")));
 
     verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(2)).logRequestComplete(any(BigInteger.class), anyInt());
@@ -92,7 +98,8 @@ public class NetworkControllerTest {
         .andExpect(
             content()
                 .string(
-                        Matchers.containsString("'The stopComid must be downstream of the start comid.'")));
+                    Matchers.containsString(
+                        "'The stopComid must be downstream of the start comid.'")));
 
     verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(1))
@@ -126,45 +133,51 @@ public class NetworkControllerTest {
   public void getCoordinatesInRangeTest() throws Exception {
     when(lookupDao.getComidByLatitudeAndLongitude(any())).thenReturn(12345);
     when(lookupDao.getComid(12345))
-            .thenReturn(new Comid("identifier",
-                    12345,
-                    new Point(new Position(0.0, 0.0))));
+        .thenReturn(new Comid("identifier", 12345, new Point(new Position(0.0, 0.0))));
 
-    mvc.perform(get("/linked-data/comid/position?coords=POINT(-180 0)"))
-            .andExpect(status().isOk());
+    mvc.perform(get("/linked-data/comid/position?coords=POINT(-180 0)")).andExpect(status().isOk());
 
-    mvc.perform(get("/linked-data/comid/position?coords=POINT(180 0)"))
-            .andExpect(status().isOk());
+    mvc.perform(get("/linked-data/comid/position?coords=POINT(180 0)")).andExpect(status().isOk());
 
-    mvc.perform(get("/linked-data/comid/position?coords=POINT(0 -90)"))
-            .andExpect(status().isOk());
+    mvc.perform(get("/linked-data/comid/position?coords=POINT(0 -90)")).andExpect(status().isOk());
 
-    mvc.perform(get("/linked-data/comid/position?coords=POINT(0 90)"))
-            .andExpect(status().isOk());
+    mvc.perform(get("/linked-data/comid/position?coords=POINT(0 90)")).andExpect(status().isOk());
   }
 
   @Test
   public void getCoordinatesOutOfRangeTest() throws Exception {
     when(lookupDao.getComidByLatitudeAndLongitude(any())).thenReturn(12345);
     when(lookupDao.getComid(12345))
-            .thenReturn(new Comid("12345",
-                    12345,
-                    new Point(new Position(0.0, 0.0))));
+        .thenReturn(new Comid("12345", 12345, new Point(new Position(0.0, 0.0))));
 
     mvc.perform(get("/linked-data/comid/position?coords=POINT(-181 0)"))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().json("{\"description\":\"400 BAD_REQUEST 'Invalid longitude'\",\"type\":\"error\"}"));
+        .andExpect(status().isBadRequest())
+        .andExpect(
+            content()
+                .json(
+                    "{\"description\":\"400 BAD_REQUEST 'Invalid"
+                        + " longitude'\",\"type\":\"error\"}"));
 
     mvc.perform(get("/linked-data/comid/position?coords=POINT(181 0)"))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().json("{\"description\":\"400 BAD_REQUEST 'Invalid longitude'\",\"type\":\"error\"}"));
+        .andExpect(status().isBadRequest())
+        .andExpect(
+            content()
+                .json(
+                    "{\"description\":\"400 BAD_REQUEST 'Invalid"
+                        + " longitude'\",\"type\":\"error\"}"));
 
     mvc.perform(get("/linked-data/comid/position?coords=POINT(0 -91)"))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().json("{\"description\":\"400 BAD_REQUEST 'Invalid latitude'\",\"type\":\"error\"}"));
+        .andExpect(status().isBadRequest())
+        .andExpect(
+            content()
+                .json(
+                    "{\"description\":\"400 BAD_REQUEST 'Invalid latitude'\",\"type\":\"error\"}"));
 
     mvc.perform(get("/linked-data/comid/position?coords=POINT(0 91)"))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().json("{\"description\":\"400 BAD_REQUEST 'Invalid latitude'\",\"type\":\"error\"}"));
+        .andExpect(status().isBadRequest())
+        .andExpect(
+            content()
+                .json(
+                    "{\"description\":\"400 BAD_REQUEST 'Invalid latitude'\",\"type\":\"error\"}"));
   }
 }

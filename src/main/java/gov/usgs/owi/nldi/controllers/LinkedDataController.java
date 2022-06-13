@@ -25,7 +25,6 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Pattern;
-
 import mil.nga.sf.geojson.Position;
 import org.hibernate.validator.constraints.Range;
 import org.json.JSONObject;
@@ -85,7 +84,8 @@ public class LinkedDataController extends BaseController {
       dataSources = lookupDao.getDataSources(configurationService.getLinkedDataUrl());
 
       // Manually add comid as a feature source.
-      String comidFeatureUri = String.join("/", configurationService.getLinkedDataUrl(), Parameters.COMID);
+      String comidFeatureUri =
+          String.join("/", configurationService.getLinkedDataUrl(), Parameters.COMID);
       dataSources.add(new DataSource(Parameters.COMID, "NHDPlus comid", comidFeatureUri));
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
@@ -138,7 +138,7 @@ public class LinkedDataController extends BaseController {
       description = "returns registered feature as WGS84 lat/lon GeoJSON if it exists")
   @GetMapping(
       value = "linked-data/{featureSource}/{featureID}",
-      produces = { MIME_TYPE_GEOJSON, MIME_TYPE_JSONLD, MediaType.APPLICATION_JSON_VALUE })
+      produces = {MIME_TYPE_GEOJSON, MIME_TYPE_JSONLD, MediaType.APPLICATION_JSON_VALUE})
   public @ResponseBody Feature getRegisteredFeature(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -168,7 +168,8 @@ public class LinkedDataController extends BaseController {
   @GetMapping(
       value = "linked-data/{featureSource}/{featureID}/navigate",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @Deprecated @Hidden
+  @Deprecated
+  @Hidden
   public Map<String, Object> getNavigateTypes(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -411,7 +412,8 @@ public class LinkedDataController extends BaseController {
   @GetMapping(
       value = "linked-data/{featureSource}/{featureID}/navigate/{navigationMode}",
       produces = {MediaType.APPLICATION_JSON_VALUE, MIME_TYPE_GEOJSON})
-  @Deprecated @Hidden
+  @Deprecated
+  @Hidden
   public void getFlowlines(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -464,7 +466,8 @@ public class LinkedDataController extends BaseController {
   @GetMapping(
       value = "linked-data/{featureSource}/{featureID}/navigate/{navigationMode}/{dataSource}",
       produces = {MediaType.APPLICATION_JSON_VALUE, MIME_TYPE_GEOJSON})
-  @Deprecated @Hidden
+  @Deprecated
+  @Hidden
   public void getFeaturesDeprecated(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -607,8 +610,8 @@ public class LinkedDataController extends BaseController {
       }
 
       // add the flowlines navigation endpoint
-      DataSource flowlinesDataSource = new DataSource("Flowlines", "NHDPlus flowlines",
-              baseUrl + "flowlines");
+      DataSource flowlinesDataSource =
+          new DataSource("Flowlines", "NHDPlus flowlines", baseUrl + "flowlines");
       dataSources.add(0, flowlinesDataSource);
 
     } finally {

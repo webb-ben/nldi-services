@@ -123,8 +123,7 @@ public class HtmlControllerIT extends BaseControllerIT {
             null,
             false,
             false);
-    assertTrue(
-        checkRedirectHtml(actualbody, "/linked-data/wqp/USGS-05427880/navigate/UT?f=json"));
+    assertTrue(checkRedirectHtml(actualbody, "/linked-data/wqp/USGS-05427880/navigate/UT?f=json"));
   }
 
   @Test

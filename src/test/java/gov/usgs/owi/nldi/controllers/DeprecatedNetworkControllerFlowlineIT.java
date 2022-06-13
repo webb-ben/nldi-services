@@ -74,8 +74,9 @@ public class DeprecatedNetworkControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13297246/navigate/UT?distance=10000",
         HttpStatus.BAD_REQUEST.value(),
-            MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getFlowlines.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getFlowlines.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -87,7 +88,8 @@ public class DeprecatedNetworkControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/comid/13297246/navigate/UT?distance=-1",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getFlowlines.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        "{\"description\":\"getFlowlines.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -177,7 +179,8 @@ public class DeprecatedNetworkControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/comid/13297246/navigate/PP?stopComid=13297198",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"400 BAD_REQUEST 'The stopComid must be downstream of the start comid.'\",\"type\":\"error\"}",
+        "{\"description\":\"400 BAD_REQUEST 'The stopComid must be downstream of the start"
+            + " comid.'\",\"type\":\"error\"}",
         true,
         true);
   }
@@ -261,7 +264,8 @@ public class DeprecatedNetworkControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/comid/13297198/navigate/XX",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getFlowlines.navigationMode: must match 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
+        "{\"description\":\"getFlowlines.navigationMode: must match"
+            + " 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
         true,
         false);
   }

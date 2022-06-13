@@ -57,8 +57,9 @@ public class LinkedDataControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/huc12pp/070900020601/navigation/DM/flowlines?distance=10000",
         HttpStatus.BAD_REQUEST.value(),
-            MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getNavigationFlowlines.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getNavigationFlowlines.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -70,7 +71,8 @@ public class LinkedDataControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/huc12pp/070900020601/navigation/DM/flowlines/?distance=-1",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getNavigationFlowlines.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        "{\"description\":\"getNavigationFlowlines.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -94,7 +96,8 @@ public class LinkedDataControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/huc12pp/070900020601/navigation/DM/flowlines",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"Required String parameter 'distance' is not present\",\"type\":\"error\"}",
+        "{\"description\":\"Required String parameter 'distance' is not"
+            + " present\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -317,7 +320,8 @@ public class LinkedDataControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/wqp/USGS-05427880/navigation/XX",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getNavigation.navigationMode: must match 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
+        "{\"description\":\"getNavigation.navigationMode: must match"
+            + " 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
         true,
         false);
   }

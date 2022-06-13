@@ -70,8 +70,9 @@ public class LinkedDataControllerDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigation/UT/wqp?distance=10000",
         HttpStatus.BAD_REQUEST.value(),
-            MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getFeatures.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getFeatures.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -83,7 +84,8 @@ public class LinkedDataControllerDataSourceIT extends BaseControllerIT {
         "/linked-data/wqp/USGS-05427880/navigation/UT/wqp?distance=-1",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getFeatures.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        "{\"description\":\"getFeatures.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -121,7 +123,8 @@ public class LinkedDataControllerDataSourceIT extends BaseControllerIT {
         "/linked-data/wqp/USGS-05427880/navigation/XX/huc12pp?distance=9999",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getFeatures.navigationMode: must match 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
+        "{\"description\":\"getFeatures.navigationMode: must match"
+            + " 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
         true,
         false);
   }

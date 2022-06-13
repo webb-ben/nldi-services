@@ -7,9 +7,7 @@ import gov.usgs.owi.nldi.BaseIT;
 import gov.usgs.owi.nldi.model.DataSource;
 import gov.usgs.owi.nldi.services.ConfigurationService;
 import gov.usgs.owi.nldi.springinit.DbTestConfig;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import mil.nga.sf.geojson.Position;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,12 +98,10 @@ public class LookupDaoIT extends BaseIT {
     assertEquals("TEST", results.get(3).getSource());
     assertEquals("TEST Source", results.get(3).getName());
     assertEquals(
-        String.join("/", configurationService.getLinkedDataUrl(), "test"),
-        results.get(3).getUri());
+        String.join("/", configurationService.getLinkedDataUrl(), "test"), results.get(3).getUri());
     assertEquals("WQP", results.get(4).getSource());
     assertEquals("Water Quality Portal", results.get(4).getName());
     assertEquals(
-        String.join("/", configurationService.getLinkedDataUrl(), "wqp"),
-        results.get(4).getUri());
+        String.join("/", configurationService.getLinkedDataUrl(), "wqp"), results.get(4).getUri());
   }
 }

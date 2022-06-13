@@ -3,13 +3,11 @@ package gov.usgs.owi.nldi.exceptions;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import gov.usgs.owi.nldi.controllers.LinkedDataController;
-import gov.usgs.owi.nldi.dao.LookupDao;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.server.ResponseStatusException;
 
 @WebMvcTest(
@@ -31,7 +28,10 @@ public class GlobalDefaultExceptionHandlerTest {
 
   @Test
   public void handleUncaughtExceptionTest() throws Exception {
-    doThrow(Exception.class).when(controller).getNavigationFlowlines(any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
+    doThrow(Exception.class)
+        .when(controller)
+        .getNavigationFlowlines(
+            any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
     mvc.perform(get("/linked-data/wqp/USGS-12345/navigation/UM/flowlines?distance=1"))
         .andExpect(status().isInternalServerError())
         .andExpect(
@@ -45,7 +45,11 @@ public class GlobalDefaultExceptionHandlerTest {
     // missing distance parameter
     mvc.perform(get("/linked-data/wqp/USGS-12345/navigation/UM/flowlines"))
         .andExpect(status().isBadRequest())
-        .andExpect(content().string(Matchers.containsString("Required String parameter 'distance' is not present")));
+        .andExpect(
+            content()
+                .string(
+                    Matchers.containsString(
+                        "Required String parameter 'distance' is not present")));
   }
 
   @Test
@@ -66,8 +70,7 @@ public class GlobalDefaultExceptionHandlerTest {
     String featureSource = "source";
     String responseMessage =
         String.format(
-            "The feature ID '%s' does not exist in feature source '%s'.",
-            featureId, featureSource);
+            "The feature ID '%s' does not exist in feature source '%s'.", featureId, featureSource);
     doThrow(new FeatureIdNotFoundException(featureSource, featureId))
         .when(controller)
         .getRegisteredFeature(any(), any(), any(), any());

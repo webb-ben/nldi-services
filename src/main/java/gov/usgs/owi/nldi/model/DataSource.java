@@ -3,40 +3,42 @@ package gov.usgs.owi.nldi.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DataSource {
-    @JsonProperty("source")
-    private String source;
-    @JsonProperty("sourceName")
-    private String name;
-    @JsonProperty("features")
-    private String uri;
+  @JsonProperty("source")
+  private String source;
 
-    public DataSource(String source, String name, String uri) {
-        this.source = source;
-        this.name = name;
-        this.uri = uri;
-    }
+  @JsonProperty("sourceName")
+  private String name;
 
-    public String getSource() {
-        return source;
-    }
+  @JsonProperty("features")
+  private String uri;
 
-    public void setSource(String source) {
-        this.source = source;
-    }
+  public DataSource(String source, String name, String uri) {
+    this.source = source;
+    this.name = name;
+    this.uri = uri;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getSource() {
+    return source;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setSource(String source) {
+    this.source = source;
+  }
 
-    public String getUri() {
-        return uri;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getUri() {
+    return uri;
+  }
+
+  public void setUri(String uri) {
+    this.uri = uri;
+  }
 }

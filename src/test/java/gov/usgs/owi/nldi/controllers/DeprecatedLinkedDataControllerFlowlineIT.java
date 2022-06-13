@@ -61,8 +61,9 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/huc12pp/070900020601/navigate/DM?distance=10000",
         HttpStatus.BAD_REQUEST.value(),
-            MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getFlowlines.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getFlowlines.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -74,7 +75,8 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/huc12pp/070900020601/navigate/DM?distance=-1",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getFlowlines.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        "{\"description\":\"getFlowlines.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -111,7 +113,8 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/wqp/USGS-05427880/navigate/XX",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getFlowlines.navigationMode: must match 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
+        "{\"description\":\"getFlowlines.navigationMode: must match"
+            + " 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
         true,
         false);
   }

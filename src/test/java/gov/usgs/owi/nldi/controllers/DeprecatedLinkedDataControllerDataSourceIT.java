@@ -75,7 +75,8 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         "/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=10000",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getFeaturesDeprecated.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        "{\"description\":\"getFeaturesDeprecated.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -87,7 +88,8 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         "/linked-data/wqp/USGS-05427880/navigate/UT/wqp?distance=-1",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getFeaturesDeprecated.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        "{\"description\":\"getFeaturesDeprecated.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -125,7 +127,8 @@ public class DeprecatedLinkedDataControllerDataSourceIT extends BaseControllerIT
         "/linked-data/wqp/USGS-05427880/navigate/XX/huc12pp",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getFeaturesDeprecated.navigationMode: must match 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
+        "{\"description\":\"getFeaturesDeprecated.navigationMode: must match"
+            + " 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
         true,
         false);
   }

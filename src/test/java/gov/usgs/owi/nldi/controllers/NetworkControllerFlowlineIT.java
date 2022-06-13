@@ -70,8 +70,9 @@ public class NetworkControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13297246/navigation/UT/flowlines?distance=10000",
         HttpStatus.BAD_REQUEST.value(),
-            MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getNavigationFlowlines.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getNavigationFlowlines.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -83,7 +84,8 @@ public class NetworkControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/comid/13297246/navigation/UT/flowlines?distance=-1",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getNavigationFlowlines.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        "{\"description\":\"getNavigationFlowlines.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -159,7 +161,8 @@ public class NetworkControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/comid/13297246/navigation/PP/flowlines?distance=9999&stopComid=13297198",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"400 BAD_REQUEST 'The stopComid must be downstream of the start comid.'\",\"type\":\"error\"}",
+        "{\"description\":\"400 BAD_REQUEST 'The stopComid must be downstream of the start"
+            + " comid.'\",\"type\":\"error\"}",
         true,
         true);
   }
@@ -242,7 +245,8 @@ public class NetworkControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/comid/13297198/navigation/XX",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getNavigation.navigationMode: must match 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
+        "{\"description\":\"getNavigation.navigationMode: must match"
+            + " 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
         true,
         false);
   }
@@ -293,7 +297,8 @@ public class NetworkControllerFlowlineIT extends BaseControllerIT {
         "/linked-data/comid/13297198/navigation/XX/flowlines?distance=9999",
         HttpStatus.BAD_REQUEST.value(),
         MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"getNavigationFlowlines.navigationMode: must match 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
+        "{\"description\":\"getNavigationFlowlines.navigationMode: must match"
+            + " 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
         true,
         false);
   }
