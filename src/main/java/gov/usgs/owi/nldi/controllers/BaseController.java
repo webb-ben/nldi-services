@@ -17,6 +17,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
@@ -210,5 +211,13 @@ public abstract class BaseController {
   protected boolean isLegacy(String legacy, String navigationMode) {
     return (StringUtils.hasText(legacy) && "true".contentEquals(legacy.trim().toLowerCase()))
         || NavigationMode.PP.toString().equalsIgnoreCase(navigationMode);
+  }
+
+  protected String createNavigationUrl(@NonNull String requestUrl) {
+    String newUrl = configurationService.getLinkedDataUrl();
+    String[] arr = requestUrl.split("linked-data");
+    newUrl += arr[1];
+    newUrl += "/navigation";
+    return newUrl;
   }
 }
