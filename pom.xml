@@ -14,7 +14,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
-        <jackson.version>2.9.6</jackson.version>
+        <jackson.version>2.11.1</jackson.version>
         <wma.artifactory.url>https://cida.usgs.gov/artifactory</wma.artifactory.url>
         <spotless.ratchetFrom>origin/master</spotless.ratchetFrom>
         <test.database.port>5445</test.database.port>
@@ -86,14 +86,17 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-csv</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>de.jkeylockmanager</groupId>
