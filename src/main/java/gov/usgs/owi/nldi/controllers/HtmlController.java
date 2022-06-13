@@ -2,7 +2,6 @@ package gov.usgs.owi.nldi.controllers;
 
 import gov.usgs.owi.nldi.services.ConfigurationService;
 import gov.usgs.owi.nldi.services.LogService;
-import gov.usgs.owi.nldi.services.Parameters;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -12,14 +11,16 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Pattern;
 import java.math.BigInteger;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
+@EnableWebMvc
 public class HtmlController {
 
 	@Autowired
@@ -29,41 +30,38 @@ public class HtmlController {
 	private ConfigurationService configurationService;
 
 
-	@GetMapping(value="/linked-data/v2/**", produces= MediaType.TEXT_HTML_VALUE)
+	// catches text/html requests for all endpoints and gives an optional redirect link
+	@GetMapping(value = {
+			"/linked-data",
+			"/linked-data/{featureSource}",
+			"/linked-data/{featureSource}/{featureID}",
+			"/linked-data/{featureSource}/{featureID}/navigate",
+			"/linked-data/{featureSource}/{featureID}/navigate/{navigationMode}",
+			"/linked-data/{featureSource}/{featureID}/navigate/{navigationMode}/{dataSource}",
+			"/linked-data/{featureSource}/{featureID}/{characteristicType}",
+			"/linked-data/{featureSource}/{featureID}/basin",
+			"/linked-data/{featureSource}/{featureID}/navigation",
+			"/linked-data/{featureSource}/{featureID}/navigation/{navigationMode}",
+			"/linked-data/{featureSource}/{featureID}/navigation/{navigationMode}/{dataSource}",
+			"/linked-data/{featureSource}/{featureID}/navigation/{navigationMode}/flowlines",
+			"/lookups",
+			"/lookups/{characteristicType}",
+			"/lookups/{characteristicType}/characteristics",
+			"/linked-data/comid/{comid}/navigate/{navigationMode}",
+			"/linked-data/comid/{comid}/navigate/{navigationMode}/{dataSource}",
+			"/linked-data/comid/{comid}/navigation/{navigationMode}/{dataSource}",
+			"/linked-data/comid/{comid}/navigation/{navigationMode}/flowlines",
+			"/linked-data/comid/position",
+			"/linked-data/hydrolocation"
+	},
+	produces = MediaType.TEXT_HTML_VALUE)
 	@Hidden
-	public String getLinkedDataV2Html(
-		HttpServletRequest request, HttpServletResponse response,
-		@RequestParam(name= Parameters.FORMAT, required=false) @Pattern(regexp=BaseController.OUTPUT_FORMAT) String format) throws Exception {
-		return processHtml(request, response);
-	}
-
-
-	@GetMapping(value="/linked-data/{featureSource}/**", produces= MediaType.TEXT_HTML_VALUE)
-	@Hidden
-	public String getLinkedDataHtml(HttpServletRequest request, HttpServletResponse response,
-		@RequestParam(name= Parameters.FORMAT, required=false) @Pattern(regexp=BaseController.OUTPUT_FORMAT) String format) throws Exception {
-		return processHtml(request, response);
-	}
-
-	@GetMapping(value="/linked-data", produces= MediaType.TEXT_HTML_VALUE)
-	@Hidden
-	public String getLinkedDataDataSourcesHtml(
-		HttpServletRequest request, HttpServletResponse response,
-		@RequestParam(name= Parameters.FORMAT, required=false) @Pattern(regexp=BaseController.OUTPUT_FORMAT) String format) throws Exception {
-		return processHtml(request, response);
-	}
-
-	@GetMapping(value="/linked-data/comid/**", produces= MediaType.TEXT_HTML_VALUE)
-	@Hidden
-	public String getNetworkHtml(HttpServletRequest request, HttpServletResponse response,
-		@RequestParam(name=Parameters.FORMAT, required=false) @Pattern(regexp=BaseController.OUTPUT_FORMAT) String format) throws Exception {
-		return processHtml(request, response);
-	}
-
-	@GetMapping(value="/lookups/**", produces= MediaType.TEXT_HTML_VALUE)
-	@Hidden
-	public String getLookupsHtml(HttpServletRequest request, HttpServletResponse response,
-		@RequestParam(name=Parameters.FORMAT, required=false) @Pattern(regexp=BaseController.OUTPUT_FORMAT) String format) throws Exception {
+	public String getHtmlRedirect(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			// catch all params
+			@RequestParam(required=false)
+			Map<String, String> params) throws Exception {
 		return processHtml(request, response);
 	}
 
