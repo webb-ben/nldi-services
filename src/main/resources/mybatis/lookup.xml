@@ -114,7 +114,7 @@
             </choose>
     </select>
 
-    <select id="dataSources" resultType="java.util.LinkedHashMap">
+    <select id="dataSources" resultMap="DataSourceResult">
         select source_suffix source,
                source_name "sourceName",
                #{rootUrl,jdbcType=VARCHAR} || '/' || lower(source_suffix) features
@@ -122,6 +122,11 @@
              order by lower(source_suffix)
     </select>
 
+    <resultMap id="DataSourceResult" type="gov.usgs.owi.nldi.model.DataSource">
+        <result property="source" column="source"/>
+        <result property="name" column="sourceName"/>
+        <result property="uri" column="features"/>
+    </resultMap>
 
     <select id="comidLatLon" resultType="integer">
         select featureid
@@ -173,5 +178,68 @@
         ) as result;
     </select>
 
+    <select id="fancyComid" resultMap="ComidResult" fetchSize="50">
+        select
+            nhdflowline_np21.nhdplus_comid identifier,
+            nhdflowline_np21.nhdplus_comid comid,
+            st_asgeojson(nhdflowline_np21.shape, 9, 0) shape
+        from nhdplus.nhdflowline_np21
+        where nhdplus_comid = #{comid}::integer
+    </select>
 
+    <!--
+        This uses constructor mapping so the order needs to match the Comid
+        constructor order.
+    -->
+    <resultMap id="ComidResult" type="gov.usgs.owi.nldi.model.Comid">
+        <result property="identifier" column="identifier"/>
+        <result property="comid" column="comid"/>
+        <result property="geometry" column="shape" javaType="mil.nga.sf.geojson.Geometry"/>
+    </resultMap>
+
+    <select id="fancyFeature" resultMap="FeatureResult" fetchSize="50">
+        select
+            crawler_source.feature_type,
+            crawler_source.source_suffix source,
+            crawler_source.source_name,
+            feature.identifier,
+            feature.name,
+            feature.uri,
+            feature.comid,
+            feature.reachcode,
+            feature.measure,
+            mainstem.uri mainstem_uri,
+            case when feature.shape is null then st_asgeojson(feature.location, 9, 0)
+                else st_asgeojson(feature.shape, 9, 0)
+                end shape,
+            case when feature.shape is null then st_astext(feature.location)
+                else st_astext(feature.shape)
+                end wkt
+        from nldi_data.feature
+                 join nldi_data.crawler_source
+                      on feature.crawler_source_id = crawler_source.crawler_source_id
+                left join nldi_data.mainstem_lookup as mainstem
+                    on feature.comid = mainstem.nhdpv2_comid
+        where identifier = #{featureID} and
+            lower(source_suffix) = lower(#{featureSource})
+    </select>
+
+    <!--
+        This uses constructor mapping so the order needs to match the Feature
+        constructor order.
+    -->
+    <resultMap id="FeatureResult" type="gov.usgs.owi.nldi.model.Feature">
+        <result property="type" column="feature_type"/>
+        <result property="source" column="source"/>
+        <result property="sourceName" column="source_name"/>
+        <result property="identifier" column="identifier"/>
+        <result property="name" column="name"/>
+        <result property="uri" column="uri"/>
+        <result property="comid" column="comid"/>
+        <result property="reachcode" column="reachcode"/>
+        <result property="measure" column="measure"/>
+        <result property="mainstemUri" column="mainstem_uri"/>
+        <result property="geometry" column="shape" javaType="mil.nga.sf.geojson.Geometry"/>
+        <result property="wellKnownText" column="wkt"/>
+    </resultMap>
 </mapper>
