@@ -151,6 +151,18 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         false);
   }
 
+  @Test
+  public void getWqpJsonLdTest() throws Exception {
+    assertEntity(
+            restTemplate,
+            "/linked-data/wqp/USGS-05427880?f=jsonld",
+            HttpStatus.OK.value(),
+            BaseController.MIME_TYPE_JSONLD,
+            getCompareFile(RESULT_FOLDER, "getWqpJsonLdTest.json"),
+            true,
+            false);
+  }
+
   // Linked Object Testing huc12pp
   @Test
   public void getHuc12ppTest() throws Exception {
