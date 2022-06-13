@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
@@ -133,9 +134,9 @@ public class NetworkControllerLegacyDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13297246/navigation/PP/wqp?distance=9999&stopComid=13297198&legacy=true",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "400 BAD_REQUEST \"The stopComid must be downstream of the start comid.\"",
-        false,
+            MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"400 BAD_REQUEST 'The stopComid must be downstream of the start comid.'\",\"type\":\"error\"}",
+        true,
         true);
   }
 

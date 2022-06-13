@@ -57,8 +57,8 @@ public class NetworkControllerHydrolocationIT extends BaseControllerIT {
         "/linked-data/hydrolocation?coords=POINT(-181 0)",
         HttpStatus.BAD_REQUEST.value(),
         null,
-        "400 BAD_REQUEST \"Invalid longitude\"",
-        false,
+        "{\"description\":\"400 BAD_REQUEST 'Invalid longitude'\",\"type\":\"error\"}",
+        true,
         false);
 
     assertEntity(
@@ -66,8 +66,8 @@ public class NetworkControllerHydrolocationIT extends BaseControllerIT {
         "/linked-data/hydrolocation?coords=POINT(181 0)",
         HttpStatus.BAD_REQUEST.value(),
         null,
-        "400 BAD_REQUEST \"Invalid longitude\"",
-        false,
+        "{\"description\":\"400 BAD_REQUEST 'Invalid longitude'\",\"type\":\"error\"}",
+        true,
         false);
 
     assertEntity(
@@ -75,8 +75,8 @@ public class NetworkControllerHydrolocationIT extends BaseControllerIT {
         "/linked-data/hydrolocation?coords=POINT(0 -91)",
         HttpStatus.BAD_REQUEST.value(),
         null,
-        "400 BAD_REQUEST \"Invalid latitude\"",
-        false,
+        "{\"description\":\"400 BAD_REQUEST 'Invalid latitude'\",\"type\":\"error\"}",
+        true,
         false);
 
     assertEntity(
@@ -84,8 +84,8 @@ public class NetworkControllerHydrolocationIT extends BaseControllerIT {
         "/linked-data/hydrolocation?coords=POINT(0 91)",
         HttpStatus.BAD_REQUEST.value(),
         null,
-        "400 BAD_REQUEST \"Invalid latitude\"",
-        false,
+        "{\"description\":\"400 BAD_REQUEST 'Invalid latitude'\",\"type\":\"error\"}",
+        true,
         false);
   }
 

@@ -85,7 +85,7 @@ public class HtmlControllerIT extends BaseControllerIT {
     String actualbody =
         assertEntity(
             restTemplate,
-            "/linked-data/v2/wqp/USGS-05427880/navigate/UM/flowlines?f=html",
+            "/linked-data/wqp/USGS-05427880/navigate/UM/flowlines?f=html",
             HttpStatus.OK.value(),
             null,
             null,
@@ -93,7 +93,7 @@ public class HtmlControllerIT extends BaseControllerIT {
             false);
     assertTrue(
         checkRedirectHtml(
-            actualbody, "/linked-data/v2/wqp/USGS-05427880/navigate/UM/flowlines?f=json"));
+            actualbody, "/linked-data/wqp/USGS-05427880/navigate/UM/flowlines?f=json"));
   }
 
   @Test
@@ -101,7 +101,7 @@ public class HtmlControllerIT extends BaseControllerIT {
     String actualbody =
         assertEntity(
             restTemplate,
-            "/linked-data/v2/comid/13297246/navigate/UM/flowlines?f=html&distance=10",
+            "/linked-data/comid/13297246/navigate/UM/flowlines?f=html&distance=10",
             HttpStatus.OK.value(),
             null,
             null,
@@ -109,7 +109,7 @@ public class HtmlControllerIT extends BaseControllerIT {
             false);
     assertTrue(
         checkRedirectHtml(
-            actualbody, "/linked-data/v2/comid/13297246/navigate/UM/flowlines?f=json&distance=10"));
+            actualbody, "/linked-data/comid/13297246/navigate/UM/flowlines?f=json&distance=10"));
   }
 
   @Test
@@ -117,14 +117,14 @@ public class HtmlControllerIT extends BaseControllerIT {
     String actualbody =
         assertEntity(
             restTemplate,
-            "/linked-data/v2/wqp/USGS-05427880/navigate/UT?f=html",
+            "/linked-data/wqp/USGS-05427880/navigate/UT?f=html",
             HttpStatus.OK.value(),
             null,
             null,
             false,
             false);
     assertTrue(
-        checkRedirectHtml(actualbody, "/linked-data/v2/wqp/USGS-05427880/navigate/UT?f=json"));
+        checkRedirectHtml(actualbody, "/linked-data/wqp/USGS-05427880/navigate/UT?f=json"));
   }
 
   @Test

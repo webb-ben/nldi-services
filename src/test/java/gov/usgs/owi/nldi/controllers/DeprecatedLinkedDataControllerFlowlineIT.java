@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
@@ -60,9 +61,9 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/huc12pp/070900020601/navigate/DM?distance=10000",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "getFlowlines.distance: distance must be between 1 and 9999 kilometers",
-        false,
+            MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getFlowlines.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        true,
         false);
   }
 
@@ -72,9 +73,9 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/huc12pp/070900020601/navigate/DM?distance=-1",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "getFlowlines.distance: distance must be between 1 and 9999 kilometers",
-        false,
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getFlowlines.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        true,
         false);
   }
 
@@ -109,9 +110,9 @@ public class DeprecatedLinkedDataControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigate/XX",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "getFlowlines.navigationMode: must match \"DD|DM|PP|UT|UM\"",
-        false,
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getFlowlines.navigationMode: must match 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
+        true,
         false);
   }
 }

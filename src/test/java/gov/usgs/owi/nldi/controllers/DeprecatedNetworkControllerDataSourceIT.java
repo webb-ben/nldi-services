@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
@@ -73,9 +74,9 @@ public class DeprecatedNetworkControllerDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13297246/navigate/UT/wqp?distance=10000",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "getFeaturesDeprecated.distance: distance must be between 1 and 9999 kilometers",
-        false,
+            MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getFeaturesDeprecated.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        true,
         false);
   }
 
@@ -85,9 +86,9 @@ public class DeprecatedNetworkControllerDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13297246/navigate/UT/wqp?distance=-1",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "getFeaturesDeprecated.distance: distance must be between 1 and 9999 kilometers",
-        false,
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getFeaturesDeprecated.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        true,
         false);
   }
 
@@ -198,9 +199,9 @@ public class DeprecatedNetworkControllerDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13297198/navigate/XX/wqp",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "getFeaturesDeprecated.navigationMode: must match \"DD|DM|PP|UT|UM\"",
-        false,
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getFeaturesDeprecated.navigationMode: must match 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
+        true,
         false);
   }
 

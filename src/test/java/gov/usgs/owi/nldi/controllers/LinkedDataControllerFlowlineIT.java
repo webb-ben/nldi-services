@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
@@ -56,9 +57,9 @@ public class LinkedDataControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/huc12pp/070900020601/navigation/DM/flowlines?distance=10000",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "getNavigationFlowlines.distance: distance must be between 1 and 9999 kilometers",
-        false,
+            MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getNavigationFlowlines.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        true,
         false);
   }
 
@@ -68,9 +69,9 @@ public class LinkedDataControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/huc12pp/070900020601/navigation/DM/flowlines/?distance=-1",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "getNavigationFlowlines.distance: distance must be between 1 and 9999 kilometers",
-        false,
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getNavigationFlowlines.distance: distance must be between 1 and 9999 kilometers\",\"type\":\"error\"}",
+        true,
         false);
   }
 
@@ -92,9 +93,9 @@ public class LinkedDataControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/huc12pp/070900020601/navigation/DM/flowlines",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "Required String parameter 'distance' is not present",
-        false,
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"Required String parameter 'distance' is not present\",\"type\":\"error\"}",
+        true,
         false);
   }
 
@@ -315,9 +316,9 @@ public class LinkedDataControllerFlowlineIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/wqp/USGS-05427880/navigation/XX",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "getNavigation.navigationMode: must match \"DD|DM|PP|UT|UM\"",
-        false,
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getNavigation.navigationMode: must match 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
+        true,
         false);
   }
 }

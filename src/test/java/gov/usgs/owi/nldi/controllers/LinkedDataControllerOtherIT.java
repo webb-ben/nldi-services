@@ -33,7 +33,7 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13302592/tot",
         HttpStatus.OK.value(),
-        BaseController.MIME_TYPE_GEOJSON,
+        null,
         getCompareFile(RESULT_FOLDER, "getCharacteristicDataTest.json"),
         true,
         false);
@@ -57,7 +57,7 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13302592/tot?characteristicId=TOT_N97&characteristicId=TOT_ET",
         HttpStatus.OK.value(),
-        BaseController.MIME_TYPE_GEOJSON,
+        null,
         getCompareFile(RESULT_FOLDER, "getCharacteristicDataFilteredTest.json"),
         true,
         false);
@@ -107,7 +107,7 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/wqp",
         HttpStatus.OK.value(),
-        BaseController.MIME_TYPE_GEOJSON,
+        null,
         getCompareFile(RESULT_FOLDER, "getFeaturesTest.json"),
         true,
         false);
@@ -120,8 +120,8 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
         "/linked-data/wqx",
         HttpStatus.NOT_FOUND.value(),
         null,
-        "The feature source \"wqx\" does not exist.",
-        false,
+        "{\"description\":\"The feature source 'wqx' does not exist.\",\"type\":\"error\"}",
+        true,
         false);
   }
 

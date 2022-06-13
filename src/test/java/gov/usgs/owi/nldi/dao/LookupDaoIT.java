@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import gov.usgs.owi.nldi.BaseIT;
+import gov.usgs.owi.nldi.model.DataSource;
 import gov.usgs.owi.nldi.services.ConfigurationService;
 import gov.usgs.owi.nldi.springinit.DbTestConfig;
 import java.util.HashMap;
@@ -78,35 +79,33 @@ public class LookupDaoIT extends BaseIT {
 
   @Test
   public void getDataSourcesTest() {
-    Map<String, Object> parameterMap = new HashMap<>();
-    parameterMap.put(LookupDao.ROOT_URL, configurationService.getLinkedDataUrl());
-    List<Map<String, Object>> results = lookupDao.getList(BaseDao.DATA_SOURCES, parameterMap);
+    List<DataSource> results = lookupDao.getDataSources(configurationService.getLinkedDataUrl());
     assertFalse(results.isEmpty());
     assertEquals(5, results.size());
-    assertEquals("huc12pp", results.get(0).get(LookupDao.SOURCE));
-    assertEquals("huc12pp", results.get(0).get(LookupDao.SOURCE_NAME));
+    assertEquals("huc12pp", results.get(0).getSource());
+    assertEquals("huc12pp", results.get(0).getName());
     assertEquals(
         String.join("/", configurationService.getLinkedDataUrl(), "huc12pp"),
-        results.get(0).get(BaseDao.FEATURES));
-    assertEquals("np21_nwis", results.get(1).get(LookupDao.SOURCE));
-    assertEquals("HNDPlusV2_NWIS_Gages", results.get(1).get(LookupDao.SOURCE_NAME));
+        results.get(0).getUri());
+    assertEquals("np21_nwis", results.get(1).getSource());
+    assertEquals("HNDPlusV2_NWIS_Gages", results.get(1).getName());
     assertEquals(
         String.join("/", configurationService.getLinkedDataUrl(), "np21_nwis"),
-        results.get(1).get(BaseDao.FEATURES));
-    assertEquals("nwissite", results.get(2).get(LookupDao.SOURCE));
-    assertEquals("NWIS Surface Water Sites", results.get(2).get(LookupDao.SOURCE_NAME));
+        results.get(1).getUri());
+    assertEquals("nwissite", results.get(2).getSource());
+    assertEquals("NWIS Surface Water Sites", results.get(2).getName());
     assertEquals(
         String.join("/", configurationService.getLinkedDataUrl(), "nwissite"),
-        results.get(2).get(BaseDao.FEATURES));
-    assertEquals("TEST", results.get(3).get(LookupDao.SOURCE));
-    assertEquals("TEST Source", results.get(3).get(LookupDao.SOURCE_NAME));
+        results.get(2).getUri());
+    assertEquals("TEST", results.get(3).getSource());
+    assertEquals("TEST Source", results.get(3).getName());
     assertEquals(
         String.join("/", configurationService.getLinkedDataUrl(), "test"),
-        results.get(3).get(BaseDao.FEATURES));
-    assertEquals("WQP", results.get(4).get(LookupDao.SOURCE));
-    assertEquals("Water Quality Portal", results.get(4).get(LookupDao.SOURCE_NAME));
+        results.get(3).getUri());
+    assertEquals("WQP", results.get(4).getSource());
+    assertEquals("Water Quality Portal", results.get(4).getName());
     assertEquals(
         String.join("/", configurationService.getLinkedDataUrl(), "wqp"),
-        results.get(4).get(BaseDao.FEATURES));
+        results.get(4).getUri());
   }
 }
