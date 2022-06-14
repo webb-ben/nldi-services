@@ -5,7 +5,6 @@ import gov.usgs.owi.nldi.converters.ComidMessageConverter;
 import gov.usgs.owi.nldi.converters.ErrorMessageConverter;
 import gov.usgs.owi.nldi.converters.FeatureMessageConverter;
 import java.util.List;
-
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.Bean;

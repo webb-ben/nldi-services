@@ -55,7 +55,8 @@ public class NetworkControllerTest {
             content()
                 .string(
                     Matchers.containsString(
-                        "Required request parameter 'distance' for method parameter type String is not present")));
+                        "Required request parameter 'distance' for method parameter type String is"
+                            + " not present")));
 
     verify(logService, times(0)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(0)).logRequestComplete(any(BigInteger.class), any(int.class));

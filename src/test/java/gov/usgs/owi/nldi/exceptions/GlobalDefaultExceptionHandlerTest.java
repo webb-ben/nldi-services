@@ -49,7 +49,8 @@ public class GlobalDefaultExceptionHandlerTest {
             content()
                 .string(
                     Matchers.containsString(
-                        "Required request parameter 'distance' for method parameter type String is not present")));
+                        "Required request parameter 'distance' for method parameter type String is"
+                            + " not present")));
   }
 
   @Test
