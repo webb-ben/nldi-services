@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/internetofwater/nldi-services/compare/nldi-services-1.11.0...master)
 ### Changed
+* Upgraded spring boot starter version
 * Enabled content negotiation for all endpoints
 * Improved navigation query speed
 * Removed feature count headers from response
