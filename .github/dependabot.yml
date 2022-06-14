@@ -9,7 +9,6 @@ updates:
   - dependency-name: org.springdoc:springdoc-openapi-ui
     versions:
     - 1.6.x
-  - dependency-name: org.springframework.boot:spring-boot-starter-parent
   - dependency-name: io.fabric8:docker-maven-plugin
     versions:
     - 0.40.x

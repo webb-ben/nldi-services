@@ -90,19 +90,6 @@ public class LinkedDataControllerFlowlineIT extends BaseControllerIT {
   }
 
   @Test
-  public void getHuc12ppDMTestMissingParameter() throws Exception {
-    assertEntity(
-        restTemplate,
-        "/linked-data/huc12pp/070900020601/navigation/DM/flowlines",
-        HttpStatus.BAD_REQUEST.value(),
-        MediaType.APPLICATION_JSON_VALUE,
-        "{\"description\":\"Required String parameter 'distance' is not"
-            + " present\",\"type\":\"error\"}",
-        true,
-        false);
-  }
-
-  @Test
   public void getNwisUpstreamTrimTest() throws Exception {
     assertEntity(
         restTemplate,
