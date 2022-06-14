@@ -65,7 +65,6 @@ public class FeatureMessageConverter extends AbstractHttpMessageConverter<Featur
       generator.writeStringField("hyf", "https://www.opengis.net/def/schema/hy_features/hyf/");
       generator.writeStringField("gsp", "http://www.opengis.net/ont/geosparql#");
       generator.writeStringField("name", "schema:name");
-      generator.writeStringField("source", "schema:provider");
 
       generator.writeObjectFieldStart("comid");
       generator.writeStringField("@id", "schema:geoWithin");
@@ -85,10 +84,10 @@ public class FeatureMessageConverter extends AbstractHttpMessageConverter<Featur
           "@type", "https://www.opengis.net/def/schema/hy_features/hyf/HY_HydroLocation");
 
       // source object vvv
-      generator.writeObjectFieldStart("source");
-      generator.writeStringField("@type", "schema:Organization");
-      generator.writeStringField("schema:name", feature.getSource());
-      generator.writeStringField("schema:description", feature.getSourceName());
+      generator.writeObjectFieldStart("schema:subjectOf");
+      generator.writeStringField("@type", "schema:CreativeWork");
+      generator.writeStringField("schema:identifier", feature.getSource());
+      generator.writeStringField("schema:name", feature.getSourceName());
       generator.writeEndObject();
       // source object ^^^
 

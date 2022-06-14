@@ -6,7 +6,6 @@
 			"hyf": "https://www.opengis.net/def/schema/hy_features/hyf/",
 			"gsp": "http://www.opengis.net/ont/geosparql#",
 			"name": "schema:name",
-			"source": "schema:provider",
 			"comid": {
 				"@id": "schema:geoWithin",
 				"@type": "@id"
@@ -18,10 +17,10 @@
 	],
 	"@id": "https://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427880/",
 	"@type": "https://www.opengis.net/def/schema/hy_features/hyf/HY_HydroLocation",
-	"source": {
-		"@type": "schema:Organization",
-		"schema:name": "WQP",
-		"schema:description": "Water Quality Portal"
+	"schema:subjectOf": {
+		"@type": "schema:CreativeWork",
+		"schema:identifier": "WQP",
+		"schema:name": "Water Quality Portal"
 	},
 	"name": "SIXMILE CREEK AT STATE HIGHWAY 19 NEAR WAUNAKEE,WI",
 	"comid": "https://geoconnex.us/nhdplusv2/comid/13294132",
