@@ -3,6 +3,9 @@ package gov.usgs.owi.nldi.dao;
 import gov.usgs.owi.nldi.exceptions.DataSourceNotFoundException;
 import gov.usgs.owi.nldi.exceptions.FeatureIdNotFoundException;
 import gov.usgs.owi.nldi.exceptions.FeatureSourceNotFoundException;
+import gov.usgs.owi.nldi.model.Comid;
+import gov.usgs.owi.nldi.model.DataSource;
+import gov.usgs.owi.nldi.model.Feature;
 import gov.usgs.owi.nldi.services.Parameters;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +13,7 @@ import java.util.Map;
 import mil.nga.sf.geojson.Position;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -76,6 +80,29 @@ public class LookupDao extends BaseDao {
     if (null == feature) {
       throw new FeatureIdNotFoundException(featureSource, featureID);
     }
+  }
+
+  public List<DataSource> getDataSources(@NonNull String linkedDataUrl) {
+    Map<String, Object> parameterMap = new HashMap<>();
+    parameterMap.put(ROOT_URL, linkedDataUrl);
+
+    return getSqlSession().selectList(NS + BaseDao.DATA_SOURCES, parameterMap);
+  }
+
+  public Feature getFeature(@NonNull String featureSource, @NonNull String featureID) {
+    Map<String, Object> parameterMap = new HashMap<>();
+    parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+    parameterMap.put(Parameters.FEATURE_ID, featureID);
+
+    Feature result = null;
+    result = getSqlSession().selectOne(NS + "fancyFeature", parameterMap);
+    return result;
+  }
+
+  public Comid getComid(@NonNull Integer comid) {
+    Comid result = null;
+    result = getSqlSession().selectOne(NS + "fancyComid", comid);
+    return result;
   }
 
   public Integer getFeatureComid(String featureSource, String featureID)

@@ -5,12 +5,13 @@ import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
 import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
+import gov.usgs.owi.nldi.model.DataSource;
+import gov.usgs.owi.nldi.model.Feature;
 import gov.usgs.owi.nldi.services.*;
-import gov.usgs.owi.nldi.swagger.model.DataSource;
-import gov.usgs.owi.nldi.swagger.model.Feature;
 import gov.usgs.owi.nldi.transform.CharacteristicDataTransformer;
 import gov.usgs.owi.nldi.transform.FeatureCollectionTransformer;
 import gov.usgs.owi.nldi.transform.FeatureTransformer;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,10 +31,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class LinkedDataController extends BaseController {
@@ -78,29 +76,22 @@ public class LinkedDataController extends BaseController {
         @ApiResponse(responseCode = "500", description = "Server error", content = @Content)
       })
   @GetMapping(value = "linked-data", produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<Map<String, Object>> getDataSources(
+  public @ResponseBody List<DataSource> getDataSources(
       HttpServletRequest request, HttpServletResponse response) {
     BigInteger logId = logService.logRequest(request);
-    List<Map<String, Object>> rtn = new ArrayList<>();
+    List<DataSource> dataSources;
     try {
-      Map<String, Object> featureSource = new LinkedHashMap<>();
+      dataSources = lookupDao.getDataSources(configurationService.getLinkedDataUrl());
 
       // Manually add comid as a feature source.
-      featureSource.put(LookupDao.SOURCE, Parameters.COMID);
-      featureSource.put(LookupDao.SOURCE_NAME, "NHDPlus comid");
-      featureSource.put(
-          BaseDao.FEATURES,
-          String.join("/", configurationService.getLinkedDataUrl(), Parameters.COMID));
-      rtn.add(featureSource);
-
-      Map<String, Object> parameterMap = new HashMap<>();
-      parameterMap.put(LookupDao.ROOT_URL, configurationService.getLinkedDataUrl());
-      rtn.addAll(lookupDao.getList(BaseDao.DATA_SOURCES, parameterMap));
-
+      String comidFeatureUri =
+          String.join("/", configurationService.getLinkedDataUrl(), Parameters.COMID);
+      dataSources.add(new DataSource(Parameters.COMID, "NHDPlus comid", comidFeatureUri));
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
-    return rtn;
+
+    return dataSources;
   }
 
   // swagger documentation for /linked-data/{featureSource} endpoint
@@ -147,26 +138,27 @@ public class LinkedDataController extends BaseController {
       description = "returns registered feature as WGS84 lat/lon GeoJSON if it exists")
   @GetMapping(
       value = "linked-data/{featureSource}/{featureID}",
-      produces = MediaType.APPLICATION_JSON_VALUE)
-  public void getRegisteredFeature(
+      produces = {MIME_TYPE_GEOJSON, MIME_TYPE_JSONLD, MediaType.APPLICATION_JSON_VALUE})
+  public @ResponseBody Feature getRegisteredFeature(
       HttpServletRequest request,
       HttpServletResponse response,
       @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "wqp") String featureSource,
-      @PathVariable(Parameters.FEATURE_ID) @Schema(example = "USGS-054279485") String featureID)
-      throws Exception {
+      @PathVariable(Parameters.FEATURE_ID) @Schema(example = "USGS-054279485") String featureID) {
+
     BigInteger logId = logService.logRequest(request);
-    try (FeatureTransformer transformer = new FeatureTransformer(response, configurationService)) {
+    Feature feature = null;
+
+    try {
       lookupDao.validateFeatureSource(featureSource);
       lookupDao.validateFeatureSourceAndId(featureSource, featureID);
 
-      Map<String, Object> parameterMap = new HashMap<>();
-      parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
-      parameterMap.put(Parameters.FEATURE_ID, featureID);
-      addContentHeader(response);
-      streamResults(transformer, BaseDao.FEATURE, parameterMap);
+      feature = lookupDao.getFeature(featureSource, featureID);
+      feature.setNavigation(createNavigationUrl(request.getRequestURI()));
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
+
+    return feature;
   }
 
   // swagger documentation for /linked-data/{featureSource}/{featureID}/navigate endpoint
@@ -177,6 +169,7 @@ public class LinkedDataController extends BaseController {
       value = "linked-data/{featureSource}/{featureID}/navigate",
       produces = MediaType.APPLICATION_JSON_VALUE)
   @Deprecated
+  @Hidden
   public Map<String, Object> getNavigateTypes(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -357,7 +350,7 @@ public class LinkedDataController extends BaseController {
           "returns the aggregated basin for the specified feature in WGS84 lat/lon GeoJSON")
   @GetMapping(
       value = "linked-data/{featureSource}/{featureID}/basin",
-      produces = MediaType.APPLICATION_JSON_VALUE)
+      produces = {MediaType.APPLICATION_JSON_VALUE, MIME_TYPE_GEOJSON})
   public void getBasin(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -418,8 +411,9 @@ public class LinkedDataController extends BaseController {
       description = "returns the flowlines for the specified navigation in WGS84 lat/lon GeoJSON")
   @GetMapping(
       value = "linked-data/{featureSource}/{featureID}/navigate/{navigationMode}",
-      produces = MediaType.APPLICATION_JSON_VALUE)
+      produces = {MediaType.APPLICATION_JSON_VALUE, MIME_TYPE_GEOJSON})
   @Deprecated
+  @Hidden
   public void getFlowlines(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -471,8 +465,9 @@ public class LinkedDataController extends BaseController {
               + " GeoJSON")
   @GetMapping(
       value = "linked-data/{featureSource}/{featureID}/navigate/{navigationMode}/{dataSource}",
-      produces = MediaType.APPLICATION_JSON_VALUE)
+      produces = {MediaType.APPLICATION_JSON_VALUE, MIME_TYPE_GEOJSON})
   @Deprecated
+  @Hidden
   public void getFeaturesDeprecated(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -525,7 +520,7 @@ public class LinkedDataController extends BaseController {
               + " GeoJSON")
   @GetMapping(
       value = "linked-data/{featureSource}/{featureID}/navigation/{navigationMode}/{dataSource}",
-      produces = MediaType.APPLICATION_JSON_VALUE)
+      produces = {MediaType.APPLICATION_JSON_VALUE, MIME_TYPE_GEOJSON})
   public void getFeatures(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -581,7 +576,7 @@ public class LinkedDataController extends BaseController {
   @GetMapping(
       value = "linked-data/{featureSource}/{featureID}/navigation/{navigationMode}",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<Map<String, Object>> getNavigation(
+  public @ResponseBody List<DataSource> getNavigation(
       HttpServletRequest request,
       HttpServletResponse response,
       @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "wqp") String featureSource,
@@ -594,32 +589,36 @@ public class LinkedDataController extends BaseController {
           String navigationMode) {
 
     BigInteger logId = logService.logRequest(request);
-
+    List<DataSource> dataSources;
     try {
       lookupDao.validateFeatureSource(featureSource);
       lookupDao.validateFeatureSourceAndId(featureSource, featureID);
 
-      List<Map<String, Object>> dataSources = getDataSources(request, response);
-      List<Map<String, Object>> newDataSources = new ArrayList<>();
-      String newNavigationUrl = createNewNavigationUrl(request);
-      for (Map<String, Object> dataSource : dataSources) {
-        if (Parameters.COMID.equals(dataSource.get(LookupDao.SOURCE))) {
-          dataSource.put(LookupDao.SOURCE, "Flowlines");
-          dataSource.put(LookupDao.SOURCE_NAME, "NHDPlus flowlines");
-          dataSource.put(BaseDao.FEATURES, newNavigationUrl + "flowlines");
-          newDataSources.add(dataSource);
-        } else {
-          dataSource.put(
-              BaseDao.FEATURES,
-              newNavigationUrl + dataSource.get(LookupDao.SOURCE).toString().toLowerCase());
-          newDataSources.add(dataSource);
-        }
+      dataSources = lookupDao.getDataSources(configurationService.getLinkedDataUrl());
+
+      // construct new navigation url
+      StringBuilder builder = new StringBuilder();
+      builder.append(configurationService.getLinkedDataUrl()).append("/");
+      builder.append(featureSource).append("/");
+      builder.append(featureID).append("/");
+      builder.append("navigation/");
+      builder.append(navigationMode).append("/");
+      String baseUrl = builder.toString();
+
+      for (DataSource dataSource : dataSources) {
+        dataSource.setUri(baseUrl + dataSource.getSource().toLowerCase());
       }
-      return newDataSources;
+
+      // add the flowlines navigation endpoint
+      DataSource flowlinesDataSource =
+          new DataSource("Flowlines", "NHDPlus flowlines", baseUrl + "flowlines");
+      dataSources.add(0, flowlinesDataSource);
 
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
+
+    return dataSources;
   }
 
   // swagger documentation for /linked-data/{featureSource}/{featureID}/navigate/{navigationMode}
@@ -629,7 +628,7 @@ public class LinkedDataController extends BaseController {
       description = "returns the flowlines for the specified navigation in WGS84 lat/lon GeoJSON")
   @GetMapping(
       value = "linked-data/{featureSource}/{featureID}/navigation/{navigationMode}/flowlines",
-      produces = MediaType.APPLICATION_JSON_VALUE)
+      produces = {MediaType.APPLICATION_JSON_VALUE, MIME_TYPE_GEOJSON})
   public void getNavigationFlowlines(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -690,17 +689,5 @@ public class LinkedDataController extends BaseController {
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
     }
-  }
-
-  // We need to create navigation urls for the various options (see test file navigation.json)
-  // We do this by starting with the linked-data url from the configuration service
-  // then adding all the request-specific elements from the request we received
-  private String createNewNavigationUrl(HttpServletRequest request) {
-    String newUrl = configurationService.getLinkedDataUrl();
-    String requestUrl = request.getRequestURL().toString();
-    String[] arr = requestUrl.split("linked-data");
-    newUrl += arr[1];
-    newUrl += "/";
-    return newUrl;
   }
 }

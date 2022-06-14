@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import gov.usgs.owi.nldi.controllers.LinkedDataController;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.server.ResponseStatusException;
 
 @WebMvcTest(
@@ -28,8 +28,11 @@ public class GlobalDefaultExceptionHandlerTest {
 
   @Test
   public void handleUncaughtExceptionTest() throws Exception {
-    doThrow(new Exception()).when(controller).getRegisteredFeature(any(), any(), any(), any());
-    mvc.perform(get("/linked-data/test/error"))
+    doThrow(Exception.class)
+        .when(controller)
+        .getNavigationFlowlines(
+            any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
+    mvc.perform(get("/linked-data/wqp/USGS-12345/navigation/UM/flowlines?distance=1"))
         .andExpect(status().isInternalServerError())
         .andExpect(
             content()
@@ -39,16 +42,14 @@ public class GlobalDefaultExceptionHandlerTest {
 
   @Test
   public void handleMissingServletRequestParameterTest() throws Exception {
-    String paramType = "String";
-    String paramValue = "value";
-    String errorMessage =
-        String.format("Required %s parameter '%s' is not present", paramType, paramValue);
-    doThrow(new MissingServletRequestParameterException(paramValue, paramType))
-        .when(controller)
-        .getRegisteredFeature(any(), any(), any(), any());
-    mvc.perform(get("/linked-data/test/error"))
+    // missing distance parameter
+    mvc.perform(get("/linked-data/wqp/USGS-12345/navigation/UM/flowlines"))
         .andExpect(status().isBadRequest())
-        .andExpect(content().string(errorMessage));
+        .andExpect(
+            content()
+                .string(
+                    Matchers.containsString(
+                        "Required String parameter 'distance' is not present")));
   }
 
   @Test
@@ -60,7 +61,7 @@ public class GlobalDefaultExceptionHandlerTest {
         .getRegisteredFeature(any(), any(), any(), any());
     mvc.perform(get("/linked-data/test/error"))
         .andExpect(status().isBadRequest())
-        .andExpect(content().string(responseMessage));
+        .andExpect(content().string(Matchers.containsString(responseMessage)));
   }
 
   @Test
@@ -69,14 +70,13 @@ public class GlobalDefaultExceptionHandlerTest {
     String featureSource = "source";
     String responseMessage =
         String.format(
-            "The feature ID \"%s\" does not exist in feature source \"%s\".",
-            featureId, featureSource);
+            "The feature ID '%s' does not exist in feature source '%s'.", featureId, featureSource);
     doThrow(new FeatureIdNotFoundException(featureSource, featureId))
         .when(controller)
         .getRegisteredFeature(any(), any(), any(), any());
     mvc.perform(get("/linked-data/test/error"))
         .andExpect(status().isNotFound())
-        .andExpect(content().string(responseMessage));
+        .andExpect(content().string(Matchers.containsString(responseMessage)));
   }
 
   @Test

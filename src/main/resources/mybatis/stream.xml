@@ -46,7 +46,7 @@
                lower(source_suffix) = #{dataSource}
     </select>
 
-    <select id="feature" resultType="java.util.LinkedHashMap" fetchSize="50">
+    <select id="feature" resultType="gov.usgs.owi.nldi.model.Feature" fetchSize="50">
         <include refid="lookup.selectFeatures"/>
     </select>
 

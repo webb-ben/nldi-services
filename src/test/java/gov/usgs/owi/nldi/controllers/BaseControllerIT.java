@@ -10,6 +10,7 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import gov.usgs.owi.nldi.ColumnSensingFlatXMLDataSetLoader;
 import java.io.IOException;
+import java.util.Collections;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,8 +19,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -57,7 +57,16 @@ public abstract class BaseControllerIT {
       boolean isJson,
       boolean extraFieldsAllowed)
       throws JSONException {
-    ResponseEntity<String> entity = restTemplate.getForEntity(urlRoot + url, String.class);
+    HttpHeaders headers = new HttpHeaders();
+    if (contentType != null) {
+      headers.setAccept(Collections.singletonList(MediaType.valueOf(contentType)));
+    } else {
+      headers.setAccept(Collections.singletonList(MediaType.ALL));
+    }
+    HttpEntity<String> requestEntity = new HttpEntity(headers);
+    ResponseEntity<String> entity =
+        restTemplate.exchange(urlRoot + url, HttpMethod.GET, requestEntity, String.class);
+
     assertEquals(httpStatus, entity.getStatusCodeValue());
     if (null != contentType) {
       assertEquals(contentType, entity.getHeaders().getContentType().toString());

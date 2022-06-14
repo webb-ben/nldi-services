@@ -49,12 +49,9 @@
 				]
 			},
 			"properties": {
-				"type": "",
 				"source": "comid",
 				"sourceName": "NHDPlus comid",
 				"identifier": "13294288",
-				"name": "",
-				"uri": "",
 				"comid": "13294288",
 				"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/comid/13294288/navigation"
 			}

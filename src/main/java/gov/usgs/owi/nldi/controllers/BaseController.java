@@ -17,17 +17,20 @@ import org.apache.ibatis.session.ResultHandler;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Validated
+@EnableWebMvc
 public abstract class BaseController {
   private static final Logger LOG = LoggerFactory.getLogger(BaseController.class);
 
   public static final String HEADER_CONTENT_TYPE = "Content-Type";
   public static final String MIME_TYPE_GEOJSON = "application/vnd.geo+json";
+  public static final String MIME_TYPE_JSONLD = "application/ld+json";
   public static final String REGEX_NAVIGATION_MODE = "DD|DM|PP|UT|UM";
-  public static final String OUTPUT_FORMAT = "json|html";
   public static final String DATA_SOURCE = "dataSource";
   public static final String COMID_MISMATCH_ERROR =
       "The stopComid must be downstream of the start comid.";
@@ -210,5 +213,13 @@ public abstract class BaseController {
   protected boolean isLegacy(String legacy, String navigationMode) {
     return (StringUtils.hasText(legacy) && "true".contentEquals(legacy.trim().toLowerCase()))
         || NavigationMode.PP.toString().equalsIgnoreCase(navigationMode);
+  }
+
+  protected String createNavigationUrl(@NonNull String requestUrl) {
+    String newUrl = configurationService.getLinkedDataUrl();
+    String[] arr = requestUrl.split("linked-data");
+    newUrl += arr[1];
+    newUrl += "/navigation";
+    return newUrl;
   }
 }

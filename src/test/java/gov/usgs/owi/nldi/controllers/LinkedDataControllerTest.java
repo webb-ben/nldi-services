@@ -11,6 +11,8 @@ import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.exceptions.DataSourceNotFoundException;
 import gov.usgs.owi.nldi.exceptions.FeatureIdNotFoundException;
 import gov.usgs.owi.nldi.exceptions.FeatureSourceNotFoundException;
+import gov.usgs.owi.nldi.model.DataSource;
+import gov.usgs.owi.nldi.model.Feature;
 import gov.usgs.owi.nldi.services.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -18,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import mil.nga.sf.geojson.Point;
+import mil.nga.sf.geojson.Position;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,18 +61,45 @@ public class LinkedDataControllerTest {
     doThrow(new DataSourceNotFoundException("invalid-source"))
         .when(lookupDao)
         .validateDataSource(eq("invalid-source"));
+    when(lookupDao.getFeature("valid-source", "valid-id"))
+        .thenReturn(
+            new Feature(
+                "type",
+                "source",
+                "sourceName",
+                "identifier",
+                "name",
+                "uri",
+                1,
+                "reachcode",
+                0.0,
+                "uri",
+                new Point(new Position(0.0, 0.0)),
+                "POINT(0.0 0.0)"));
   }
 
   @Test
   public void getDataSourcesTest() throws Exception {
-    mvc.perform(get("/linked-data"))
+    List<DataSource> returnedSources = new ArrayList<>();
+    String testSource = "TestSource";
+    String testName = "Test Name";
+    String testUri = "test-uri";
+    returnedSources.add(new DataSource(testSource, testName, testUri));
+    when(lookupDao.getDataSources(any(String.class))).thenReturn(returnedSources);
+
+    mvc.perform(get("/linked-data?f=json").header("accept", "application/json"))
         .andExpect(status().isOk())
         .andExpect(
             content()
-                .string(
+                .json(
                     "[{\"source\":\"comid\",\"sourceName\":\"NHDPlus"
-                        + " comid\",\"features\":\"http://owi-test.usgs.gov:8080/test-url/linked-data/comid\"},{\"features\":\"features-url\",\"source\":\"source\",\"sourceName\":\"source"
-                        + " name\"}]"));
+                        + " comid\",\"features\":\"http://owi-test.usgs.gov:8080/test-url/linked-data/comid\"},{\"features\":\""
+                        + testUri
+                        + "\",\"source\":\""
+                        + testSource
+                        + "\",\"sourceName\":\""
+                        + testName
+                        + "\"}]"));
 
     verify(logService).logRequest(any(HttpServletRequest.class));
     verify(logService).logRequestComplete(any(BigInteger.class), any(int.class));
@@ -94,14 +126,19 @@ public class LinkedDataControllerTest {
         .andExpect(
             content()
                 .string(
-                    "The feature ID \"invalid-id\" does not exist in feature source \"source\"."));
+                    Matchers.containsString(
+                        "The feature ID 'invalid-id' does not exist in feature source 'source'.")));
 
     verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(2)).logRequestComplete(any(BigInteger.class), anyInt());
 
     mvc.perform(get("/linked-data/invalid-source/valid-id"))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("The feature source \"invalid-source\" does not exist."));
+        .andExpect(
+            content()
+                .string(
+                    Matchers.containsString(
+                        "The feature source 'invalid-source' does not exist.")));
 
     verify(logService, times(3)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(3)).logRequestComplete(any(BigInteger.class), anyInt());
@@ -177,7 +214,11 @@ public class LinkedDataControllerTest {
 
     mvc.perform(get("/linked-data/invalid-source/valid-id/basin"))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("The feature source \"invalid-source\" does not exist."));
+        .andExpect(
+            content()
+                .string(
+                    Matchers.containsString(
+                        "The feature source 'invalid-source' does not exist.")));
 
     verify(logService, times(3)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(3)).logRequestComplete(any(BigInteger.class), anyInt());
@@ -187,7 +228,8 @@ public class LinkedDataControllerTest {
         .andExpect(
             content()
                 .string(
-                    "The feature ID \"invalid-id\" does not exist in feature source \"source\"."));
+                    Matchers.containsString(
+                        "The feature ID 'invalid-id' does not exist in feature source 'source'.")));
 
     verify(logService, times(4)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(4)).logRequestComplete(any(BigInteger.class), anyInt());
@@ -263,14 +305,21 @@ public class LinkedDataControllerTest {
 
     mvc.perform(get("/linked-data/valid-source/valid-id/navigation/UM/invalid-source?distance=1"))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("The data source \"invalid-source\" does not exist."));
+        .andExpect(
+            content()
+                .string(
+                    Matchers.containsString("The data source 'invalid-source' does not exist.")));
 
     verify(logService, times(3)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(3)).logRequestComplete(any(BigInteger.class), anyInt());
 
     mvc.perform(get("/linked-data/invalid-source/valid-id/navigation/UM/valid-source?distance=1"))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("The feature source \"invalid-source\" does not exist."));
+        .andExpect(
+            content()
+                .string(
+                    Matchers.containsString(
+                        "The feature source 'invalid-source' does not exist.")));
 
     verify(logService, times(4)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(4)).logRequestComplete(any(BigInteger.class), anyInt());
@@ -280,7 +329,8 @@ public class LinkedDataControllerTest {
         .andExpect(
             content()
                 .string(
-                    "The feature ID \"invalid-id\" does not exist in feature source \"source\"."));
+                    Matchers.containsString(
+                        "The feature ID 'invalid-id' does not exist in feature source 'source'.")));
 
     verify(logService, times(5)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(5)).logRequestComplete(any(BigInteger.class), anyInt());
@@ -294,26 +344,31 @@ public class LinkedDataControllerTest {
     mvc.perform(get("/linked-data/valid-source/valid-id/navigation/UM")).andExpect(status().isOk());
 
     // logging gets called twice for this request because it calls another controller function
-    verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
-    verify(logService, times(2))
+    verify(logService, times(1)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(1))
         .logRequestComplete(any(BigInteger.class), eq(HttpStatus.OK.value()));
 
     mvc.perform(get("/linked-data/invalid-source/valid-id/navigation/UM"))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("The feature source \"invalid-source\" does not exist."));
+        .andExpect(
+            content()
+                .string(
+                    Matchers.containsString(
+                        "The feature source 'invalid-source' does not exist.")));
 
-    verify(logService, times(3)).logRequest(any(HttpServletRequest.class));
-    verify(logService, times(3)).logRequestComplete(any(BigInteger.class), anyInt());
+    verify(logService, times(2)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(2)).logRequestComplete(any(BigInteger.class), anyInt());
 
     mvc.perform(get("/linked-data/valid-source/invalid-id/navigation/UM"))
         .andExpect(status().isNotFound())
         .andExpect(
             content()
                 .string(
-                    "The feature ID \"invalid-id\" does not exist in feature source \"source\"."));
+                    Matchers.containsString(
+                        "The feature ID 'invalid-id' does not exist in feature source 'source'.")));
 
-    verify(logService, times(4)).logRequest(any(HttpServletRequest.class));
-    verify(logService, times(4)).logRequestComplete(any(BigInteger.class), anyInt());
+    verify(logService, times(3)).logRequest(any(HttpServletRequest.class));
+    verify(logService, times(3)).logRequestComplete(any(BigInteger.class), anyInt());
   }
 
   @Test
@@ -379,7 +434,11 @@ public class LinkedDataControllerTest {
 
     mvc.perform(get("/linked-data/invalid-source/valid-id/navigation/UM/flowlines?distance=1"))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("The feature source \"invalid-source\" does not exist."));
+        .andExpect(
+            content()
+                .string(
+                    Matchers.containsString(
+                        "The feature source 'invalid-source' does not exist.")));
 
     verify(logService, times(6)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(6)).logRequestComplete(any(BigInteger.class), anyInt());
@@ -389,7 +448,8 @@ public class LinkedDataControllerTest {
         .andExpect(
             content()
                 .string(
-                    "The feature ID \"invalid-id\" does not exist in feature source \"source\"."));
+                    Matchers.containsString(
+                        "The feature ID 'invalid-id' does not exist in feature source 'source'.")));
 
     verify(logService, times(7)).logRequest(any(HttpServletRequest.class));
     verify(logService, times(7)).logRequestComplete(any(BigInteger.class), anyInt());

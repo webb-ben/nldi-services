@@ -70,9 +70,10 @@ public class NetworkControllerDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13297246/navigation/UT/wqp?distance=10000",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "getFeatures.distance: distance must be between 1 and 9999 kilometers",
-        false,
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getFeatures.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
+        true,
         false);
   }
 
@@ -82,9 +83,10 @@ public class NetworkControllerDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13297246/navigation/UT/wqp?distance=-1",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "getFeatures.distance: distance must be between 1 and 9999 kilometers",
-        false,
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getFeatures.distance: distance must be between 1 and 9999"
+            + " kilometers\",\"type\":\"error\"}",
+        true,
         false);
   }
 
@@ -170,9 +172,10 @@ public class NetworkControllerDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13297246/navigation/PP/wqp?distance=9999&stopComid=13297198",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "400 BAD_REQUEST \"The stopComid must be downstream of the start comid.\"",
-        false,
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"400 BAD_REQUEST 'The stopComid must be downstream of the start"
+            + " comid.'\",\"type\":\"error\"}",
+        true,
         true);
   }
 
@@ -195,9 +198,10 @@ public class NetworkControllerDataSourceIT extends BaseControllerIT {
         restTemplate,
         "/linked-data/comid/13297198/navigation/XX/wqp?distance=9999",
         HttpStatus.BAD_REQUEST.value(),
-        null,
-        "getFeatures.navigationMode: must match \"DD|DM|PP|UT|UM\"",
-        false,
+        MediaType.APPLICATION_JSON_VALUE,
+        "{\"description\":\"getFeatures.navigationMode: must match"
+            + " 'DD|DM|PP|UT|UM'\",\"type\":\"error\"}",
+        true,
         false);
   }
 
