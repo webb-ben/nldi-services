@@ -135,7 +135,7 @@ public class NetworkControllerTest {
   @Test
   public void getCoordinatesInRangeTest() throws Exception {
     when(lookupDao.getComidByLatitudeAndLongitude(any())).thenReturn(12345);
-    when(lookupDao.getComid(12345))
+    when(lookupDao.getComidObject(12345))
         .thenReturn(new Comid("identifier", 12345, new Point(new Position(0.0, 0.0))));
 
     mvc.perform(get("/linked-data/comid/position?coords=POINT(-180 0)")).andExpect(status().isOk());
@@ -150,7 +150,7 @@ public class NetworkControllerTest {
   @Test
   public void getCoordinatesOutOfRangeTest() throws Exception {
     when(lookupDao.getComidByLatitudeAndLongitude(any())).thenReturn(12345);
-    when(lookupDao.getComid(12345))
+    when(lookupDao.getComidObject(12345))
         .thenReturn(new Comid("12345", 12345, new Point(new Position(0.0, 0.0))));
 
     mvc.perform(get("/linked-data/comid/position?coords=POINT(-181 0)"))
