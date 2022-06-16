@@ -4,22 +4,21 @@ import gov.usgs.owi.nldi.model.Feature;
 import gov.usgs.owi.nldi.model.FeatureList;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
-import org.slf4j.LoggerFactory;
 
 public class FeatureListResultHandler implements ResultHandler<Feature> {
 
-    private FeatureList featureList;
+  private FeatureList featureList;
 
-    public FeatureListResultHandler() {
-        featureList = new FeatureList();
-    }
+  public FeatureListResultHandler() {
+    featureList = new FeatureList();
+  }
 
-    @Override
-    public void handleResult(ResultContext<? extends Feature> resultContext) {
-        featureList.addFeature(resultContext.getResultObject());
-    }
+  @Override
+  public void handleResult(ResultContext<? extends Feature> resultContext) {
+    featureList.addFeature(resultContext.getResultObject());
+  }
 
-    public FeatureList getFeatureList() {
-        return featureList;
-    }
+  public FeatureList getFeatureList() {
+    return featureList;
+  }
 }

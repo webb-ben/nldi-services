@@ -56,7 +56,8 @@ public class SpringConfig implements WebMvcConfigurer {
     MediaType jsonLd = MediaType.valueOf(BaseController.MIME_TYPE_JSONLD);
     // we want our converters to take priority, so we add them to the top of the list
     messageConverters.add(0, new ComidMessageConverter(geoJson, MediaType.APPLICATION_JSON));
-    messageConverters.add(0, new FeatureListMessageConverter(geoJson, jsonLd, MediaType.APPLICATION_JSON));
+    messageConverters.add(
+        0, new FeatureListMessageConverter(geoJson, jsonLd, MediaType.APPLICATION_JSON));
     messageConverters.add(
         0, new FeatureMessageConverter(geoJson, jsonLd, MediaType.APPLICATION_JSON));
     messageConverters.add(0, new ErrorMessageConverter(MediaType.ALL));

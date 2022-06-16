@@ -6,6 +6,9 @@ public class ComidNotFoundException extends RuntimeException {
   }
 
   public ComidNotFoundException(String featureSource, String featureID) {
-    super(String.format("The comid for feature source \"%s\" and feature ID \"%s\" does not exist.", featureSource, featureID));
+    super(
+        String.format(
+            "The comid for feature source \"%s\" and feature ID \"%s\" does not exist.",
+            featureSource, featureID));
   }
 }

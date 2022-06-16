@@ -5,19 +5,17 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import gov.usgs.owi.nldi.controllers.BaseController;
 import gov.usgs.owi.nldi.model.Feature;
 import gov.usgs.owi.nldi.model.FeatureList;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import mil.nga.sf.geojson.*;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
-
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
 
 public class FeatureListMessageConverter extends AbstractHttpMessageConverter<FeatureList> {
 
@@ -31,7 +29,8 @@ public class FeatureListMessageConverter extends AbstractHttpMessageConverter<Fe
   }
 
   @Override
-  protected FeatureList readInternal(Class<? extends FeatureList> aClass, HttpInputMessage httpInputMessage)
+  protected FeatureList readInternal(
+      Class<? extends FeatureList> aClass, HttpInputMessage httpInputMessage)
       throws IOException, HttpMessageNotReadableException {
     return null;
   }
@@ -85,13 +84,13 @@ public class FeatureListMessageConverter extends AbstractHttpMessageConverter<Fe
       generator.writeStringField("@id", "_:graph");
       generator.writeArrayFieldStart("@graph");
 
-      for (Feature feature: featureList.getFeatures()) {
+      for (Feature feature : featureList.getFeatures()) {
         // start final object vvv
         generator.writeStartObject();
 
         generator.writeStringField("@id", feature.getUri());
         generator.writeStringField(
-                "@type", "https://www.opengis.net/def/schema/hy_features/hyf/HY_HydroLocation");
+            "@type", "https://www.opengis.net/def/schema/hy_features/hyf/HY_HydroLocation");
 
         // source object vvv
         generator.writeObjectFieldStart("schema:subjectOf");
@@ -103,7 +102,7 @@ public class FeatureListMessageConverter extends AbstractHttpMessageConverter<Fe
 
         generator.writeStringField("name", feature.getName());
         generator.writeStringField(
-                "comid", "https://geoconnex.us/nhdplusv2/comid/" + feature.getComid());
+            "comid", "https://geoconnex.us/nhdplusv2/comid/" + feature.getComid());
 
         // hyf referenced position vvv
         generator.writeArrayFieldStart("hyf:referencedPosition");
@@ -131,8 +130,8 @@ public class FeatureListMessageConverter extends AbstractHttpMessageConverter<Fe
           generator.writeEndObject();
 
           generator.writeStringField(
-                  "hyf:linearElement",
-                  "https://geoconnex.us/nhdplusv2/reachcode/" + feature.getReachcode());
+              "hyf:linearElement",
+              "https://geoconnex.us/nhdplusv2/reachcode/" + feature.getReachcode());
 
           generator.writeEndObject();
           generator.writeEndObject();
@@ -154,7 +153,7 @@ public class FeatureListMessageConverter extends AbstractHttpMessageConverter<Fe
 
         generator.writeObjectFieldStart("gsp:hasGeometry");
         generator.writeStringField(
-                "@type", "http://www.opengis.net/ont/sf#" + feature.getGeometry().getType());
+            "@type", "http://www.opengis.net/ont/sf#" + feature.getGeometry().getType());
         generator.writeObjectFieldStart("gsp:asWKT");
         generator.writeStringField("@value", feature.getWellKnownText());
         generator.writeStringField("@type", "http://www.opengis.net/ont/geosparql#wktLiteral");
@@ -176,7 +175,7 @@ public class FeatureListMessageConverter extends AbstractHttpMessageConverter<Fe
 
     FeatureCollection collection = new FeatureCollection();
 
-    for (Feature feature: featureList.getFeatures()) {
+    for (Feature feature : featureList.getFeatures()) {
       mil.nga.sf.geojson.Feature geoJsonFeature = new mil.nga.sf.geojson.Feature();
       geoJsonFeature.setGeometry(feature.getGeometry());
 

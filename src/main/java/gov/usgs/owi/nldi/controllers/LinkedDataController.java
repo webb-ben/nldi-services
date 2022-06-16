@@ -527,20 +527,20 @@ public class LinkedDataController extends BaseController {
       @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "wqp") String featureSource,
       @PathVariable(Parameters.FEATURE_ID) @Schema(example = "USGS-054279485") String featureID,
       @PathVariable(Parameters.NAVIGATION_MODE)
-      @Pattern(regexp = REGEX_NAVIGATION_MODE)
-      @Schema(
-          example = "UM",
-          allowableValues = {"UM", "UT", "PP", "DM", "DD"})
+          @Pattern(regexp = REGEX_NAVIGATION_MODE)
+          @Schema(
+              example = "UM",
+              allowableValues = {"UM", "UT", "PP", "DM", "DD"})
           String navigationMode,
       @PathVariable(value = DATA_SOURCE) @Schema(example = "nwissite") String dataSource,
       @RequestParam(value = Parameters.STOP_COMID, required = false)
-      @Range(min = 1, max = Integer.MAX_VALUE)
-        String stopComid,
+          @Range(min = 1, max = Integer.MAX_VALUE)
+          String stopComid,
       @Parameter(description = Parameters.DISTANCE_DESCRIPTION_NEW)
-      @RequestParam(value = Parameters.DISTANCE)
-      @Range(min = 1, max = 9999, message = Parameters.DISTANCE_VALIDATION_MESSAGE)
-      @Schema(example = "50")
-        BigDecimal distance,
+          @RequestParam(value = Parameters.DISTANCE)
+          @Range(min = 1, max = 9999, message = Parameters.DISTANCE_VALIDATION_MESSAGE)
+          @Schema(example = "50")
+          BigDecimal distance,
       @RequestParam(value = Parameters.LEGACY, required = false) String legacy)
       throws Exception {
 

@@ -43,13 +43,13 @@ public class LinkedDataControllerDataSourceIT extends BaseControllerIT {
   @Test
   public void getWqpJsonLdTest() throws Exception {
     assertEntity(
-            restTemplate,
-            "/linked-data/wqp/USGS-05427880/navigation/UM/wqp?distance=10",
-            HttpStatus.OK.value(),
-            BaseController.MIME_TYPE_JSONLD,
-            getCompareFile(RESULT_FOLDER, "getWqpJsonLdTest.json"),
-            true,
-            false);
+        restTemplate,
+        "/linked-data/wqp/USGS-05427880/navigation/UM/wqp?distance=10",
+        HttpStatus.OK.value(),
+        BaseController.MIME_TYPE_JSONLD,
+        getCompareFile(RESULT_FOLDER, "getWqpJsonLdTest.json"),
+        true,
+        false);
   }
 
   @Test

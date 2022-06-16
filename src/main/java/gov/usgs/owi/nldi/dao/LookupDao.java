@@ -115,7 +115,7 @@ public class LookupDao extends BaseDao {
       comid = Integer.parseInt(featureID);
       Boolean comidExists = getSqlSession().selectOne(DOES_COMID_EXIST, comid);
       if (!comidExists) {
-       throw new ComidNotFoundException(comid);
+        throw new ComidNotFoundException(comid);
       }
     } else {
       Map<String, Object> parameterMap = new HashMap<>();
