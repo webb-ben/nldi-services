@@ -7,6 +7,7 @@ import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.model.DataSource;
 import gov.usgs.owi.nldi.model.Feature;
+import gov.usgs.owi.nldi.model.FeatureList;
 import gov.usgs.owi.nldi.services.*;
 import gov.usgs.owi.nldi.transform.CharacteristicDataTransformer;
 import gov.usgs.owi.nldi.transform.FeatureCollectionTransformer;
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.util.*;
@@ -327,18 +329,14 @@ public class LinkedDataController extends BaseController {
       lookupDao.validateFeatureSource(featureSource);
       lookupDao.validateFeatureSourceAndId(featureSource, featureID);
 
-      Integer comid = lookupDao.getFeatureComid(featureSource, featureID);
+      Integer comid = lookupDao.getComidFromFeature(featureSource, featureID);
 
-      if (null == comid) {
-        response.setStatus(HttpStatus.NOT_FOUND.value());
-      } else {
-        Map<String, Object> parameterMap = new HashMap<>();
-        parameterMap.put(Parameters.CHARACTERISTIC_TYPE, characteristicType.toLowerCase());
-        parameterMap.put(Parameters.COMID, comid);
-        parameterMap.put(Parameters.CHARACTERISTIC_ID, characteristicIds);
-        addContentHeader(response);
-        streamResults(transformer, BaseDao.CHARACTERISTIC_DATA, parameterMap);
-      }
+      Map<String, Object> parameterMap = new HashMap<>();
+      parameterMap.put(Parameters.CHARACTERISTIC_TYPE, characteristicType.toLowerCase());
+      parameterMap.put(Parameters.COMID, comid);
+      parameterMap.put(Parameters.CHARACTERISTIC_ID, characteristicIds);
+      addContentHeader(response);
+      streamResults(transformer, BaseDao.CHARACTERISTIC_DATA, parameterMap);
 
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
@@ -370,7 +368,7 @@ public class LinkedDataController extends BaseController {
       lookupDao.validateFeatureSource(featureSource);
       lookupDao.validateFeatureSourceAndId(featureSource, featureID);
 
-      Integer comid = lookupDao.getFeatureComid(featureSource, featureID);
+      Integer comid = lookupDao.getComidFromFeature(featureSource, featureID);
 
       if (comid == null) {
         response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -441,7 +439,7 @@ public class LinkedDataController extends BaseController {
     BigInteger logId = logService.logRequest(request);
 
     try {
-      Integer comid = lookupDao.getFeatureComid(featureSource, featureID);
+      Integer comid = lookupDao.getComidFromFeature(featureSource, featureID);
       if (null == comid) {
         response.setStatus(HttpStatus.NOT_FOUND.value());
       } else {
@@ -495,7 +493,7 @@ public class LinkedDataController extends BaseController {
 
     BigInteger logId = logService.logRequest(request);
     try {
-      Integer comid = lookupDao.getFeatureComid(featureSource, featureID);
+      Integer comid = lookupDao.getComidFromFeature(featureSource, featureID);
       if (null == comid) {
         response.setStatus(HttpStatus.NOT_FOUND.value());
       } else {
@@ -522,50 +520,57 @@ public class LinkedDataController extends BaseController {
               + " GeoJSON")
   @GetMapping(
       value = "linked-data/{featureSource}/{featureID}/navigation/{navigationMode}/{dataSource}",
-      produces = {MediaType.APPLICATION_JSON_VALUE, MIME_TYPE_GEOJSON})
-  public void getFeatures(
+      produces = {MediaType.APPLICATION_JSON_VALUE, MIME_TYPE_GEOJSON, MIME_TYPE_JSONLD})
+  public FeatureList getFeatures(
       HttpServletRequest request,
       HttpServletResponse response,
       @PathVariable(LookupDao.FEATURE_SOURCE) @Schema(example = "wqp") String featureSource,
       @PathVariable(Parameters.FEATURE_ID) @Schema(example = "USGS-054279485") String featureID,
       @PathVariable(Parameters.NAVIGATION_MODE)
-          @Pattern(regexp = REGEX_NAVIGATION_MODE)
-          @Schema(
-              example = "UM",
-              allowableValues = {"UM", "UT", "PP", "DM", "DD"})
+      @Pattern(regexp = REGEX_NAVIGATION_MODE)
+      @Schema(
+          example = "UM",
+          allowableValues = {"UM", "UT", "PP", "DM", "DD"})
           String navigationMode,
       @PathVariable(value = DATA_SOURCE) @Schema(example = "nwissite") String dataSource,
       @RequestParam(value = Parameters.STOP_COMID, required = false)
-          @Range(min = 1, max = Integer.MAX_VALUE)
-          String stopComid,
+      @Range(min = 1, max = Integer.MAX_VALUE)
+        String stopComid,
       @Parameter(description = Parameters.DISTANCE_DESCRIPTION_NEW)
-          @RequestParam(value = Parameters.DISTANCE)
-          @Pattern(
-              message = Parameters.DISTANCE_VALIDATION_MESSAGE,
-              regexp = Parameters.DISTANCE_VALIDATION_REGEX)
-          @Schema(example = "50")
-          String distance,
+      @RequestParam(value = Parameters.DISTANCE)
+      @Range(min = 1, max = 9999, message = Parameters.DISTANCE_VALIDATION_MESSAGE)
+      @Schema(example = "50")
+        BigDecimal distance,
       @RequestParam(value = Parameters.LEGACY, required = false) String legacy)
       throws Exception {
 
     BigInteger logId = logService.logRequest(request);
+    FeatureList featureList;
     try {
       lookupDao.validateFeatureSource(featureSource);
       lookupDao.validateFeatureSourceAndId(featureSource, featureID);
       lookupDao.validateDataSource(dataSource);
 
-      Integer comid = lookupDao.getFeatureComid(featureSource, featureID);
-      if (null == comid) {
-        response.setStatus(HttpStatus.NOT_FOUND.value());
-      } else {
+      Integer comid = lookupDao.getComidFromFeature(featureSource, featureID);
+
+      if (isLegacy(legacy, navigationMode)) {
         streamFeatures(
             response,
             comid.toString(),
             navigationMode,
             stopComid,
-            distance,
+            String.valueOf(distance),
             dataSource,
             isLegacy(legacy, navigationMode));
+        // the legacy version handles the response manually,
+        // so we can return null here to avoid overriding
+        return null;
+      } else {
+        featureList = navigationDao.navigateFeatures(comid, dataSource, navigationMode, distance);
+
+        featureList.setNavigationUrls(configurationService.getLinkedDataUrl());
+
+        return featureList;
       }
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
@@ -665,10 +670,9 @@ public class LinkedDataController extends BaseController {
       lookupDao.validateFeatureSource(featureSource);
       lookupDao.validateFeatureSourceAndId(featureSource, featureID);
 
-      Integer comid = lookupDao.getFeatureComid(featureSource, featureID);
-      if (null == comid) {
-        response.setStatus(HttpStatus.NOT_FOUND.value());
-      } else if (null != trimStart && trimStart == true) {
+      Integer comid = lookupDao.getComidFromFeature(featureSource, featureID);
+
+      if (null != trimStart && trimStart == true) {
         String measure = lookupDao.getMeasure(featureSource, featureID, true);
         streamFlowLines(
             response,
