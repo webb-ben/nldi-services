@@ -22,7 +22,8 @@ public class GlobalDefaultExceptionHandler {
   @ExceptionHandler({
     FeatureSourceNotFoundException.class,
     FeatureIdNotFoundException.class,
-    DataSourceNotFoundException.class
+    DataSourceNotFoundException.class,
+    ComidNotFoundException.class
   })
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   @ResponseBody
