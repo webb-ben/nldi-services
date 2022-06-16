@@ -53,18 +53,6 @@ public class LinkedDataControllerDataSourceIT extends BaseControllerIT {
   }
 
   @Test
-  public void getWqpUtTestDistanceEmpty() throws Exception {
-    assertEntity(
-        restTemplate,
-        "/linked-data/wqp/USGS-05427880/navigation/UT/wqp?distance=",
-        HttpStatus.OK.value(),
-        BaseController.MIME_TYPE_GEOJSON,
-        getCompareFile(RESULT_FOLDER, "getWqpUtTestDistanceEmpty.json"),
-        true,
-        false);
-  }
-
-  @Test
   public void getWqpUtTestDistanceAboveMax() throws Exception {
     assertEntity(
         restTemplate,
