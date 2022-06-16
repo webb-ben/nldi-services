@@ -69,7 +69,7 @@ public class NetworkController extends BaseController {
     Comid result = null;
 
     try {
-      result = lookupDao.getComid(comid);
+      result = lookupDao.getComidObject(comid);
       result.setNavigation(createNavigationUrl(request.getRequestURI()));
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
@@ -320,7 +320,7 @@ public class NetworkController extends BaseController {
     try {
       Integer comid = lookupDao.getComidByLatitudeAndLongitude(position);
 
-      Comid comidFeature = lookupDao.getComid(comid);
+      Comid comidFeature = lookupDao.getComidObject(comid);
       String navigationUrl = createNavigationUrl(request.getRequestURI());
       navigationUrl = navigationUrl.replaceFirst("position", comidFeature.getComid().toString());
       comidFeature.setNavigation(navigationUrl);
