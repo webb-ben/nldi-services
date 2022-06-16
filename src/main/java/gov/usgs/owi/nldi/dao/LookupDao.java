@@ -1,5 +1,6 @@
 package gov.usgs.owi.nldi.dao;
 
+import gov.usgs.owi.nldi.exceptions.ComidNotFoundException;
 import gov.usgs.owi.nldi.exceptions.DataSourceNotFoundException;
 import gov.usgs.owi.nldi.exceptions.FeatureIdNotFoundException;
 import gov.usgs.owi.nldi.exceptions.FeatureSourceNotFoundException;
@@ -20,13 +21,8 @@ import org.springframework.stereotype.Component;
 public class LookupDao extends BaseDao {
 
   public static final String ROOT_URL = "rootUrl";
-  public static final String NAME = "name";
-  public static final String URI = "uri";
-  public static final String SHAPE = "shape";
-  public static final String IDENTIFIER = "identifier";
   public static final String FEATURE_SOURCE = "featureSource";
   public static final String SOURCE = "source";
-  public static final String SOURCE_NAME = "sourceName";
   public static final String COMID_LAT_LON = "comidLatLon";
   public static final String ST_DISTANCE = "distanceFromFlowline";
   public static final String ST_CLOSEST_POINT = "closestPointOnFlowline";
@@ -36,6 +32,8 @@ public class LookupDao extends BaseDao {
   public static final String REACH_CODE = "reachCode";
 
   private static final String NS = "lookup.";
+  private static final String DOES_COMID_EXIST = NS + "comidExists";
+  private static final String FEATURE_COMID = NS + "featureComid";
 
   @Autowired
   public LookupDao(SqlSessionFactory sqlSessionFactory) {
@@ -99,28 +97,39 @@ public class LookupDao extends BaseDao {
     return result;
   }
 
-  public Comid getComid(@NonNull Integer comid) {
-    Comid result = null;
-    result = getSqlSession().selectOne(NS + "fancyComid", comid);
+  public Comid getComidObject(@NonNull Integer comid) {
+    Comid result = getSqlSession().selectOne(NS + "fancyComid", comid);
+
+    if (comid == null) {
+      throw new ComidNotFoundException(comid);
+    }
+
     return result;
   }
 
-  public Integer getFeatureComid(String featureSource, String featureID)
-      throws IllegalArgumentException {
-    if (null == featureSource || null == featureID) {
-      throw new IllegalArgumentException("A featureSource and featureID are required.");
-    }
+  public Integer getComidFromFeature(@NonNull String featureSource, @NonNull String featureID) {
+    Integer comid;
 
-    Map<String, Object> parameterMap = new HashMap<>();
-    parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
-    parameterMap.put(Parameters.FEATURE_ID, featureID);
-
-    Map<String, Object> feature = getSqlSession().selectOne(NS + BaseDao.FEATURE, parameterMap);
-    if (null == feature || !feature.containsKey(Parameters.COMID)) {
-      return null;
+    if (featureSource != null && featureSource.equals(Parameters.COMID)) {
+      // if the user is using comid as feature source, they are passing in the comid value
+      comid = Integer.parseInt(featureID);
+      Boolean comidExists = getSqlSession().selectOne(DOES_COMID_EXIST, comid);
+      if (!comidExists) {
+       throw new ComidNotFoundException(comid);
+      }
     } else {
-      return Integer.parseInt(feature.get(Parameters.COMID).toString());
+      Map<String, Object> parameterMap = new HashMap<>();
+      parameterMap.put(FEATURE_SOURCE, featureSource);
+      parameterMap.put(Parameters.FEATURE_ID, featureID);
+
+      comid = getSqlSession().selectOne(FEATURE_COMID, parameterMap);
     }
+
+    if (comid == null) {
+      throw new ComidNotFoundException(featureSource, featureID);
+    }
+
+    return comid;
   }
 
   public String getMeasure(String featureSource, String featureID, Boolean allowEstimate) {
