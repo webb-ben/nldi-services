@@ -18,7 +18,8 @@
 		"name": "Sixmile Creek - Woodland Rd Station #2",
 		"uri": "https://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10017024/",
 		"comid": "13294132",
-		"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/wqp/WIDNR_WQX-10017024/navigation"
+		"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/wqp/WIDNR_WQX-10017024/navigation",
+		"mainstem": "https://geoconnex.us/ref/mainstems/467897"
 	}
 	},
 	{
@@ -38,7 +39,8 @@
 		"name": "SIXMILE CREEK AT STATE HIGHWAY 19 NEAR WAUNAKEE,WI",
 		"uri": "https://www.waterqualitydata.us/provider/NWIS/USGS-WI/USGS-05427880/",
 		"comid": "13294132",
-		"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/wqp/USGS-05427880/navigation"
+		"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/wqp/USGS-05427880/navigation",
+		"mainstem": "https://geoconnex.us/ref/mainstems/467897"
 	}
 	},
 	{
@@ -58,7 +60,8 @@
 		"name": "SIXMILE CREEK - 10 M UPSTREAM OF KINGSLEY RD CROS-SING",
 		"uri": "https://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10016974/",
 		"comid": "13294132",
-		"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/wqp/WIDNR_WQX-10016974/navigation"
+		"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/wqp/WIDNR_WQX-10016974/navigation",
+		"mainstem": "https://geoconnex.us/ref/mainstems/467897"
 	}
 	},
 	{
@@ -78,7 +81,8 @@
 		"name": "BARBIAN POND - BARBIAN POND",
 		"uri": "https://www.waterqualitydata.us/provider/STORET/WIDNR_WQX/WIDNR_WQX-10001221/",
 		"comid": "13294132",
-		"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/wqp/WIDNR_WQX-10001221/navigation"
+		"navigation": "http://owi-test.usgs.gov:8080/test-url/linked-data/wqp/WIDNR_WQX-10001221/navigation",
+		"mainstem": "https://geoconnex.us/ref/mainstems/467897"
 	}
 	}
 ]
