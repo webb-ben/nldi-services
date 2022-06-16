@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import gov.usgs.owi.nldi.BaseIT;
+import gov.usgs.owi.nldi.exceptions.ComidNotFoundException;
 import gov.usgs.owi.nldi.model.DataSource;
 import gov.usgs.owi.nldi.services.ConfigurationService;
 import gov.usgs.owi.nldi.springinit.DbTestConfig;
@@ -27,7 +28,7 @@ public class LookupDaoIT extends BaseIT {
   public void getFeatureTest() {
     String featureSource = "wqp";
     String featureID = "USGS-05427880";
-    Integer result = lookupDao.getFeatureComid(featureSource, featureID);
+    Integer result = lookupDao.getComidFromFeature(featureSource, featureID);
     assertEquals(13294132, result);
   }
 
@@ -36,9 +37,9 @@ public class LookupDaoIT extends BaseIT {
     String featureSource = null;
     String featureID = "USGS-05427880";
     assertThrows(
-        IllegalArgumentException.class,
+        ComidNotFoundException.class,
         () -> {
-          lookupDao.getFeatureComid(featureSource, featureID);
+          lookupDao.getComidFromFeature(featureSource, featureID);
         });
   }
 
@@ -47,9 +48,9 @@ public class LookupDaoIT extends BaseIT {
     String featureSource = "wqp";
     String featureID = null;
     assertThrows(
-        IllegalArgumentException.class,
+        ComidNotFoundException.class,
         () -> {
-          lookupDao.getFeatureComid(featureSource, featureID);
+          lookupDao.getComidFromFeature(featureSource, featureID);
         });
   }
 
@@ -57,7 +58,7 @@ public class LookupDaoIT extends BaseIT {
   public void getComidTest() {
     String featureSource = "comid";
     String featureID = "937090090";
-    Integer result = lookupDao.getFeatureComid(featureSource, featureID);
+    Integer result = lookupDao.getComidFromFeature(featureSource, featureID);
     assertEquals(937090090, result);
   }
 
