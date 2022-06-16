@@ -46,6 +46,7 @@ public class LinkedDataController extends BaseController {
   public LinkedDataController(
       LookupDao inLookupDao,
       StreamingDao inStreamingDao,
+      NavigationDao inNavigationDao,
       Navigation inNavigation,
       Parameters inParameters,
       ConfigurationService configurationService,
@@ -54,6 +55,7 @@ public class LinkedDataController extends BaseController {
     super(
         inLookupDao,
         inStreamingDao,
+        inNavigationDao,
         inNavigation,
         inParameters,
         configurationService,

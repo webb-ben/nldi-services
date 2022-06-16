@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
+import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.exceptions.DataSourceNotFoundException;
 import gov.usgs.owi.nldi.exceptions.FeatureIdNotFoundException;
@@ -40,6 +41,7 @@ public class LinkedDataControllerTest {
 
   @MockBean private LookupDao lookupDao;
   @MockBean private StreamingDao streamingDao;
+  @MockBean private NavigationDao navigationDao;
   @MockBean private Navigation navigation;
   @MockBean private Parameters parameters;
   @MockBean private ConfigurationService configurationService;

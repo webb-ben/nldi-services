@@ -2,6 +2,7 @@ package gov.usgs.owi.nldi.controllers;
 
 import gov.usgs.owi.nldi.dao.BaseDao;
 import gov.usgs.owi.nldi.dao.LookupDao;
+import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.ConfigurationService;
 import gov.usgs.owi.nldi.services.LogService;
@@ -29,6 +30,7 @@ public class LookupController extends BaseController {
   public LookupController(
       LookupDao inLookupDao,
       StreamingDao inStreamingDao,
+      NavigationDao inNavigationDao,
       Navigation inNavigation,
       Parameters inParameters,
       ConfigurationService configurationService,
@@ -37,6 +39,7 @@ public class LookupController extends BaseController {
     super(
         inLookupDao,
         inStreamingDao,
+        inNavigationDao,
         inNavigation,
         inParameters,
         configurationService,

@@ -1,6 +1,7 @@
 package gov.usgs.owi.nldi.controllers;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
+import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.model.Comid;
 import gov.usgs.owi.nldi.services.*;
@@ -35,6 +36,7 @@ public class NetworkController extends BaseController {
   public NetworkController(
       LookupDao inLookupDao,
       StreamingDao inStreamingDao,
+      NavigationDao inNavigationDao,
       Navigation inNavigation,
       Parameters inParameters,
       ConfigurationService configurationService,
@@ -43,6 +45,7 @@ public class NetworkController extends BaseController {
     super(
         inLookupDao,
         inStreamingDao,
+        inNavigationDao,
         inNavigation,
         inParameters,
         configurationService,
