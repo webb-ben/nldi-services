@@ -13,7 +13,10 @@
         feature.comid,
         feature.reachcode,
         feature.measure,
-        st_asgeojson(feature.location, 9, 0) shape
+        case when feature.shape is null
+            then st_asgeojson(feature.location, 9, 0)
+            else st_asgeojson(feature.shape, 9, 0)
+        end shape
     </sql>
 
     <sql id="comidProperties">
