@@ -3,10 +3,7 @@ package gov.usgs.owi.nldi.controllers;
 import de.jkeylockmanager.manager.KeyLockManager;
 import de.jkeylockmanager.manager.KeyLockManagers;
 import gov.usgs.owi.nldi.NavigationMode;
-import gov.usgs.owi.nldi.dao.BaseDao;
-import gov.usgs.owi.nldi.dao.LookupDao;
-import gov.usgs.owi.nldi.dao.StreamingDao;
-import gov.usgs.owi.nldi.dao.StreamingResultHandler;
+import gov.usgs.owi.nldi.dao.*;
 import gov.usgs.owi.nldi.services.*;
 import gov.usgs.owi.nldi.transform.*;
 import java.io.IOException;
@@ -37,6 +34,7 @@ public abstract class BaseController {
 
   protected final LookupDao lookupDao;
   protected final StreamingDao streamingDao;
+  protected final NavigationDao navigationDao;
   protected final Navigation navigation;
   protected final Parameters parameters;
   protected final ConfigurationService configurationService;
@@ -48,6 +46,7 @@ public abstract class BaseController {
   public BaseController(
       LookupDao inLookupDao,
       StreamingDao inStreamingDao,
+      NavigationDao inNavigationDao,
       Navigation inNavigation,
       Parameters inParameters,
       ConfigurationService inConfigurationService,
@@ -55,6 +54,7 @@ public abstract class BaseController {
       PyGeoApiService inPygeoapiService) {
     lookupDao = inLookupDao;
     streamingDao = inStreamingDao;
+    navigationDao = inNavigationDao;
     navigation = inNavigation;
     parameters = inParameters;
     configurationService = inConfigurationService;

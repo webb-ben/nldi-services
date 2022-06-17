@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
+import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.*;
 import java.math.BigInteger;
@@ -28,6 +29,7 @@ public class LookupControllerTest {
 
   @MockBean private LookupDao lookupDao;
   @MockBean private StreamingDao streamingDao;
+  @MockBean private NavigationDao navigationDao;
   @MockBean private Navigation navigation;
   @MockBean private Parameters parameters;
   @MockBean private ConfigurationService configurationService;

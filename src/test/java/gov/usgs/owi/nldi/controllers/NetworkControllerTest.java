@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
+import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.exceptions.DataSourceNotFoundException;
 import gov.usgs.owi.nldi.model.Comid;
@@ -32,6 +33,7 @@ public class NetworkControllerTest {
 
   @MockBean private LookupDao lookupDao;
   @MockBean private StreamingDao streamingDao;
+  @MockBean private NavigationDao navigationDao;
   @MockBean private Navigation navigation;
   @MockBean private Parameters parameters;
   @MockBean private ConfigurationService configurationService;
@@ -133,7 +135,7 @@ public class NetworkControllerTest {
   @Test
   public void getCoordinatesInRangeTest() throws Exception {
     when(lookupDao.getComidByLatitudeAndLongitude(any())).thenReturn(12345);
-    when(lookupDao.getComid(12345))
+    when(lookupDao.getComidObject(12345))
         .thenReturn(new Comid("identifier", 12345, new Point(new Position(0.0, 0.0))));
 
     mvc.perform(get("/linked-data/comid/position?coords=POINT(-180 0)")).andExpect(status().isOk());
@@ -148,7 +150,7 @@ public class NetworkControllerTest {
   @Test
   public void getCoordinatesOutOfRangeTest() throws Exception {
     when(lookupDao.getComidByLatitudeAndLongitude(any())).thenReturn(12345);
-    when(lookupDao.getComid(12345))
+    when(lookupDao.getComidObject(12345))
         .thenReturn(new Comid("12345", 12345, new Point(new Position(0.0, 0.0))));
 
     mvc.perform(get("/linked-data/comid/position?coords=POINT(-181 0)"))

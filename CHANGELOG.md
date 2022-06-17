@@ -13,9 +13,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Fixed issues with data pollution in tests
 
 ### Added
+* `/linked-data/{featureSource}/{featureID}/navigation/{navigationMode}/{dataSource}` will return JSON-LD when `f=jsonld` is specified
 * `/linked-data/{featureSource}/{featureID}` will return JSON-LD when `f=jsonld` is specified
 * Swagger now contains example values for required parameters
 * Invalid feature sources and IDs now return an error message
+* Invalid comids now return an error message
 
 ## [1.11.0](https://github.com/internetofwater/nldi-services/compare/nldi-services-1.10.0...nldi-services-1.11.0)
 ### Changed

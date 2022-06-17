@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import gov.usgs.owi.nldi.NavigationMode;
 import gov.usgs.owi.nldi.dao.LookupDao;
+import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.services.*;
 import gov.usgs.owi.nldi.transform.ITransformer;
@@ -30,6 +31,7 @@ public class BaseControllerTest {
   @Mock private ConfigurationService configurationService;
   @Mock private LookupDao lookupDao;
   @Mock private StreamingDao streamingDao;
+  @Mock private NavigationDao navigationDao;
   @Mock private Navigation navigation;
   @Mock private Parameters parameters;
   @Mock private ITransformer transformer;
@@ -43,6 +45,7 @@ public class BaseControllerTest {
     public TestBaseController(
         LookupDao inLookupDao,
         StreamingDao inStreamingDao,
+        NavigationDao inNavigationDao,
         Navigation inNavigation,
         Parameters inParameters,
         ConfigurationService inConfigurationService,
@@ -51,6 +54,7 @@ public class BaseControllerTest {
       super(
           inLookupDao,
           inStreamingDao,
+          inNavigationDao,
           inNavigation,
           inParameters,
           inConfigurationService,
@@ -66,6 +70,7 @@ public class BaseControllerTest {
         new TestBaseController(
             lookupDao,
             streamingDao,
+            navigationDao,
             navigation,
             parameters,
             configurationService,

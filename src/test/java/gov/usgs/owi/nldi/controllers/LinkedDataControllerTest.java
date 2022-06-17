@@ -7,12 +7,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
+import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.exceptions.DataSourceNotFoundException;
 import gov.usgs.owi.nldi.exceptions.FeatureIdNotFoundException;
 import gov.usgs.owi.nldi.exceptions.FeatureSourceNotFoundException;
 import gov.usgs.owi.nldi.model.DataSource;
 import gov.usgs.owi.nldi.model.Feature;
+import gov.usgs.owi.nldi.model.FeatureList;
 import gov.usgs.owi.nldi.services.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class LinkedDataControllerTest {
 
   @MockBean private LookupDao lookupDao;
   @MockBean private StreamingDao streamingDao;
+  @MockBean private NavigationDao navigationDao;
   @MockBean private Navigation navigation;
   @MockBean private Parameters parameters;
   @MockBean private ConfigurationService configurationService;
@@ -76,6 +79,7 @@ public class LinkedDataControllerTest {
                 "uri",
                 new Point(new Position(0.0, 0.0)),
                 "POINT(0.0 0.0)"));
+    when(navigationDao.navigateFeatures(any(), any(), any(), any())).thenReturn(new FeatureList());
   }
 
   @Test

@@ -184,4 +184,17 @@
                    )
     </sql>
 
+    <select id="features" resultMap="lookup.FeatureResult" fetchSize="50">
+        <include refid="navigate.core"/>
+        select <include refid="lookup.newFeatureProperties"/>
+        from navigation_results
+            join nldi_data.feature
+                on navigation_results.comid = feature.comid
+            join nldi_data.crawler_source
+                on feature.crawler_source_id = crawler_source.crawler_source_id
+            left join nldi_data.mainstem_lookup as mainstem
+                on feature.comid = mainstem.nhdpv2_comid
+            where lower(source_suffix) = #{dataSource}
+    </select>
+
 </mapper>

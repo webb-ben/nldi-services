@@ -1,6 +1,7 @@
 package gov.usgs.owi.nldi.controllers;
 
 import gov.usgs.owi.nldi.dao.LookupDao;
+import gov.usgs.owi.nldi.dao.NavigationDao;
 import gov.usgs.owi.nldi.dao.StreamingDao;
 import gov.usgs.owi.nldi.model.Comid;
 import gov.usgs.owi.nldi.services.*;
@@ -35,6 +36,7 @@ public class NetworkController extends BaseController {
   public NetworkController(
       LookupDao inLookupDao,
       StreamingDao inStreamingDao,
+      NavigationDao inNavigationDao,
       Navigation inNavigation,
       Parameters inParameters,
       ConfigurationService configurationService,
@@ -43,6 +45,7 @@ public class NetworkController extends BaseController {
     super(
         inLookupDao,
         inStreamingDao,
+        inNavigationDao,
         inNavigation,
         inParameters,
         configurationService,
@@ -66,7 +69,7 @@ public class NetworkController extends BaseController {
     Comid result = null;
 
     try {
-      result = lookupDao.getComid(comid);
+      result = lookupDao.getComidObject(comid);
       result.setNavigation(createNavigationUrl(request.getRequestURI()));
     } finally {
       logService.logRequestComplete(logId, response.getStatus());
@@ -317,7 +320,7 @@ public class NetworkController extends BaseController {
     try {
       Integer comid = lookupDao.getComidByLatitudeAndLongitude(position);
 
-      Comid comidFeature = lookupDao.getComid(comid);
+      Comid comidFeature = lookupDao.getComidObject(comid);
       String navigationUrl = createNavigationUrl(request.getRequestURI());
       navigationUrl = navigationUrl.replaceFirst("position", comidFeature.getComid().toString());
       comidFeature.setNavigation(navigationUrl);
