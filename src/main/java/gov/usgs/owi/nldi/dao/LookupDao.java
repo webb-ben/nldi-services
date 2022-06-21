@@ -235,9 +235,9 @@ public class LookupDao extends BaseDao {
     }
 
     Position position =
-            new Position(
-                    Double.parseDouble(result.get(Parameters.LONGITUDE).toString()),
-                    Double.parseDouble(result.get(Parameters.LATITUDE).toString()));
+        new Position(
+            Double.parseDouble(result.get(Parameters.LONGITUDE).toString()),
+            Double.parseDouble(result.get(Parameters.LATITUDE).toString()));
 
     return position;
   }

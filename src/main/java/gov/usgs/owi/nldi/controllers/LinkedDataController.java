@@ -369,9 +369,9 @@ public class LinkedDataController extends BaseController {
       lookupDao.validateFeatureSourceAndId(featureSource, featureID);
 
       // we should only attempt split catchment for point locations
-      if (!featureSource.equals(Parameters.COMID) &&
-              lookupDao.featureIsPointType(featureSource, featureID) &&
-              splitCatchment) {
+      if (!featureSource.equals(Parameters.COMID)
+          && lookupDao.featureIsPointType(featureSource, featureID)
+          && splitCatchment) {
         // try to get point on flowline using measure
         Position finalPosition = lookupDao.getPointOnFlowline(featureSource, featureID);
 
@@ -386,8 +386,8 @@ public class LinkedDataController extends BaseController {
             // call nldi-flowtrace for a more accurate point on flowline
             Position locationResult = lookupDao.getFeatureLocation(featureSource, featureID);
             finalPosition =
-                    pygeoapiService.getNldiFlowTraceIntersectionPoint(
-                            locationResult, true, PyGeoApiService.Direction.NONE);
+                pygeoapiService.getNldiFlowTraceIntersectionPoint(
+                    locationResult, true, PyGeoApiService.Direction.NONE);
           }
         }
 
