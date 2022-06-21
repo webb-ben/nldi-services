@@ -175,6 +175,30 @@
         ) as result;
     </select>
 
+    <select id="featureIsPoint" resultType="Boolean">
+        select case when feat.shape is not null
+            then geometrytype(feat.shape) = 'POINT'
+            else geometrytype(feat.location) = 'POINT'
+            end
+        from nldi_data.feature feat
+                inner join nldi_data.crawler_source crawler
+                    on crawler.source_suffix = #{featureSource}
+        and feat.crawler_source_id = crawler.crawler_source_id
+        where feat.identifier = #{featureID}
+    </select>
+
+    <select id="pointOnFlowline" resultType="java.util.LinkedHashMap">
+        select st_y(st_lineinterpolatepoint(flow.shape, (1 - ((feat.measure - flow.fmeasure)/(flow.tmeasure - flow.fmeasure))))) as lat,
+               st_x(st_lineinterpolatepoint(flow.shape, (1 - ((feat.measure - flow.fmeasure)/(flow.tmeasure - flow.fmeasure))))) as lon
+        from nhdplus.nhdflowline_np21 flow
+                 inner join nldi_data.feature feat
+                            on feat.comid = flow.nhdplus_comid
+                                and feat.identifier = #{featureID}
+                 inner join nldi_data.crawler_source crawler
+                            on crawler.source_suffix = #{featureSource}
+                                and feat.crawler_source_id = crawler.crawler_source_id
+    </select>
+
     <select id="fancyComid" resultMap="ComidResult" fetchSize="50">
         select
             nhdflowline_np21.nhdplus_comid identifier,

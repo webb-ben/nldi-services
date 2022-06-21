@@ -34,6 +34,8 @@ public class LookupDao extends BaseDao {
   private static final String NS = "lookup.";
   private static final String DOES_COMID_EXIST = NS + "comidExists";
   private static final String FEATURE_COMID = NS + "featureComid";
+  private static final String POINT_ON_FLOWLINE = NS + "pointOnFlowline";
+  private static final String FEATURE_IS_POINT = NS + "featureIsPoint";
 
   @Autowired
   public LookupDao(SqlSessionFactory sqlSessionFactory) {
@@ -221,6 +223,25 @@ public class LookupDao extends BaseDao {
     return position;
   }
 
+  public Position getPointOnFlowline(String featureSource, String featureID) throws Exception {
+    Map<String, Object> parameterMap = new HashMap<>();
+    parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+    parameterMap.put(Parameters.FEATURE_ID, featureID);
+
+    Map<String, Object> result = getSqlSession().selectOne(POINT_ON_FLOWLINE, parameterMap);
+
+    if (!result.containsKey("lat") || !result.containsKey("lon")) {
+      throw new Exception("getPointOnFlowline did not return lat or lon");
+    }
+
+    Position position =
+            new Position(
+                    Double.parseDouble(result.get(Parameters.LONGITUDE).toString()),
+                    Double.parseDouble(result.get(Parameters.LATITUDE).toString()));
+
+    return position;
+  }
+
   public Position getFeatureLocation(String featureSource, String featureID) throws Exception {
 
     if (null == featureSource || null == featureID) {
@@ -243,5 +264,13 @@ public class LookupDao extends BaseDao {
             Double.parseDouble(result.get(Parameters.LATITUDE).toString()));
 
     return position;
+  }
+
+  public Boolean featureIsPointType(String featureSource, String featureID) {
+    Map<String, Object> parameterMap = new HashMap<>();
+    parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
+    parameterMap.put(Parameters.FEATURE_ID, featureID);
+
+    return getSqlSession().selectOne(FEATURE_IS_POINT, parameterMap);
   }
 }
