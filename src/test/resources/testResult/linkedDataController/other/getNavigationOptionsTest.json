@@ -28,5 +28,10 @@
 	"source": "WQP",
 	"sourceName": "Water Quality Portal",
 	"features": "http://owi-test.usgs.gov:8080/test-url/linked-data/wqp/USGS-05427880/navigation/UT/wqp"
+},
+{
+	"source": "shapes",
+	"sourceName": "Demo Shapes",
+	"features": "http://owi-test.usgs.gov:8080/test-url/linked-data/wqp/USGS-05427880/navigation/UT/shapes"
 }
 ]

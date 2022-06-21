@@ -76,6 +76,30 @@ public class LinkedDataControllerOtherIT extends BaseControllerIT {
   }
 
   @Test
+  public void getBasinShapeFeatureTest() throws Exception {
+    assertEntity(
+            restTemplate,
+            "/linked-data/shapes/377002/basin",
+            HttpStatus.OK.value(),
+            BaseController.MIME_TYPE_GEOJSON,
+            getCompareFile(RESULT_FOLDER, "getBasinShapeFeatureTest.json"),
+            true,
+            false);
+  }
+
+  @Test
+  public void getShapeFeatureTest() throws Exception {
+    assertEntity(
+            restTemplate,
+            "/linked-data/shapes/377002",
+            HttpStatus.OK.value(),
+            BaseController.MIME_TYPE_GEOJSON,
+            getCompareFile(RESULT_FOLDER, "getShapeFeatureTest.json"),
+            true,
+            false);
+  }
+
+  @Test
   public void getBasinMissingTest() throws Exception {
     assertEntity(
         restTemplate,
