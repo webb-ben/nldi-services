@@ -368,25 +368,27 @@ public class LinkedDataController extends BaseController {
       lookupDao.validateFeatureSource(featureSource);
       lookupDao.validateFeatureSourceAndId(featureSource, featureID);
 
-      Integer comid = lookupDao.getComidFromFeature(featureSource, featureID);
+      // we should only attempt split catchment for point locations
+      if (!featureSource.equals(Parameters.COMID)
+          && lookupDao.featureIsPointType(featureSource, featureID)
+          && splitCatchment) {
+        // try to get point on flowline using measure
+        Position finalPosition = lookupDao.getPointOnFlowline(featureSource, featureID);
 
-      if (comid == null) {
-        response.setStatus(HttpStatus.NOT_FOUND.value());
-      } else if (splitCatchment) {
-        // call st_distance to get distance between feature and flowline
-        float distance = lookupDao.getDistanceFromFlowline(featureSource, featureID);
+        if (finalPosition == null) {
+          // call st_distance to get distance between feature and flowline
+          float distance = lookupDao.getDistanceFromFlowline(featureSource, featureID);
 
-        Position finalPosition = null;
-
-        if (distance <= SPLIT_CATCHMENT_THRESHOLD) {
-          // get point on flowline closest to feature
-          finalPosition = lookupDao.getClosestPointOnFlowline(featureSource, featureID);
-        } else {
-          // call nldi-flowtrace for a more accurate point on flowline
-          Position locationResult = lookupDao.getFeatureLocation(featureSource, featureID);
-          finalPosition =
-              pygeoapiService.getNldiFlowTraceIntersectionPoint(
-                  locationResult, true, PyGeoApiService.Direction.NONE);
+          if (distance <= SPLIT_CATCHMENT_THRESHOLD) {
+            // get point on flowline closest to feature
+            finalPosition = lookupDao.getClosestPointOnFlowline(featureSource, featureID);
+          } else {
+            // call nldi-flowtrace for a more accurate point on flowline
+            Position locationResult = lookupDao.getFeatureLocation(featureSource, featureID);
+            finalPosition =
+                pygeoapiService.getNldiFlowTraceIntersectionPoint(
+                    locationResult, true, PyGeoApiService.Direction.NONE);
+          }
         }
 
         if (finalPosition == null) {
@@ -397,6 +399,7 @@ public class LinkedDataController extends BaseController {
         JSONObject splitCatchmentResponse = pygeoapiService.nldiSplitCatchment(finalPosition, true);
         handleSplitCatchmentResponse(splitCatchmentResponse, response);
       } else {
+        Integer comid = lookupDao.getComidFromFeature(featureSource, featureID);
         streamBasin(response, comid, simplified);
       }
     } finally {

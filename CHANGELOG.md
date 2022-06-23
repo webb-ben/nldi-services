@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Fixed issues with data pollution in tests
 
 ### Added
+* Queries now support the generic `shape` column in the NLDI database
 * `/linked-data/{featureSource}/{featureID}/navigation/{navigationMode}/{dataSource}` will return JSON-LD when `f=jsonld` is specified
 * `/linked-data/{featureSource}/{featureID}` will return JSON-LD when `f=jsonld` is specified
 * Swagger now contains example values for required parameters
