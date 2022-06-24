@@ -10,8 +10,8 @@ The services are accessed via an http GET request. All output is generated as JS
 
 ### The root is {host}/api/nldi
 Both a test and a production are exposed to the public:
-  <https://labs-beta.waterdata.usgs.gov/api/nldi/linked_data> is the test root.
-  <https://labs.waterdata.usgs.gov/api/nldi/linked_data> is the production root.
+  <https://labs-beta.waterdata.usgs.gov/api/nldi/linked-data> is the test root.
+  <https://labs.waterdata.usgs.gov/api/nldi/linked-data> is the production root.
 
 This endpoint will give you the valid dataSource names for the other endpoints. There is also a health check at /about/health and version information at /about/info.
 
