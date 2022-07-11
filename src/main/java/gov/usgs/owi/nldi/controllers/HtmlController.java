@@ -27,7 +27,7 @@ public class HtmlController {
   @Autowired private ConfigurationService configurationService;
 
   // catches text/html requests for all endpoints and gives an optional redirect link
-  @GetMapping(
+  /*@GetMapping(
       value = {
         "/linked-data",
         "/linked-data/{featureSource}",
@@ -60,7 +60,7 @@ public class HtmlController {
       @RequestParam(required = false) Map<String, String> params)
       throws Exception {
     return processHtml(request, response);
-  }
+  }*/
 
   private String removeHtmlFormatFromQueryString(String oldQueryString) {
     // remove it if user put it somewhere in the middle
