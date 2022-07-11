@@ -2,6 +2,7 @@ package gov.usgs.owi.nldi.converters;
 
 import com.fasterxml.jackson.core.JsonFactoryBuilder;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import gov.usgs.owi.nldi.controllers.BaseController;
 import gov.usgs.owi.nldi.model.Feature;
 import gov.usgs.owi.nldi.model.FeatureList;
@@ -10,6 +11,9 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import mil.nga.sf.geojson.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -170,8 +174,7 @@ public class FeatureListMessageConverter extends AbstractHttpMessageConverter<Fe
     }
   }
 
-  private void writeGeoJson(FeatureList featureList, HttpOutputMessage httpOutputMessage)
-      throws IOException {
+  private void writeGeoJson(FeatureList featureList, HttpOutputMessage httpOutputMessage) {
 
     FeatureCollection collection = new FeatureCollection();
 
@@ -207,9 +210,20 @@ public class FeatureListMessageConverter extends AbstractHttpMessageConverter<Fe
       collection.addFeature(geoJsonFeature);
     }
 
-    String geoJsonString = FeatureConverter.toStringValue(collection);
-
-    byte[] output = geoJsonString.getBytes(StandardCharsets.UTF_8);
-    httpOutputMessage.getBody().write(output);
+    try {
+      JSONObject geoJsonObject = new JSONObject(FeatureConverter.toStringValue(collection));
+      // the features array does not get added if it is empty (bug with the library?)
+      // so we need to add it manually to prevent parsing issues on the users' end
+      if (collection.numFeatures() == 0) {
+        geoJsonObject.put("features", new JSONArray());
+      }
+      String geoJsonString = geoJsonObject.toString();
+      byte[] output = geoJsonString.getBytes(StandardCharsets.UTF_8);
+      httpOutputMessage.getBody().write(output);
+    } catch (JSONException e) {
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
