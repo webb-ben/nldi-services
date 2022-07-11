@@ -2,7 +2,6 @@ package gov.usgs.owi.nldi.converters;
 
 import com.fasterxml.jackson.core.JsonFactoryBuilder;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
 import gov.usgs.owi.nldi.controllers.BaseController;
 import gov.usgs.owi.nldi.model.Feature;
 import gov.usgs.owi.nldi.model.FeatureList;
