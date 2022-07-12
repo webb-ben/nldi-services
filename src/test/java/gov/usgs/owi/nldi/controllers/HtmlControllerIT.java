@@ -15,7 +15,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@Disabled
 public class HtmlControllerIT extends BaseControllerIT {
 
   @LocalServerPort private int port;
