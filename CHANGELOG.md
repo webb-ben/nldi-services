@@ -4,7 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/internetofwater/nldi-services/compare/nldi-services-1.11.0...master)
+## [Unreleased](https://github.com/internetofwater/nldi-services/compare/1.12.1...master)
+### Changed
+* Re-enabled HTML pages
+
+### Fixed
+* Added a custom filter to handle `Accept` headers with multiple values prioritizing html
+
+## [1.12.1](https://github.com/internetofwater/nldi-services/compare/1.12.0...1.12.1)
+### Fixed
+* Empty navigations now return valid GeoJSON
+
+### Changed
+* Temporarily disabled HTML pages during issue investigation
+
+## [1.12.0](https://github.com/internetofwater/nldi-services/compare/nldi-services-1.11.0...1.12.0)
 ### Changed
 * Upgraded spring boot starter version
 * Enabled content negotiation for all endpoints
