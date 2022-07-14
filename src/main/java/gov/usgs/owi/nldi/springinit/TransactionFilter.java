@@ -50,6 +50,11 @@ public class TransactionFilter implements Filter {
         headerList.remove(MediaType.TEXT_HTML_VALUE);
         headerList.remove(MediaType.ALL_VALUE);
       }
+    } else if (headerList.contains(MediaType.ALL_VALUE)
+        && (headerList.contains(BaseController.MIME_TYPE_GEOJSON)
+            || headerList.contains(BaseController.MIME_TYPE_JSONLD)
+            || headerList.contains(MediaType.APPLICATION_JSON_VALUE))) {
+      headerList.remove(MediaType.ALL_VALUE);
     }
 
     MutableHttpServletRequest mutableRequest = new MutableHttpServletRequest(httpRequest);
