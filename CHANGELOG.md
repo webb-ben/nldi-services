@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/internetofwater/nldi-services/compare/1.12.2...master)
+## [Unreleased](https://github.com/internetofwater/nldi-services/compare/1.12.3...master)
+### Fixed
+* Proper CORS header is included in response
+
+## [1.12.3](https://github.com/internetofwater/nldi-services/compare/1.12.2...1.12.3)
 ### Changed
 * Updated transaction filter
 
