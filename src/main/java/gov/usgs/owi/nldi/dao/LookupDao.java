@@ -33,6 +33,7 @@ public class LookupDao extends BaseDao {
 
   private static final String NS = "lookup.";
   private static final String DOES_COMID_EXIST = NS + "comidExists";
+  private static final String DOES_FEATURE_ID_EXIST = NS + "featureExists";
   private static final String FEATURE_COMID = NS + "featureComid";
   private static final String POINT_ON_FLOWLINE = NS + "pointOnFlowline";
   private static final String FEATURE_IS_POINT = NS + "featureIsPoint";
@@ -76,8 +77,8 @@ public class LookupDao extends BaseDao {
     parameterMap.put(LookupDao.FEATURE_SOURCE, featureSource);
     parameterMap.put(Parameters.FEATURE_ID, featureID);
 
-    Map<String, Object> feature = getSqlSession().selectOne(NS + BaseDao.FEATURE, parameterMap);
-    if (null == feature) {
+    Boolean featureExists = getSqlSession().selectOne(DOES_FEATURE_ID_EXIST, parameterMap);
+    if (!featureExists) {
       throw new FeatureIdNotFoundException(featureSource, featureID);
     }
   }
