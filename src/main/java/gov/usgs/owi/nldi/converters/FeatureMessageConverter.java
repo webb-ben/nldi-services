@@ -169,7 +169,11 @@ public class FeatureMessageConverter extends AbstractHttpMessageConverter<Featur
     properties.put("identifier", feature.getIdentifier());
     properties.put("name", feature.getName());
     properties.put("uri", feature.getUri());
-    properties.put("comid", feature.getComid().toString());
+    if (feature.getComid() != null) {
+      properties.put("comid", feature.getComid().toString());
+    } else {
+      properties.put("comid", null);
+    }
 
     if (feature.getReachcode() != null) {
       properties.put("reachcode", feature.getReachcode());

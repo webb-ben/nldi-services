@@ -67,6 +67,11 @@
             where nhdplus_comid = #{comid}
     </select>
 
+    <select id="featureExists" resultType="Boolean">
+        select count(*) != 0
+        <include refid="lookup.featureFromWhere"/>
+    </select>
+
     <select id="reachCode" resultType="String">
         select distinct reachcode
         from nhdplus.nhdflowline_np21
