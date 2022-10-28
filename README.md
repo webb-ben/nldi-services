@@ -5,6 +5,19 @@
 
 This repository houses code behind the Network Linked Data Index (NLDI) API [(Swagger Docs)](https://labs.waterdata.usgs.gov/api/nldi/swagger-ui/index.html). The NLDI is hosted as part of the [USGS Waterdata Labs](https://labs.waterdata.usgs.gov/index.html), a set of new capabilities being developed by the USGS Water Mission Area.
 
+## Table of Contents
+* [Public API](#public-api)
+  * [The root is {host}/api/nldi](#the-root-is-hostapinldi)
+  * [Up/Down Stream navigation](#updown-stream-navigation)
+  * [Up/Down Stream data](#updown-stream-data)
+  * [Query Parameters](#query-parameters)
+  * [Other Endpoints](#other-endpoints)
+* [Development](#development)
+  * [Dependencies](#dependencies)
+  * [Docker Compose](#docker-compose)
+  * [Environment variables](#environment-variables)
+  * [Testing](#testing)
+
 ## Public API
 The services are accessed via an http GET request. All output is generated as JSON and GeoJSON.
 
@@ -56,13 +69,23 @@ Rather, start up the demo db and create an application.yml file as described bel
 This application utilizes a PostgreSQL database.
 [nldi-db](https://github.com/internetofwater/nldi-db) contains everything you need to set up a development database environment. It includes data for the Yahara River in Wisconsin.
 
-### Running the Demo DB for local development
-See the nldi-db project for more details, but in short:
-```shell
-docker network create --subnet=172.26.0.0/16 nldi
-docker run -it --env-file ./.env -p 127.0.0.1:5437:5432/tcp ghcr.io/internetofwater/nldi-db:demo
+### Docker Compose
+This project includes a Docker-Compose file with all necessary variables predefined.
+First, start the demo database by running:
+
+```sh
+docker-compose up -d nldi-db
 ```
-Note the _5437_ port mapping, which is used in the environmental variables below.
+
+Then, build and start the NLDI services by running:
+
+```sh
+docker-compose up nldi-services
+```
+
+These test services will be accessible at <localhost:8080/nldi>. \
+If you would like to build these images using a mirror url simply set a `DOCKER_MIRROR` environment variable or include
+it as a build argument.
 
 ### Environment variables
 To run the project (connecting to a separately running db instance) you will need to create the file application.yml in the project's root directory and add the following (normal defaults are filled in):
